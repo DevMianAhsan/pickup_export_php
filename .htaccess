@@ -1,0 +1,7 @@
+RewriteEngine On
+RewriteRule ^api/catalog/?$ api/catalog.php [L,QSA]
+RewriteRule ^api/catalog/(.*)$ api/catalog.php/$1 [L,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . - [L]

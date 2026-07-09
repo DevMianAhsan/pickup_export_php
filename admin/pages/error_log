@@ -1,0 +1,62 @@
+[03-Apr-2023 12:51:29 UTC] PHP Warning:  include_once(includes/header.php): failed to open stream: No such file or directory in /home/htcjapan/public_html/htcjapan.jp/admin/pages/advance_search.php on line 2
+[03-Apr-2023 12:51:29 UTC] PHP Warning:  include_once(): Failed opening 'includes/header.php' for inclusion (include_path='.:/opt/alt/php72/usr/share/pear') in /home/htcjapan/public_html/htcjapan.jp/admin/pages/advance_search.php on line 2
+[03-Apr-2023 12:51:29 UTC] PHP Warning:  include_once(inc/code.php): failed to open stream: No such file or directory in /home/htcjapan/public_html/htcjapan.jp/admin/pages/advance_search.php on line 3
+[03-Apr-2023 12:51:29 UTC] PHP Warning:  include_once(): Failed opening 'inc/code.php' for inclusion (include_path='.:/opt/alt/php72/usr/share/pear') in /home/htcjapan/public_html/htcjapan.jp/admin/pages/advance_search.php on line 3
+[03-Apr-2023 12:51:29 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function get() in /home/htcjapan/public_html/htcjapan.jp/admin/pages/advance_search.php:135
+Stack trace:
+#0 {main}
+  thrown in /home/htcjapan/public_html/htcjapan.jp/admin/pages/advance_search.php on line 135
+[03-Apr-2023 12:53:37 UTC] PHP Warning:  include_once(php_action/core.php): failed to open stream: No such file or directory in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 2
+[03-Apr-2023 12:53:37 UTC] PHP Warning:  include_once(): Failed opening 'php_action/core.php' for inclusion (include_path='.:/opt/alt/php72/usr/share/pear') in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 2
+[03-Apr-2023 12:53:37 UTC] PHP Notice:  Undefined variable: dbc in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 6
+[03-Apr-2023 12:53:37 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 6
+[03-Apr-2023 12:53:37 UTC] PHP Warning:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, null given in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 6
+[03-Apr-2023 12:53:37 UTC] PHP Notice:  Undefined variable: dbc in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 11
+[03-Apr-2023 12:53:37 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 11
+[03-Apr-2023 12:53:37 UTC] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, null given in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 12
+[03-Apr-2023 12:53:37 UTC] PHP Warning:  include_once(includes/head.php): failed to open stream: No such file or directory in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 27
+[03-Apr-2023 12:53:37 UTC] PHP Warning:  include_once(): Failed opening 'includes/head.php' for inclusion (include_path='.:/opt/alt/php72/usr/share/pear') in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 27
+[03-Apr-2023 12:53:37 UTC] PHP Warning:  include_once(includes/sidebar.php): failed to open stream: No such file or directory in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 73
+[03-Apr-2023 12:53:37 UTC] PHP Warning:  include_once(): Failed opening 'includes/sidebar.php' for inclusion (include_path='.:/opt/alt/php72/usr/share/pear') in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 73
+[03-Apr-2023 12:53:37 UTC] PHP Warning:  include_once(inc/functions.php): failed to open stream: No such file or directory in /home/htcjapan/public_html/htcjapan.jp/admin/inc/code.php on line 2
+[03-Apr-2023 12:53:37 UTC] PHP Warning:  include_once(): Failed opening 'inc/functions.php' for inclusion (include_path='.:/opt/alt/php72/usr/share/pear') in /home/htcjapan/public_html/htcjapan.jp/admin/inc/code.php on line 2
+[03-Apr-2023 12:53:37 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function get() in /home/htcjapan/public_html/htcjapan.jp/admin/pages/advance_search.php:135
+Stack trace:
+#0 {main}
+  thrown in /home/htcjapan/public_html/htcjapan.jp/admin/pages/advance_search.php on line 135
+[03-Apr-2023 12:53:52 UTC] PHP Warning:  include_once(php_action/core.php): failed to open stream: No such file or directory in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 2
+[03-Apr-2023 12:53:52 UTC] PHP Warning:  include_once(): Failed opening 'php_action/core.php' for inclusion (include_path='.:/opt/alt/php72/usr/share/pear') in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 2
+[03-Apr-2023 12:53:52 UTC] PHP Notice:  Undefined variable: dbc in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 6
+[03-Apr-2023 12:53:52 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 6
+[03-Apr-2023 12:53:52 UTC] PHP Warning:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, null given in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 6
+[03-Apr-2023 12:53:52 UTC] PHP Notice:  Undefined variable: dbc in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 11
+[03-Apr-2023 12:53:52 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 11
+[03-Apr-2023 12:53:52 UTC] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, null given in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 12
+[03-Apr-2023 12:53:52 UTC] PHP Warning:  include_once(includes/head.php): failed to open stream: No such file or directory in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 27
+[03-Apr-2023 12:53:52 UTC] PHP Warning:  include_once(): Failed opening 'includes/head.php' for inclusion (include_path='.:/opt/alt/php72/usr/share/pear') in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 27
+[03-Apr-2023 12:53:52 UTC] PHP Warning:  include_once(includes/sidebar.php): failed to open stream: No such file or directory in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 73
+[03-Apr-2023 12:53:52 UTC] PHP Warning:  include_once(): Failed opening 'includes/sidebar.php' for inclusion (include_path='.:/opt/alt/php72/usr/share/pear') in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 73
+[03-Apr-2023 12:53:52 UTC] PHP Warning:  include_once(inc/functions.php): failed to open stream: No such file or directory in /home/htcjapan/public_html/htcjapan.jp/admin/inc/code.php on line 2
+[03-Apr-2023 12:53:52 UTC] PHP Warning:  include_once(): Failed opening 'inc/functions.php' for inclusion (include_path='.:/opt/alt/php72/usr/share/pear') in /home/htcjapan/public_html/htcjapan.jp/admin/inc/code.php on line 2
+[03-Apr-2023 12:53:52 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function get() in /home/htcjapan/public_html/htcjapan.jp/admin/pages/advance_search.php:135
+Stack trace:
+#0 {main}
+  thrown in /home/htcjapan/public_html/htcjapan.jp/admin/pages/advance_search.php on line 135
+[03-Apr-2023 12:54:04 UTC] PHP Warning:  include_once(php_action/core.php): failed to open stream: No such file or directory in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 2
+[03-Apr-2023 12:54:04 UTC] PHP Warning:  include_once(): Failed opening 'php_action/core.php' for inclusion (include_path='.:/opt/alt/php72/usr/share/pear') in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 2
+[03-Apr-2023 12:54:04 UTC] PHP Notice:  Undefined variable: dbc in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 6
+[03-Apr-2023 12:54:04 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 6
+[03-Apr-2023 12:54:04 UTC] PHP Warning:  mysqli_fetch_assoc() expects parameter 1 to be mysqli_result, null given in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 6
+[03-Apr-2023 12:54:04 UTC] PHP Notice:  Undefined variable: dbc in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 11
+[03-Apr-2023 12:54:04 UTC] PHP Warning:  mysqli_query() expects parameter 1 to be mysqli, null given in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 11
+[03-Apr-2023 12:54:04 UTC] PHP Warning:  mysqli_num_rows() expects parameter 1 to be mysqli_result, null given in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 12
+[03-Apr-2023 12:54:04 UTC] PHP Warning:  include_once(includes/head.php): failed to open stream: No such file or directory in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 27
+[03-Apr-2023 12:54:04 UTC] PHP Warning:  include_once(): Failed opening 'includes/head.php' for inclusion (include_path='.:/opt/alt/php72/usr/share/pear') in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 27
+[03-Apr-2023 12:54:04 UTC] PHP Warning:  include_once(includes/sidebar.php): failed to open stream: No such file or directory in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 73
+[03-Apr-2023 12:54:04 UTC] PHP Warning:  include_once(): Failed opening 'includes/sidebar.php' for inclusion (include_path='.:/opt/alt/php72/usr/share/pear') in /home/htcjapan/public_html/htcjapan.jp/admin/includes/header.php on line 73
+[03-Apr-2023 12:54:04 UTC] PHP Warning:  include_once(inc/functions.php): failed to open stream: No such file or directory in /home/htcjapan/public_html/htcjapan.jp/admin/inc/code.php on line 2
+[03-Apr-2023 12:54:04 UTC] PHP Warning:  include_once(): Failed opening 'inc/functions.php' for inclusion (include_path='.:/opt/alt/php72/usr/share/pear') in /home/htcjapan/public_html/htcjapan.jp/admin/inc/code.php on line 2
+[03-Apr-2023 12:54:04 UTC] PHP Fatal error:  Uncaught Error: Call to undefined function get() in /home/htcjapan/public_html/htcjapan.jp/admin/pages/advance_search.php:135
+Stack trace:
+#0 {main}
+  thrown in /home/htcjapan/public_html/htcjapan.jp/admin/pages/advance_search.php on line 135

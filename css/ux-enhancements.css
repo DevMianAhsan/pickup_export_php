@@ -1,0 +1,572 @@
+/* ==========================================================
+   UX ENHANCEMENTS — Pickup Export
+   Sticky Navbar · Typography · Responsiveness · Micro-animations
+   ========================================================== */
+
+/* ---- Google Font Import ---- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ---- CSS Custom Properties ---- */
+:root {
+  --brand-red:   #e72a1a;
+  --brand-dark:  #1e1e1e;
+  --nav-height:  64px;
+  --nav-bg:      #ffffff;
+  --nav-shadow:  0 2px 16px rgba(0,0,0,0.10);
+  --transition:  0.25s ease;
+  --font-base:   'Inter', 'Roboto', 'Arial', sans-serif;
+}
+
+/* ---- Base Typography ---- */
+body {
+  font-family: var(--font-base) !important;
+  font-size:   15px !important;
+  line-height: 1.65 !important;
+  color:       #2d2d2d !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-base) !important;
+  font-weight: 700 !important;
+  line-height: 1.25 !important;
+}
+
+h1 { font-size: clamp(1.6rem, 4vw, 2.4rem) !important; }
+h2 { font-size: clamp(1.3rem, 3vw, 2rem)   !important; }
+h3 { font-size: clamp(1.1rem, 2.5vw, 1.5rem) !important; }
+h4 { font-size: clamp(1rem, 2vw, 1.25rem)  !important; }
+h5 { font-size: 1rem  !important; }
+h6 { font-size: 0.9rem !important; }
+
+p  { font-size: 0.95rem !important; line-height: 1.7 !important; }
+a  { transition: color var(--transition), opacity var(--transition); }
+
+
+
+/* ==========================================================
+   FIXED / STICKY NAVBAR
+   ========================================================== */
+
+/* Neutralise the theme's sticky.js plugin completely */
+.sticky-wrapper,
+.sticky-wrapper.is-sticky {
+  position: static !important;
+  height:   auto !important;
+  width:    100% !important;
+  top:      auto !important;
+}
+
+/* Fix the header to the top of the viewport — works even when
+   the theme wraps it in a .sticky-wrapper div at runtime       */
+.header-main {
+  position:   fixed !important;
+  top:        0 !important;
+  left:       0 !important;
+  width:      100% !important;
+  z-index:    1050 !important;
+  background: var(--nav-bg) !important;
+  box-shadow: none;
+  transition: box-shadow var(--transition), background var(--transition) !important;
+  /* GPU-accelerated compositing */
+  will-change:  transform;
+  backface-visibility: hidden;
+}
+
+/* Shadow appears after scrolling 10px (JS adds .nav-scrolled) */
+.header-main.nav-scrolled {
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Keep inner bars at natural height */
+.horizontal-main,
+.horizontal-header {
+  height:     auto !important;
+  min-height: auto !important;
+  padding:    0 !important;
+}
+
+
+
+
+/* ==========================================================
+   DESKTOP NAV LINK IMPROVEMENTS
+   ========================================================== */
+
+@media (min-width: 992px) {
+  .horizontal-mainwrapper.container {
+    padding: 0 24px !important;
+  }
+
+  .horizontalMenu > .horizontalMenu-list > li > a {
+    font-family: var(--font-base) !important;
+    font-size:   14px !important;
+    font-weight: 600 !important;
+    padding:     20px 16px !important;
+    position:    relative;
+    color:       #1e1e1e !important;
+    transition:  color var(--transition) !important;
+  }
+
+  /* Animated underline on hover */
+  .horizontalMenu > .horizontalMenu-list > li > a::after {
+    content:    '';
+    position:   absolute;
+    bottom:     12px;
+    left:       16px;
+    right:      16px;
+    height:     2px;
+    background: var(--brand-red);
+    transform:  scaleX(0);
+    transition: transform var(--transition);
+    transform-origin: left;
+  }
+
+  .horizontalMenu > .horizontalMenu-list > li:hover > a::after,
+  .horizontalMenu > .horizontalMenu-list > li > a.active::after {
+    transform: scaleX(1);
+  }
+
+  .horizontalMenu > .horizontalMenu-list > li:hover > a,
+  .horizontalMenu > .horizontalMenu-list > li > a.active {
+    color: var(--brand-red) !important;
+  }
+
+  /* Logo sizing */
+  .desktoplogo img,
+  .desktoplogo-1 img {
+    max-height: 48px !important;
+    width: auto !important;
+    transition: opacity var(--transition);
+  }
+  .desktoplogo img:hover,
+  .desktoplogo-1 img:hover { opacity: 0.85; }
+}
+
+
+/* ==========================================================
+   MOBILE HEADER — styling only (visibility controlled in topbar.php)
+   ========================================================== */
+
+.horizontal-header {
+  align-items:     center !important;
+  justify-content: space-between !important;
+  padding:         10px 16px !important;
+  background:      #fff !important;
+  border-bottom:   2px solid var(--brand-red) !important;
+  min-height:      56px !important;
+}
+
+
+/* Mobile logo */
+.horizontal-header .smllogo img {
+  max-height: 38px !important;
+  width: auto !important;
+}
+
+/* Hamburger touch area */
+#horizontal-navtoggle {
+  padding: 8px !important;
+  cursor:  pointer;
+}
+
+/* Mobile call button */
+.horizontal-header .callusbtn {
+  font-size: 20px !important;
+  color:     var(--brand-red) !important;
+  padding:   6px 10px !important;
+}
+
+
+/* ==========================================================
+   MOBILE MENU (slide-in) — small devices
+   ========================================================== */
+
+@media (max-width: 991px) {
+  .horizontalMenu-list {
+    padding-top: 8px !important;
+  }
+
+  .horizontalMenu-list > li > a {
+    font-family: var(--font-base) !important;
+    font-size:   15px !important;
+    font-weight: 600 !important;
+    padding:     13px 20px !important;
+    border-bottom: 1px solid #f0f0f0;
+    color:       #1e1e1e !important;
+  }
+
+  .horizontalMenu-list > li > a:active {
+    color: var(--brand-red) !important;
+  }
+
+  /* Mobile mega menu */
+  .horizontal-megamenu {
+    width:      100% !important;
+    padding:    12px 16px !important;
+    box-sizing: border-box;
+    background: #fafafa !important;
+  }
+
+  .horizontal-megamenu .link-list .title {
+    font-size:   12px !important;
+    font-weight: 700 !important;
+    color:       var(--brand-red) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding:     10px 0 4px !important;
+  }
+
+  .horizontal-megamenu .link-list li a {
+    font-size:   14px !important;
+    padding:     8px 0 !important;
+    color:       #333 !important;
+    border-bottom: 1px solid #eee;
+    display:     block !important;
+  }
+
+  /* Prevent body scroll when menu open */
+  body.nav-open {
+    overflow: hidden;
+  }
+}
+
+
+/* ==========================================================
+   SEARCH BOX — Desktop
+   ========================================================== */
+
+@media (min-width: 992px) {
+  .pickup-search-box {
+    border-radius: 4px !important;
+    overflow:      hidden !important;
+    border:        1.5px solid #dde1e7 !important;
+    transition:    border-color var(--transition), box-shadow var(--transition) !important;
+  }
+
+  .pickup-search-box:focus-within {
+    border-color: var(--brand-red) !important;
+    box-shadow:   0 0 0 3px rgba(231,42,26,0.12) !important;
+  }
+
+  .pickup-search-box input[type="text"] {
+    font-family:   var(--font-base) !important;
+    font-size:     14px !important;
+    letter-spacing: 0.01em;
+  }
+
+  .pickup-search-box .search-btn {
+    background-color: var(--brand-red) !important;
+    color:            #fff !important;
+    border-left:      none !important;
+    transition:       background-color var(--transition) !important;
+  }
+
+  .pickup-search-box .search-btn:hover {
+    background-color: #c0220f !important;
+  }
+
+  .pickup-search-box .search-btn i {
+    font-size: 17px !important;
+  }
+}
+
+
+/* ==========================================================
+   SEARCH BOX — Mobile
+   ========================================================== */
+
+.pickup-search-box-mobile {
+  border-radius: 4px !important;
+  border:        1.5px solid #dde1e7 !important;
+  height:        42px !important;
+  transition:    border-color var(--transition) !important;
+}
+
+.pickup-search-box-mobile:focus-within {
+  border-color: var(--brand-red) !important;
+}
+
+.pickup-search-box-mobile input[type="text"] {
+  font-family: var(--font-base) !important;
+  font-size:   13px !important;
+  text-transform: none !important;
+  font-weight: 500 !important;
+}
+
+.pickup-search-box-mobile .search-btn {
+  background-color: var(--brand-red) !important;
+  color:            #fff !important;
+  border-left:      none !important;
+}
+
+
+/* ==========================================================
+   FOOTER IMPROVEMENTS
+   ========================================================== */
+
+footer h6 {
+  font-family:    var(--font-base) !important;
+  font-size:      13px !important;
+  font-weight:    700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-bottom:  12px !important;
+}
+
+footer ul li {
+  margin-bottom: 8px !important;
+}
+
+footer ul li a {
+  font-size:  14px !important;
+  opacity:    0.8;
+  transition: opacity var(--transition);
+}
+
+footer ul li a:hover { opacity: 1; }
+
+.footer-main {
+  padding: 48px 0 32px !important;
+}
+
+@media (max-width: 767px) {
+  .footer-main .col-lg-2,
+  .footer-main .col-lg-3,
+  .footer-main .col-lg-4 {
+    margin-bottom: 28px !important;
+  }
+}
+
+
+/* ==========================================================
+   SECTION HEADINGS & SECTION TITLES
+   ========================================================== */
+
+.section-title h2 {
+  font-size:      clamp(1.3rem, 3vw, 1.9rem) !important;
+  font-weight:    700 !important;
+  letter-spacing: -0.01em;
+}
+
+.section-title p {
+  font-size: 1rem !important;
+  opacity:   0.75;
+}
+
+
+/* ==========================================================
+   CARD / VEHICLE LISTING IMPROVEMENTS
+   ========================================================== */
+
+.card {
+  border-radius: 6px !important;
+  transition:    box-shadow var(--transition), transform var(--transition) !important;
+}
+
+.card:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.10) !important;
+  transform:  translateY(-3px) !important;
+}
+
+.card-title {
+  font-size:   1rem !important;
+  font-weight: 700 !important;
+}
+
+.card-text {
+  font-size: 0.875rem !important;
+}
+
+/* Price badge */
+.item-card2-desc h4 {
+  font-size:   1.1rem !important;
+  font-weight: 700 !important;
+  color:       var(--brand-red) !important;
+}
+
+
+/* ==========================================================
+   BUTTON IMPROVEMENTS
+   ========================================================== */
+
+.btn {
+  font-family:    var(--font-base) !important;
+  font-weight:    600 !important;
+  letter-spacing: 0.02em;
+  border-radius:  4px !important;
+  transition:     background-color var(--transition),
+                  border-color var(--transition),
+                  transform 0.15s ease,
+                  box-shadow var(--transition) !important;
+}
+
+.btn:hover  { transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+
+.btn-primary {
+  background-color: var(--brand-red) !important;
+  border-color:     var(--brand-red) !important;
+}
+
+.btn-primary:hover {
+  background-color: #c0220f !important;
+  border-color:     #c0220f !important;
+}
+
+
+/* ==========================================================
+   FLOATING SOCIAL BUTTONS (WhatsApp / Facebook)
+   ========================================================== */
+
+.float, .float2 {
+  transition: transform var(--transition), box-shadow var(--transition) !important;
+}
+
+.float:hover, .float2:hover {
+  transform:  scale(1.1) !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.20) !important;
+}
+
+@media (max-width: 480px) {
+  .float  { width: 48px !important; height: 48px !important; font-size: 24px !important; right: 12px !important; bottom: 16px !important; }
+  .float2 { width: 48px !important; height: 48px !important; font-size: 24px !important; right: 72px !important; bottom: 16px !important; }
+  .float2 img { width: 26px !important; height: 26px !important; }
+}
+
+
+/* ==========================================================
+   BACK TO TOP BUTTON
+   ========================================================== */
+
+#back-to-top {
+  transition: opacity var(--transition), transform var(--transition) !important;
+}
+
+#back-to-top:hover {
+  transform: translateY(-4px) !important;
+}
+
+
+/* ==========================================================
+   FORM ELEMENTS
+   ========================================================== */
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="tel"],
+select,
+textarea {
+  font-family: var(--font-base) !important;
+  font-size:   14px !important;
+  border-radius: 4px !important;
+  transition:  border-color var(--transition), box-shadow var(--transition) !important;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+input[type="tel"]:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--brand-red) !important;
+  box-shadow:   0 0 0 3px rgba(231,42,26,0.12) !important;
+  outline:      none !important;
+}
+
+
+/* ==========================================================
+   RESPONSIVE — EXTRA SMALL (< 480px)
+   ========================================================== */
+
+@media (max-width: 480px) {
+  /* Tighten container padding */
+  .container { padding-left: 12px !important; padding-right: 12px !important; }
+
+  h1 { font-size: 1.5rem !important; }
+  h2 { font-size: 1.25rem !important; }
+
+  /* Stack call-to-action section */
+  .about-1 .content-text .row > div { margin-bottom: 20px !important; }
+
+  /* Section padding */
+  .sptb { padding-top: 28px !important; padding-bottom: 28px !important; }
+
+  /* Mega menu link padding */
+  .horizontal-megamenu .link-list li a { padding: 10px 0 !important; font-size: 13px !important; }
+
+  /* Card grid: 1 column */
+  .col-sm-6, .col-md-4, .col-md-3, .col-lg-3, .col-lg-4 {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+
+/* ==========================================================
+   RESPONSIVE — SMALL (481px – 767px)
+   ========================================================== */
+
+@media (min-width: 481px) and (max-width: 767px) {
+  .container { padding-left: 16px !important; padding-right: 16px !important; }
+  h1 { font-size: 1.6rem !important; }
+  h2 { font-size: 1.3rem !important; }
+  .sptb { padding-top: 36px !important; padding-bottom: 36px !important; }
+}
+
+
+/* ==========================================================
+   RESPONSIVE — TABLET (768px – 991px)
+   ========================================================== */
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .horizontal-header { display: flex !important; }
+}
+
+
+/* ==========================================================
+   SCROLL-TRIGGERED NAV SHRINK ANIMATION
+   ========================================================== */
+
+.header-main {
+  will-change: box-shadow;
+}
+
+/* Smooth page offset when header is sticky */
+html { scroll-padding-top: calc(var(--nav-height) + 8px); }
+
+
+/* ==========================================================
+   ACCESSIBILITY & FOCUS
+   ========================================================== */
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--brand-red) !important;
+  outline-offset: 3px !important;
+}
+
+
+/* ==========================================================
+   SMOOTH SCROLL
+   ========================================================== */
+
+html { scroll-behavior: smooth; }
+
+
+/* ==========================================================
+   TESTIMONIALS SECTION
+   ========================================================== */
+
+.testimonia p {
+  font-size:   1rem !important;
+  line-height: 1.8 !important;
+}
+
+.testimonia h3.title {
+  font-size:   1.05rem !important;
+  font-weight: 700 !important;
+}

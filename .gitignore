@@ -1,0 +1,15 @@
+# Ignore actual upload directories storing images, PDFs, and documents
+/admin/img/uploads/
+/admin/img/vehicles_images/
+/admin/img/vehicle_docs/
+/admin/img/leads/
+/admin/img/slider/
+/admin/img/logo/
+/admin/img/user/
+/admin/img/vehicle/
+/admin/img/image-gallery/
+/images/howtobuy
+# Ignore database connection and sensitive connection files
+**/db_connect.php
+*.env
+/api/config.php
