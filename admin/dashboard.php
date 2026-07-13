@@ -5,12 +5,8 @@
     <div class="wrapper">
       <?php include_once 'includes/header.php'; ?>
       <?php include_once 'includes/sidebar.php'; ?>
-      <style>
-        .vertical .main-content, .vertical.hover .main-content, .narrow.open .main-content{
-          margin-left: 7rem !important;
-        }
-      </style>
-      <main role="main" class="main-content">
+      
+      <main role="main" class="">
         <div class="col-12">
           <div class="row align-items-center mb-2">
             <div class="col">

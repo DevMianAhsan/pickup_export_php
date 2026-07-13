@@ -6,8 +6,8 @@
           <!-- nav bar -->
           <div class="w-100 mb-4 d-flex">
             <a class="navbar-brand mx-auto mt-2 flex-fill text-center" href="index.php">
-            <img src="img/logo/<?=@$get_company['logo']?>" class="img-fluid" alt="" style="height: 120px;">
-          </a>
+              <img src="img/logo/<?=@$get_company['logo']?>" class="img-fluid sidebar-logo" alt="">
+            </a>
           </div>
 
           <ul class="navbar-nav flex-fill w-100 mb-2">
