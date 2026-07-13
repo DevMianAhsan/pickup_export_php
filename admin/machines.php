@@ -93,9 +93,23 @@ if (isset($_GET['machine_id'])) {
       
     </div>
     <div class="col-sm-2">
+
+
         <label for="">Machine Type</label>     
 
-        <input type="text" name="machine_type" id="machine_type" class="form-control form-control-sm machine_type" value="<?=@$PartDe['machine_type']?>">
+        <select tabindex="2" name="machine_type" id="machine_type" class="form-control abcCustomNew vehicle_machine" required="required">
+
+          <option value="">~~SELECT~~</option>
+
+          <?php $q = get($dbc,"machine_type WHERE machine_type_sts = '1' ORDER BY machine_type_name ASC");
+
+          while($r = mysqli_fetch_assoc($q)): ?>
+
+            <option <?=@($PartDe['machine_type']==$r['machine_type_id'])?"selected":""?> value="<?=$r['machine_type_id']?>"><?=strtoupper($r['machine_type_name'])?></option>
+
+              <?php endwhile ?>
+
+        </select>
     </div>
     <div class="col-sm-2">
 
