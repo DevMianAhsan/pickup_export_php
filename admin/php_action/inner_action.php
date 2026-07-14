@@ -90,6 +90,7 @@ if (isset($_POST['machine_stock_idp'])) {
 		$data = [
 			'machine_stock_id' => $_POST['machine_stock_idp'],
 			'machine_type' => $_POST['machine_type'],
+			'country_id' => @$_POST['machine_country_id'],
 			'part_no' => $_POST['part_no'],
 			'machine_weight' => $_POST['machine_weight'],
 			'machine_manu_year' => $_POST['machine_manu_year'],

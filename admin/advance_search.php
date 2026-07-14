@@ -395,7 +395,7 @@ include_once "inc/code.php";
                 <div class="row">
                   <div class="col-md-6">
                     <select class="form-control select2-show-search border-bottom-0 border-left-0 w-100"
-                      data-placeholder="Select" name="from_km">
+                      data-placeholder="Select" name="select2-show-search">
                       <optgroup label="Type">
                         <option value="null">From</option>
 

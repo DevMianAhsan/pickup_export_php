@@ -257,15 +257,30 @@ if (isset($_GET['machine_id'])) {
 
 
   <div class="row">
-    <div class="col-sm-4">
+    	<div class="col-sm-3">
+    <label for="">Country</label>           
+    <select name="machine_country_id" id="machine_country_id" class="form-control" required>
+        <option value="">~~SELECT~~</option>
+        <?php 
+        $q = get($dbc, "countries ORDER BY country_name ASC");
+        while ($r = mysqli_fetch_assoc($q)): 
+            $selected = (isset($PartDe['country_id']) && $PartDe['country_id'] == $r['country_id']) ? 'selected' : '';
+        ?>
+            <option value="<?= $r['country_id'] ?>" <?= $selected ?>>
+                <?= $r['country_name'] ?>
+            </option>
+        <?php endwhile ?>
+    </select>
+</div>
+    <div class="col-sm-3">
         <label for="">Drive </label>
         <input  value="<?=@$PartDe['machine_drive']?>" name="machine_drive" id="machine_drive" class="form-control" autocomplete="off" required >
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-3">
         <label for="">Transmission</label>
        <input  value="<?=@$PartDe['machine_transmission']?>" name="machine_transmission" id="machine_transmission" class="form-control" autocomplete="off" required >
     </div>
-     <div class="col-sm-4">
+     <div class="col-sm-3">
         <label for="">Condition</label>
        <input  value="<?=@$PartDe['machine_condition']?>" name="machine_condition" id="machine_condition" class="form-control" autocomplete="off" required >
     </div>
