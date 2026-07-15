@@ -614,109 +614,111 @@ if ($resource === 'filters') {
 }
 
 
-// Combined API: latest vehicles + discounted vehicles grouped by maker
+// Combined API: latest vehicles and machines, grouped by country
 if ($resource === 'latest_discounted' || $resource === 'latest-discounted') {
     requireApiToken();
 
-    // Latest vehicles (limit 6)
+    $buildCombinedItem = function (array $row, string $itemType) use ($dbc): array {
+        $itemId = (int) ($row['item_id'] ?? 0);
+        $image = null;
+        $imageQuery = "SELECT vehicle_image_name FROM vehicle_images WHERE vehicle_id = $itemId";
+        if ($itemType === 'machine') {
+            $imageQuery .= " AND images_type = 'machine'";
+        }
+        $imageQuery .= " ORDER BY vehicle_image_featured DESC, order_no ASC LIMIT 1";
+        $imgResult = mysqli_query($dbc, $imageQuery);
+        if ($imgResult && ($imgRow = mysqli_fetch_assoc($imgResult))) {
+            $image = normalizeImageUrl($imgRow['vehicle_image_name']);
+        }
+
+        $featureList = [];
+        $featureValue = $row['feature_list'] ?? $row['vehicle_feature_list'] ?? null;
+        if (!empty($featureValue)) {
+            $decodedFeatures = json_decode($featureValue, true);
+            if (is_array($decodedFeatures)) {
+                $featureList = $decodedFeatures;
+            }
+        }
+
+        return [
+            'id' => $itemId,
+            'type' => $itemType,
+            'stock_id' => $row['stock_id'] ?? null,
+            'year' => $row['year'] ?? null,
+            'registration_year' => $row['registration_year'] ?? null,
+            'fuel' => $row['fuel'] ?? null,
+            'transmission' => $row['transmission'] ?? null,
+            'driven' => $row['driven'] ?? null,
+            'steering' => $row['steering'] ?? null,
+            'featured_image' => $image,
+            'country_id' => isset($row['country_id']) ? (int) $row['country_id'] : null,
+            'country_name' => $row['country_name'] ?? null,
+        ];
+    };
+
+    $vehicleItems = [];
+    $vehicleQuery = mysqli_query($dbc, "SELECT vi.vehicle_id AS item_id, 'car' AS item_type, vi.vehicle_stock_id AS stock_id, m.maker_id AS maker_id, m.maker_name, b.brand_name, bt.body_type_name AS type_name, vi.vehicle_chassis_no AS chassis_no, vi.vehicle_engine_no AS engine_no, vi.vehicle_manu_year AS year, vi.vehicle_reg_year AS registration_year, vi.vehicle_km AS mileage, vi.vehicle_cc AS cc, vi.vehicle_fuel AS fuel, vi.vehicle_transmission AS transmission, COALESCE(vi.vehicle_color_name, vi.vehicle_color) AS color, vi.vehicle_seat AS seats, vi.vehicle_door AS doors, vi.vehicle_option AS option, vi.vehicle_drive AS driven, vi.vehicle_option AS steering, vi.vehicle_mode AS vehicle_mode, vi.vehicle_est_price AS price, vi.vehicle_discount AS discount, vi.vehicle_feature_list AS feature_list, vi.vehicle_status AS status, vi.country_id AS country_id, c.country_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id LEFT JOIN countries c ON vi.country_id = c.country_id WHERE vi.vehicle_status != 'sold' ORDER BY vi.vehicle_id DESC LIMIT 6");
+    if ($vehicleQuery) {
+        while ($row = mysqli_fetch_assoc($vehicleQuery)) {
+            $vehicleItems[] = $buildCombinedItem($row, 'car');
+        }
+    }
+
+    $machineItems = [];
+    $machineQuery = mysqli_query($dbc, "SELECT m.machine_id AS item_id, 'machine' AS item_type, m.machine_stock_id AS stock_id, maker.maker_id AS maker_id, maker.maker_name, b.brand_name, mt.machine_type_name AS type_name, m.machine_serial_no AS chassis_no, NULL AS engine_no, m.machine_manu_year AS year, m.machine_year AS registration_year, m.machine_hours AS mileage, NULL AS cc, m.machine_fuel AS fuel, m.machine_transmission AS transmission, m.machine_color AS color, NULL AS seats, NULL AS doors, m.machine_steering AS option, m.machine_drive AS driven, m.machine_steering AS steering, m.machine_condition AS vehicle_mode, m.machine_fob_price AS price, NULL AS discount, NULL AS feature_list, m.machine_sale_stts AS status, m.country_id AS country_id, c.country_name FROM machines m LEFT JOIN maker maker ON m.machine_maker = maker.maker_id LEFT JOIN brands b ON m.machine_brand = b.brand_id LEFT JOIN machine_type mt ON m.machine_type = mt.machine_type_id LEFT JOIN countries c ON m.country_id = c.country_id WHERE m.machine_sts = 1 AND (m.machine_sale_stts IS NULL OR m.machine_sale_stts != 'sold') ORDER BY m.machine_id DESC LIMIT 6");
+    if ($machineQuery) {
+        while ($row = mysqli_fetch_assoc($machineQuery)) {
+            $machineItems[] = $buildCombinedItem($row, 'machine');
+        }
+    }
+
+    $allCountryItems = array_values(array_merge($vehicleItems, $machineItems));
+
     $latest = [];
-    $lq = mysqli_query($dbc, "SELECT vi.*, m.maker_name, b.brand_name, bt.body_type_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id WHERE vi.vehicle_status != 'sold' ORDER BY vi.vehicle_id DESC LIMIT 6");
-    if ($lq) {
-        while ($row = mysqli_fetch_assoc($lq)) {
-            $vehicleId = (int) $row['vehicle_id'];
-            $image = null;
-            $imgResult = mysqli_query($dbc, "SELECT vehicle_image_name FROM vehicle_images WHERE vehicle_id = $vehicleId ORDER BY vehicle_image_featured DESC, order_no ASC LIMIT 1");
-            if ($imgResult && ($imgRow = mysqli_fetch_assoc($imgResult))) {
-                $image = normalizeImageUrl($imgRow['vehicle_image_name']);
-            }
-            $featureList = [];
-            if (!empty($row['vehicle_feature_list'])) {
-                $decodedFeatures = json_decode($row['vehicle_feature_list'], true);
-                if (is_array($decodedFeatures)) {
-                    $featureList = $decodedFeatures;
-                }
-            }
-            $latest[] = [
-                'id' => $vehicleId,
-                'stock_id' => $row['vehicle_stock_id'] ?? null,
-                'maker_name' => $row['maker_name'] ?? null,
-                'brand_name' => $row['brand_name'] ?? null,
-                'type_name' => $row['body_type_name'] ?? null,
-                'year' => $row['vehicle_manu_year'] ?? null,
-                'registration_year' => $row['vehicle_reg_year'] ?? null,
-                'mileage' => $row['vehicle_km'] ?? null,
-                'price' => isset($row['vehicle_est_price']) ? (float) $row['vehicle_est_price'] : null,
-                'discount' => isset($row['vehicle_discount']) ? (float) $row['vehicle_discount'] : null,
-                'fuel' => $row['vehicle_fuel'] ?? null,
-                'driven' => $row['vehicle_drive'] ?? null,
-                'vehicle_mode' => $row['vehicle_mode'] ?? null,
-                'vehicle_feature_list' => $featureList,
-                'featured_image' => $image,
-                'status' => $row['vehicle_status'] ?? null,
-            ];
+    $vehicleIndex = 0;
+    $machineIndex = 0;
+    while (count($latest) < 6) {
+        if ($vehicleIndex < count($vehicleItems)) {
+            $latest[] = $vehicleItems[$vehicleIndex++];
+        }
+        if (count($latest) >= 6) {
+            break;
+        }
+        if ($machineIndex < count($machineItems)) {
+            $latest[] = $machineItems[$machineIndex++];
+        }
+        if ($vehicleIndex >= count($vehicleItems) && $machineIndex >= count($machineItems)) {
+            break;
         }
     }
 
-    // Discounted vehicles grouped by maker, limit 6 per maker
-    $discounted_by_maker = [];
-    $mq = mysqli_query($dbc, "SELECT DISTINCT vehicle_maker FROM vehicle_info WHERE vehicle_discount > 0 AND vehicle_status != 'sold' ORDER BY vehicle_maker ASC");
-    if ($mq) {
-        while ($mrow = mysqli_fetch_assoc($mq)) {
-            $maker_id = (int) $mrow['vehicle_maker'];
-            if ($maker_id <= 0)
-                continue;
-            $makerInfo = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT maker_id, maker_name FROM maker WHERE maker_id = $maker_id LIMIT 1"));
-            $maker_name = $makerInfo['maker_name'] ?? null;
+    $groupedByCountry = [];
+    foreach ($allCountryItems as $item) {
+        $countryId = isset($item['country_id']) ? (int) $item['country_id'] : 0;
+        if ($countryId <= 0) {
+            continue;
+        }
 
-            $vehicles = [];
-            $vq = mysqli_query($dbc, "SELECT vi.*, b.brand_name, bt.body_type_name FROM vehicle_info vi LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id WHERE vi.vehicle_maker = $maker_id AND vi.vehicle_discount > 0 AND vi.vehicle_status != 'sold' ORDER BY vi.vehicle_id DESC LIMIT 6");
-            if ($vq) {
-                while ($row = mysqli_fetch_assoc($vq)) {
-                    $vehicleId = (int) $row['vehicle_id'];
-                    $image = null;
-                    $imgResult = mysqli_query($dbc, "SELECT vehicle_image_name FROM vehicle_images WHERE vehicle_id = $vehicleId ORDER BY vehicle_image_featured DESC, order_no ASC LIMIT 1");
-                    if ($imgResult && ($imgRow = mysqli_fetch_assoc($imgResult))) {
-                        $image = normalizeImageUrl($imgRow['vehicle_image_name']);
-                    }
-                    $featureList = [];
-                    if (!empty($row['vehicle_feature_list'])) {
-                        $decodedFeatures = json_decode($row['vehicle_feature_list'], true);
-                        if (is_array($decodedFeatures)) {
-                            $featureList = $decodedFeatures;
-                        }
-                    }
-                    $vehicles[] = [
-                        'id' => $vehicleId,
-                        'stock_id' => $row['vehicle_stock_id'] ?? null,
-                        'brand_name' => $row['brand_name'] ?? null,
-                        'type_name' => $row['body_type_name'] ?? null,
-                        'year' => $row['vehicle_manu_year'] ?? null,
-                        'registration_year' => $row['vehicle_reg_year'] ?? null,
-                        'mileage' => $row['vehicle_km'] ?? null,
-                        'price' => isset($row['vehicle_est_price']) ? (float) $row['vehicle_est_price'] : null,
-                        'discount' => isset($row['vehicle_discount']) ? (float) $row['vehicle_discount'] : null,
-                        'fuel' => $row['vehicle_fuel'] ?? null,
-                        'driven' => $row['vehicle_drive'] ?? null,
-                        'vehicle_mode' => $row['vehicle_mode'] ?? null,
-                        'vehicle_feature_list' => $featureList,
-                        'featured_image' => $image,
-                        'status' => $row['vehicle_status'] ?? null,
-                    ];
-                }
-            }
-
-            $discounted_by_maker[] = [
-                'maker_id' => $maker_id,
-                'maker_name' => $maker_name,
-                'vehicles' => $vehicles,
+        if (!isset($groupedByCountry[$countryId])) {
+            $groupedByCountry[$countryId] = [
+                'country_id' => $countryId,
+                'country_name' => $item['country_name'] ?? null,
+                'vehicles' => [],
             ];
         }
+
+        if (count($groupedByCountry[$countryId]['vehicles']) < 6) {
+            $groupedByCountry[$countryId]['vehicles'][] = $item;
+        }
     }
+
+    $groupedByCountry = array_values($groupedByCountry);
 
     respondJson(200, [
         'status' => 'success',
+        'count' => count($latest),
         'latest' => $latest,
-        'discounted_by_maker' => $discounted_by_maker,
+        'grouped_by_country' => $groupedByCountry,
     ]);
 }
 
