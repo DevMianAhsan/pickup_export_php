@@ -13,7 +13,7 @@ include_once "inc/code.php";
 								<div class="msg"></div>
 								<div class="form-group">
 				<label for="">Maker</label>			
-				<select id="color_maker" name="color_maker" class="form-control abcCustomNew" required="required">
+				<select id="color_maker" name="color_maker" class="form-control select2 abcCustomNew" required="required">
 					<option value="">~~SELECT~~</option>
 					<?php $q = get($dbc,"maker WHERE maker_sts = '1'");
 					while($r = mysqli_fetch_assoc($q)): ?>
@@ -23,7 +23,7 @@ include_once "inc/code.php";
 			</div><!-- form group -->										
 		<div class="form-group">
 				<label for="">Color Name</label>
-				<select list="vehicle_color_name1" autocomplete="off" name="color_name" id="color_name" required="required" class="form-control">
+				<select list="vehicle_color_name1" autocomplete="off" name="color_name" id="color_name" required="required" class="form-control select2">
 					<option value="">~~SELECT~~</option>
 						<?php $q = get($dbc,"color_code WHERE color_code_sts = '1'");
 						while($r = mysqli_fetch_assoc($q)): ?>
@@ -47,7 +47,7 @@ include_once "inc/code.php";
 								</div>
 								<div class="form-group">
 									<label for="">Color Code Status</label>
-									<select class="form-control" id="color_code_sts" name="color_code_sts"> 
+									<select class="form-control select2" id="color_code_sts" name="color_code_sts"> 
 										<option value="">~~SELECT~~</option>
 										<option value="1">Active</option>
 										<option value="0">Inactive</option>

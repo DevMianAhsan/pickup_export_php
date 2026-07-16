@@ -56,7 +56,7 @@
 					  </div>			
 					    <div class="form-group">
 					    <label for="pwd">Status</label>
-					   		<select class="form-control" name="slider_img_sts">
+					   		<select class="form-control select2" name="slider_img_sts">
 					   			
 					   			<option value="1">Available</option>
 					   			<option value="2">Not Available</option>

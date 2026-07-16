@@ -15,7 +15,7 @@ include_once "inc/code.php";
 								<div class="msg"></div>
 								<div class="form-group">
 									<label for="">Category</label>
-									<select class="form-control" id="vehicle_feature_category" name="vehicle_feature_category"> 
+									<select class="form-control select2" id="vehicle_feature_category" name="vehicle_feature_category"> 
 										<option value="">~~SELECT~~</option>
 										<option value="exterior">Exterior Options</option>
 										<option value="interior">Interior Options</option>

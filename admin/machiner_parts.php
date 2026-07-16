@@ -38,7 +38,7 @@ if (isset($_GET['part_id'])) {
 
     <div class="col-sm-2">
        <label for="">Stock ID</label>      
-            <select tabindex="1" name="part_stock_idp" id="part_stock_id" class="form-control" required> 
+            <select tabindex="1" name="part_stock_idp" id="part_stock_id" class="form-control select2" required> 
                 <option <?=@($PartDe['part_stock_id']=="HX-2022")?"selected":""?> value="HX-2022">HX-2022</option>   
 
                 <option <?=@($PartDe['part_stock_id']=="HS-2022")?"selected":""?> value="HS-2022">HJ-2022</option>   
@@ -103,7 +103,7 @@ if (isset($_GET['part_id'])) {
 
         <!-- <input list="vehicle_cc1" name="vehicle_cc" id="vehicle_cc" class="form-control" required="required"> -->
 
-        <select list="vehicle_cc1" name="part_cc" id="part_cc" class="form-control" required="required">
+        <select list="vehicle_cc1" name="part_cc" id="part_cc" class="form-control select2" required="required">
 
          <option value="">Select</option>
 
@@ -211,7 +211,7 @@ if (isset($_GET['part_id'])) {
     </div>
     <div class="col-sm-3">
         <label for="">Fuel</label>
-        <select  list="part_fuel1" name="part_fuel" id="part_fuel" class="form-control" >
+        <select  list="part_fuel1" name="part_fuel" id="part_fuel" class="form-control select2" >
 
           <option value="">~~SELECT~~</option>
 

@@ -58,7 +58,7 @@
 
 
 
-				<select class="form-control" id="ledger_customer_id" name="customer_id" autofocus="true">
+				<select class="form-control select2" id="ledger_customer_id" name="customer_id" autofocus="true">
 
 
 

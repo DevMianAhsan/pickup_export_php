@@ -20,7 +20,7 @@
  </style>
 <div class="row">
 	<div class="col-sm-6">
-		 <select class="form-control" id="auction_type_check" <?=@$dib?>>
+		 <select class="form-control select2" id="auction_type_check" <?=@$dib?>>
 		 	 <option value="">Select</option>
         	<option <?=@($auction_only_check==1)?"selected":""?> value="auction">Auction </option>
         	<option <?=@($auction_person_check==1)?"selected":""?> value="person">Individual</option>
@@ -96,7 +96,7 @@ $date->modify('+3 day');
 
 					<div class="col-sm-4">			
 
-						<select name="auction_house" id="auction_house" class="form-control" style="width: 100%;" onchange="AuctionInfNow(this.value)">
+						<select name="auction_house" id="auction_house" class="form-control select2" style="width: 100%;" onchange="AuctionInfNow(this.value)">
 
 							<option value="">~~SELECT~~</option>
 
@@ -172,7 +172,7 @@ $date->modify('+3 day');
 
 					<div class="col-sm-8">			
 
-						<select name="auction_house_type" id="auction_house_type" onchange="getAuctionFee(this.value)" class="form-control">
+						<select name="auction_house_type" id="auction_house_type" onchange="getAuctionFee(this.value)" class="form-control select2">
 
 				 			<option value="">~~SELECT~~</option>
 
@@ -450,7 +450,7 @@ if(@$d['file_title'] == 'auction_bill'){
 
 					<div class="col-sm-8">					
 
-						<select name="auction_bidder" id="auction_bidder" class="form-control">
+						<select name="auction_bidder" id="auction_bidder" class="form-control select2">
 
 							<option value="">~~SELECT~~</option>
 
@@ -503,7 +503,7 @@ if(@$d['file_title'] == 'auction_bill'){
 					<div class="col-sm-8">			
 
 						<!-- <input type="text" name="auction_win_by" id="auction_win_by" class="form-control form-control-sm"> -->
-						<select class="form-control"  name="auction_win_by" id="auction_win_by">
+						<select class="form-control select2"  name="auction_win_by" id="auction_win_by">
 
 							<option value="">~~SELECT~~</option>
 
@@ -594,7 +594,7 @@ if(@$d['file_title'] == 'auction_bill'){
 						<label for="">Loading Point</label>
 					</div><!-- col -->
 					<div class="col-sm-5">			
-						<select onchange='getSubYards(this.value,"#auction_sub_yard")' name="auction_loading_point" id="auction_loading_point" class="form-control">
+						<select onchange='getSubYards(this.value,"#auction_sub_yard")' name="auction_loading_point" id="auction_loading_point" class="form-control select2">
 								<option value="">Select Point</option>
 							<?php $q = mysqli_query($dbc,"SELECT DISTINCT auction_house_name FROM riksu_transportation ");
 							while ($r = mysqli_fetch_assoc($q)):?>
@@ -615,7 +615,7 @@ if(@$d['file_title'] == 'auction_bill'){
 						<label for="">Sub Yards</label>
 					</div><!-- col -->
 					<div class="col-sm-5">			
-						<select  name="auction_sub_yard" id="auction_sub_yard" class="form-control">
+						<select  name="auction_sub_yard" id="auction_sub_yard" class="form-control select2">
 						</select>
 					</div><!-- col -->
 					<div class="col-sm-3">

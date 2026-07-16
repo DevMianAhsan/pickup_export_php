@@ -152,7 +152,7 @@ include_once "inc/code.php";
               </div>
               <div class="col-md-4 col-lg-2 col-sm">
                 <label class="" for="validationDefault02">Chassis</label>
-                <select name="vehicle_chassis_code" id="vehicle_chassis_code" class="form-control"
+                <select name="vehicle_chassis_code" id="vehicle_chassis_code" class="form-control select2"
                   style="text-transform: uppercase ">
                   <option value="null">~~SELECT~~</option>
                   <!-- <?php $q = get($dbc, "models WHERE model_sts = '1'");
@@ -242,7 +242,7 @@ include_once "inc/code.php";
               <div class="col-md-6 col-lg-3 form-row">
                 <div class="col-md-6">
                   <label for="validationDefault04">Transmission</label><br />
-                  <select name="transmission" id="transmission" class="form-control" style="text-transform: uppercase ">
+                  <select name="transmission" id="transmission" class="form-control select2" style="text-transform: uppercase ">
                     <option value="null">~~SELECT~~</option>
                     <?php $trans_query = get($dbc, "transmission WHERE transmission_sts = '1'");
                     while ($r_trans = mysqli_fetch_assoc($trans_query)): ?>
@@ -254,7 +254,7 @@ include_once "inc/code.php";
                 </div>
                 <div class="col-md-6">
                   <label for="validationDefault04">Steering</label><br />
-                  <select name="options" id="options" class="form-control" style="text-transform: uppercase ">
+                  <select name="options" id="options" class="form-control select2" style="text-transform: uppercase ">
                     <option value="null">~~SELECT~~</option>
                     <?php $st_query = get($dbc, "options WHERE option_sts = '1'");
                     while ($st_r = mysqli_fetch_assoc($st_query)): ?>

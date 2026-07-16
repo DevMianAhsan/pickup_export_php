@@ -22,7 +22,7 @@ include_once "inc/code.php";
 								</div>
 								<div class="form-group">
 									<label for="">Auction Grade Status</label>
-									<select class="form-control" id="auction_grade_sts" name="auction_grade_sts"> 
+									<select class="form-control select2" id="auction_grade_sts" name="auction_grade_sts"> 
 										<option value="">~~SELECT~~</option>
 										<option value="1">Active</option>
 										<option value="0">Inactive</option>

@@ -79,7 +79,7 @@ include_once "inc/code.php";
 
 									<div class="col-sm-6">
 										<label for="">Inspection Company Status</label>
-									<select class="form-control" id="inspection_company_sts" name="inspection_company_sts"> 
+									<select class="form-control select2" id="inspection_company_sts" name="inspection_company_sts"> 
 										<option value="">~~SELECT~~</option>
 										<option value="1">Active</option>
 										<option value="0">Inactive</option>

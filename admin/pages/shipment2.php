@@ -306,7 +306,7 @@
 					<div class="col-sm-8">			
 						<!-- <input type="text" value="<?=@$conDestination['consignee_dest_port']?>" name="shipment_port_of_discharge" id="shipment_port_of_discharge" class="form-control"> -->
 
-						<select name="shipment_port_of_discharge" id="shipment_port_of_discharge" class="form-control" required>
+						<select name="shipment_port_of_discharge" id="shipment_port_of_discharge" class="form-control select2" required>
 							<option value="">~~SELECT~~</option>
 							
 						</select>
@@ -490,7 +490,7 @@
 						<label for="">Final Destination</label>
 					</div><!-- col -->
 					<div class="col-sm-8">					
-						<!-- <select name="shipment_destination" id="shipment_destination" class="form-control">
+						<!-- <select name="shipment_destination" id="shipment_destination" class="form-control select2">
 							<option value="">~~SELECT~~</option>
 							<?php $q = get($dbc,"bidders WHERE bidders_sts = '1'");
 							while($r = mysqli_fetch_assoc($q)): ?>
@@ -509,7 +509,7 @@
 						<label for="">Shipment Type</label>
 					</div><!-- col -->
 					<div class="col-sm-8">			
-						<select name="shipment_type" id="shipment_type" class="form-control" required="required">
+						<select name="shipment_type" id="shipment_type" class="form-control select2" required="required">
 							<option value="">~~SELECT~~</option>
 							<option value="roro">RORO</option>
 							<option value="container">Container</option>

@@ -80,7 +80,7 @@
 
 						<label for="">Bank Type</label>
 
-							<select class="form-control" id="customer_type" name="customer_type">
+							<select class="form-control select2" id="customer_type" name="customer_type">
 
 							<option value="">~~SElECT~~</option>
 
@@ -183,7 +183,7 @@
 
 	          	    	<label for="">Bank Status</label>	
 
-						<select class="form-control" id="customer_active" name="customer_active">
+						<select class="form-control select2" id="customer_active" name="customer_active">
 
 							<option value="">~~SElECT~~</option>
 
@@ -474,7 +474,7 @@
 					<div class="col-sm-8">					
 <!-- 
 						<input type="text"   value="<?=@$customer_info['customer_designation']?>" value="0" name="customer_designation" id="customer_designation" class="form-control form-control-sm"> -->
-						<select class="form-control" id="consignee_dest_port" name="customer_designation" required>
+						<select class="form-control select2" id="consignee_dest_port" name="customer_designation" required>
 							<option value="">Select Country First</option>
 						<?php 	$sql = mysqli_query($dbc,"SELECT * FROM country_regulation GROUP BY country_regulation_country");
 						     	while($countries=mysqli_fetch_assoc($sql)):
@@ -901,7 +901,7 @@
 
 					<div class="col-sm-8">			
 
-						<select class="form-control" id="customer_type" name="customer_type">
+						<select class="form-control select2" id="customer_type" name="customer_type">
 
 							<option value="">~~SElECT~~</option>
 
@@ -933,7 +933,7 @@
 
 					<div class="col-sm-8">			
 
-						<select class="form-control" id="customer_active" name="customer_active">
+						<select class="form-control select2" id="customer_active" name="customer_active">
 
 							<option  value="">~~SElECT~~</option>
 

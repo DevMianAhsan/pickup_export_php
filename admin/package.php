@@ -32,7 +32,7 @@ include_once "inc/code.php";
 								</div>
 								<div class="form-group">
 									<label for="">Package Status</label>
-									<select class="form-control" id="pack_sts" name="pack_sts"> 
+									<select class="form-control select2" id="pack_sts" name="pack_sts"> 
 										<option value="">~~SELECT~~</option>
 										<option value="1">Active</option>
 										<option value="0">Inactive</option>

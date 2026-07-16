@@ -36,7 +36,7 @@ include_once "inc/code.php";
 								</div>
 								<div class="form-group">
 									<label for="">Body Type Status</label>
-									<select class="form-control" id="body_type_sts" name="body_type_sts"> 
+									<select class="form-control select2" id="body_type_sts" name="body_type_sts"> 
 										<option value="">~~SELECT~~</option>
 										<option value="1">Active</option>
 										<option value="0">Inactive</option>

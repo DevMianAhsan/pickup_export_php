@@ -174,7 +174,7 @@
 					</div><!-- col -->
 					<div class="col-sm-3">			
 						<input type="number" name="ricksu_charger_for_additional" id="ricksu_charger_for_additional" class="form-control form-control-sm taxOnAmount">
-						<!-- <select class="form-control" id="ricksu_charger_for_additional" name="ricksu_charger_for_additional">
+						<!-- <select class="form-control select2" id="ricksu_charger_for_additional" name="ricksu_charger_for_additional">
 							<option value="">~~SElECT~~</option>
 							<option value="1">Active</option>
 							<option value="0">Deactive</option>
@@ -209,7 +209,7 @@
 						<label for="">Delievery Point</label>
 					</div><!-- col -->
 					<div class="col-sm-5">			
-						<select onchange='getSubYards(this.value,"#ricksu_dp_sub_yards")' name="ricksu_delievery_point" id="ricksu_delievery_point" class="form-control">
+						<select onchange='getSubYards(this.value,"#ricksu_dp_sub_yards")' name="ricksu_delievery_point" id="ricksu_delievery_point" class="form-control select2">
 							<option >Select Delivery Point</option>
 
 							<?php $q = mysqli_query($dbc,"SELECT DISTINCT PORT FROM riksu_transportation ");
@@ -231,7 +231,7 @@
 						<label for="">Sub Yards DP</label>
 					</div><!-- col -->
 					<div class="col-sm-8">			
-						<select name="ricksu_dp_sub_yards" id="ricksu_dp_sub_yards" class="form-control">
+						<select name="ricksu_dp_sub_yards" id="ricksu_dp_sub_yards" class="form-control select2">
 							<option >Select Delivery Point</option>
 						</select>
 						
@@ -509,7 +509,7 @@ if(@$d['file_title'] == 'ricksu_bill'){
          			<div class="col-sm-7">
          				<label>Delivery point </label>
          		
-						<select  required onchange='getSubYards(this.value,"#mini_ricksu_dp_sub_yards")' name="ricksu_delievery_point" id="mini_ricksu_delievery_point" class="form-control">
+						<select  required onchange='getSubYards(this.value,"#mini_ricksu_dp_sub_yards")' name="ricksu_delievery_point" id="mini_ricksu_delievery_point" class="form-control select2">
 							<option >Select Delivery Point</option>
 
 							<?php $q = mysqli_query($dbc,"SELECT DISTINCT PORT FROM riksu_transportation ");
@@ -531,7 +531,7 @@ if(@$d['file_title'] == 'ricksu_bill'){
 				
 						<label for="">Sub Yards DP</label>
 			
-						<select name="ricksu_dp_sub_yards" id="mini_ricksu_dp_sub_yards" class="form-control">
+						<select name="ricksu_dp_sub_yards" id="mini_ricksu_dp_sub_yards" class="form-control select2">
 							<option >Select DP sub Yards </option>
 						</select>
 						

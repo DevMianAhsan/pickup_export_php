@@ -59,7 +59,7 @@ if (!empty($_GET['edit']) && is_numeric($_GET['edit'])) {
 						</div>
 						<div class="form-group">
 							<label for="">machine Type Status</label>
-							<select class="form-control" id="machine_type_sts" name="machine_type_sts">
+							<select class="form-control select2" id="machine_type_sts" name="machine_type_sts">
 								<option value="">~~SELECT~~</option>
 								<option value="1" <?= ($machine_type_sts == '1') ? 'selected' : '' ?>>Active</option>
 								<option value="0" <?= ($machine_type_sts == '0') ? 'selected' : '' ?>>Inactive</option>

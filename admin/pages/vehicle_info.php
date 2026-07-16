@@ -55,7 +55,7 @@ require_once("custom/vendor/autoload.php");
 
 						<div class="col-sm-6">
 
-							<select tabindex="1" name="vehicle_stock_pre" id="vehicle_stock_pre" class="form-control"
+							<select tabindex="1" name="vehicle_stock_pre" id="vehicle_stock_pre" class="form-control select2"
 								required>
 
 
@@ -95,7 +95,7 @@ require_once("custom/vendor/autoload.php");
 							<!-- <input list="manu_year" name="vehicle_manu_year" id="vehicle_manu_year" class="form-control"> -->
 
 							<select tabindex="1" list="manu_year" onchange="validateyears()" name="vehicle_manu_year"
-								id="vehicle_manu_year" class="form-control">
+								id="vehicle_manu_year" class="form-control select2">
 
 								<!-- <datalist id="manu_year"> -->
 
@@ -128,7 +128,7 @@ require_once("custom/vendor/autoload.php");
 
 
 							<select tabindex="2" name="vehicle_manu_month" id="vehicle_manu_month"
-								onchange="validatemonth()" class="form-control">
+								onchange="validatemonth()" class="form-control select2">
 
 								<option data-id="0" value="">~~SELECT~~</option>
 
@@ -178,7 +178,7 @@ require_once("custom/vendor/autoload.php");
 
 					<!-- <input type="text"  class="form-control form-control-sm"> -->
 
-					<select name="vehicle_chassis_code" id="vehicle_chassis_code" class="form-control"
+					<select name="vehicle_chassis_code" id="vehicle_chassis_code" class="form-control select2"
 						required="required" style="text-transform: uppercase ">
 
 						<option value="">~~SELECT~~</option>
@@ -212,7 +212,7 @@ require_once("custom/vendor/autoload.php");
 					<!-- <input list="vehicle_transmission1" required="required" name="vehicle_transmission" id="vehicle_transmission" class="form-control"> -->
 
 					<select list="vehicle_transmission1" required="required" name="vehicle_transmission"
-						id="vehicle_transmission" class="form-control">
+						id="vehicle_transmission" class="form-control select2">
 						<option value="">Select</option>
 
 						<?php $q = get($dbc, "transmission WHERE transmission_sts = '1'");
@@ -232,7 +232,7 @@ require_once("custom/vendor/autoload.php");
 					<!-- <input list="vehicle_interior1" autocomplete="off" name="vehicle_interior" id="vehicle_interior" class="form-control"> -->
 
 					<select list="vehicle_interior1" autocomplete="off" name="vehicle_interior" id="vehicle_interior"
-						class="form-control">
+						class="form-control select2">
 
 						<option value="">~~SELECT~~</option>
 
@@ -257,7 +257,7 @@ require_once("custom/vendor/autoload.php");
 
 					<!-- <input list="vehicle_seat1" name="vehicle_seat" id="vehicle_seat" class="form-control"> -->
 
-					<select list="vehicle_seat1" name="vehicle_seat" id="vehicle_seat" class="form-control">
+					<select list="vehicle_seat1" name="vehicle_seat" id="vehicle_seat" class="form-control select2">
 
 						<option value="">~~SELECT~~</option>
 
@@ -280,7 +280,7 @@ require_once("custom/vendor/autoload.php");
 					<label for="">Color Name</label>
 
 					<select list="vehicle_color_name1" autocomplete="off" onchange="loadcolorCode(this.value)"
-						name="vehicle_color_name" id="vehicle_color_name" required="required" class="form-control">
+						name="vehicle_color_name" id="vehicle_color_name" required="required" class="form-control select2">
 
 						<option value="">~~SELECT~~</option>
 
@@ -338,7 +338,7 @@ require_once("custom/vendor/autoload.php");
 					<label for="">Maker</label>
 
 					<select tabindex="2" name="vehicle_maker" onchange="loadBrands(this.value)" id="vehicle_maker"
-						class="form-control abcCustomNew vehicle_maker" required="required">
+						class="form-control abcCustomNew vehicle_maker select2" required="required">
 
 						<option value="">~~SELECT~~</option>
 
@@ -379,7 +379,6 @@ require_once("custom/vendor/autoload.php");
 							data: { vehicle_brand1: vehicle_brand },
 							dataType: "json",
 							success: function (response) {
-								console.log(response)
 								var fucked = "<option>~~SELECT~~</option>";
 								$.each(response, function (index, value) {
 									fucked += '<option class="text-capitalize" style="text-transform: uppercase!important;" value="' + value['model_id'] + '">' + value['model_name'] + '</option>';
@@ -398,7 +397,7 @@ require_once("custom/vendor/autoload.php");
 					<!-- <input list="vehicle_reg_month1" name="vehicle_reg_month" id="vehicle_reg_month" class="form-control" required="required" readonly> -->
 
 					<select list="vehicle_reg_month1" name="vehicle_reg_year" id="vehicle_reg_year"
-						class="form-control vehicle_reg_month" required="required" onchange="validateyears()">
+						class="form-control vehicle_reg_month select2" required="required" onchange="validateyears()">
 
 						<option value="">~~SELECT~~</option>
 
@@ -435,7 +434,7 @@ require_once("custom/vendor/autoload.php");
 
 					<!-- <input list="vehicle_cc1" name="vehicle_cc" id="vehicle_cc" class="form-control" required="required"> -->
 
-					<select list="vehicle_cc1" name="vehicle_cc" id="vehicle_cc" class="form-control"
+					<select list="vehicle_cc1" name="vehicle_cc" id="vehicle_cc" class="form-control select2"
 						required="required">
 
 						<option value="">~~SELECT~~</option>
@@ -458,7 +457,7 @@ require_once("custom/vendor/autoload.php");
 
 					<!-- <input list="vehicle_fuel1" name="vehicle_fuel" id="vehicle_fuel" class="form-control" required="required"> -->
 
-					<select list="vehicle_fuel1" name="vehicle_fuel" id="vehicle_fuel" class="form-control"
+					<select list="vehicle_fuel1" name="vehicle_fuel" id="vehicle_fuel" class="form-control select2"
 						required="required">
 
 						<option value="">~~SELECT~~</option>
@@ -483,7 +482,7 @@ require_once("custom/vendor/autoload.php");
 					<!-- <input list="vehicle_exterior1" autocomplete="off" name="vehicle_exterior" id="vehicle_exterior" class="form-control"> -->
 
 					<select list="vehicle_exterior1" autocomplete="off" name="vehicle_exterior" id="vehicle_exterior"
-						class="form-control">
+						class="form-control select2">
 
 						<option value="">~~SELECT~~</option>
 
@@ -509,7 +508,7 @@ require_once("custom/vendor/autoload.php");
 					<!-- <input list="vehicle_door1" name="vehicle_door" id="vehicle_door" required="required" class="form-control"> -->
 
 					<select list="vehicle_door1" name="vehicle_door" id="vehicle_door" required="required"
-						class="form-control">
+						class="form-control select2">
 
 						<option value="">~~SELECT~~</option>
 
@@ -579,7 +578,7 @@ require_once("custom/vendor/autoload.php");
 					<label for="">Brand</label>
 
 					<select tabindex="3" name="vehicle_brand" onchange="loadChassis(this.value)" id="vehicle_brand"
-						class="form-control fuckJS vehicle_brand" required="required">
+						class="form-control fuckJS vehicle_brand select2" required="required">
 
 						<!-- <option class="fuckJS" value="">~~SELECT~~</option>
 
@@ -602,7 +601,7 @@ require_once("custom/vendor/autoload.php");
 					<label>Registration Month</label>
 
 					<select name="vehicle_reg_month" onchange="validatemonth()" id="vehicle_reg_month"
-						class="form-control" required="required">
+						class="form-control select2" required="required">
 
 						<option data-id="0" value="">~~SELECT~~</option>
 
@@ -640,7 +639,7 @@ require_once("custom/vendor/autoload.php");
 
 					<!-- <input list="vehicle_drive1" name="vehicle_drive" id="vehicle_drive" class="form-control" required="required"> -->
 
-					<select list="vehicle_drive1" name="vehicle_drive" id="vehicle_drive" class="form-control"
+					<select list="vehicle_drive1" name="vehicle_drive" id="vehicle_drive" class="form-control select2"
 						required="required">
 
 						<option value="">~~SELECT~~</option>
@@ -700,7 +699,7 @@ require_once("custom/vendor/autoload.php");
 
 					<!-- <input list="vehicle_grade1" autocomplete="off" name="vehicle_grade" id="vehicle_grade" class="form-control"> -->
 
-					<select name="vehicle_grade" id="vehicle_grade" class="form-control">
+					<select name="vehicle_grade" id="vehicle_grade" class="form-control select2">
 
 						<option value="">~~SELECT~~</option>
 
@@ -725,7 +724,7 @@ require_once("custom/vendor/autoload.php");
 
 					<!-- <input list="vehicle_option1" name="vehicle_option" id="vehicle_option" class="form-control" required="required"> -->
 
-					<select name="vehicle_option" id="vehicle_option" class="form-control">
+					<select name="vehicle_option" id="vehicle_option" class="form-control select2">
 
 						<option value="">~~SELECT~~</option>
 
@@ -790,7 +789,7 @@ require_once("custom/vendor/autoload.php");
 
 				<label for="">Vehicle Type</label>
 
-				<select name="vehicle_type" id="vehicle_type" class="form-control">
+				<select name="vehicle_type" id="vehicle_type" class="form-control select2">
 
 					<option value="">~~SELECT~~</option>
 
@@ -810,7 +809,7 @@ require_once("custom/vendor/autoload.php");
 
 			<label for="">Country</label>			
 
-			<select name="country_id" id="country_id" class="form-control">
+			<select name="country_id" id="country_id" class="form-control select2">
 
 						<option value="">~~SELECT~~</option>
 
@@ -861,7 +860,7 @@ require_once("custom/vendor/autoload.php");
 
 					<label for="vehicle_mode">Vehicle Mode</label>
 
-					<select name="vehicle_mode" id="vehicle_mode" class="form-control">
+					<select name="vehicle_mode" id="vehicle_mode" class="form-control select2">
 
 						<option value=""></option>
 

@@ -191,7 +191,7 @@
 						<label for="">Parcel Weight</label>
 					</div><!-- col -->
 					<div class="col-sm-5">			
-						<select name="airmail_parcel_weight" id="airmail_parcel_weight" class="form-control">
+						<select name="airmail_parcel_weight" id="airmail_parcel_weight" class="form-control select2">
 										<option >Parcel Weight </option>
 										<option value="0.5">0.5 kg</option>
 										<option value="1">1 kg</option>
@@ -295,7 +295,7 @@
 					</div><!-- col -->
 					<div class="col-sm-8">			
 						<!-- <input type="text" name="airmail_request_by" id="airmail_request_by" class="form-control form-control-sm"> -->
-						<select name="airmail_request_by" id="airmail_request_by" class="form-control">
+						<select name="airmail_request_by" id="airmail_request_by" class="form-control select2">
 							<option value="">~~SELECT~~</option>
 							<?php $q = get($dbc,"users");
 							while($r = mysqli_fetch_assoc($q)): ?>
@@ -358,7 +358,7 @@ if(@$d['file_title'] == 'airmail_document'){
 						<label for="">Services Company</label>
 					</div><!-- col -->
 					<div class="col-sm-5">				
-						<select name="airmail_services_company" id="airmail_services_company" class="form-control">
+						<select name="airmail_services_company" id="airmail_services_company" class="form-control select2">
 							<option value="">~~SELECT~~</option>
 							<?php $q = get($dbc,"services_company WHERE services_company_sts = '1'");
 							while($r = mysqli_fetch_assoc($q)): ?>
@@ -379,7 +379,7 @@ if(@$d['file_title'] == 'airmail_document'){
 						<label for="">Parcel Type</label>
 					</div><!-- col -->
 					<div class="col-sm-8">				
-						<select name="airmail_services_parcel_type" id="airmail_services_parcel_type" class="form-control">
+						<select name="airmail_services_parcel_type" id="airmail_services_parcel_type" class="form-control select2">
 							<option value="">~~SELECT~~</option>
 						
 								<option value="normal">Normal</option>

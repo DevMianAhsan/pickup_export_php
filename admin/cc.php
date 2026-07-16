@@ -17,7 +17,7 @@ include_once "inc/code.php";
 								</div>
 								<div class="form-group">
 									<label for="">CC Status</label>
-									<select class="form-control" id="cc_sts" name="cc_sts"> 
+									<select class="form-control select2" id="cc_sts" name="cc_sts"> 
 										<option value="">~~SELECT~~</option>
 										<option value="1">Active</option>
 										<option value="0">Inactive</option>

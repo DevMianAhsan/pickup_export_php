@@ -18,7 +18,7 @@ include_once "inc/code.php";
 								<div class="msg"></div>
 								<div class="form-group">
 									<label for="">Maker Name</label>
-									<select class="form-control" id="maker_id" name="maker_id">
+									<select class="form-control select2" id="maker_id" name="maker_id">
 										<option value="">~~SELECT~~</option>
 										<?php 
 											if (empty($fetchBrand['maker_id'])) {
@@ -34,7 +34,7 @@ include_once "inc/code.php";
 								</div>
 								<div class="form-group">
 									<label for="">Brand Name</label>
-									<select class="form-control" id="brand_id" name="brand_id">
+									<select class="form-control select2" id="brand_id" name="brand_id">
 										<option value="">~~SELECT~~</option>
 										<?php 	
 											if (empty($brand_id)) {

@@ -28,7 +28,7 @@ include_once "inc/code.php";
 									<div class="col-sm-6">
 										<div class="form-group">
 											<label for="">Continents</label>
-											<select name="country_regulation_continent" id="country_regulation_continent" class="form-control" required="required">
+											<select name="country_regulation_continent" id="country_regulation_continent" class="form-control select2" required="required">
 												<option value="">~~SELECT~~</option>
 												<option value="asia">Asia & Pacific</option>
 												<option value="africa">Africa</option>
@@ -53,7 +53,7 @@ include_once "inc/code.php";
 										</div>
 										<div class="form-group">
 											<label for="">Hand Drive</label>
-											<select name="country_regulation_hand" id="country_regulation_hand" class="form-control" required="required">
+											<select name="country_regulation_hand" id="country_regulation_hand" class="form-control select2" required="required">
 												<option value="">~~SELECT~~</option>
 												<option value="left">Left Hand</option>
 												<option value="right">Right Hand</option>

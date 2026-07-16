@@ -38,7 +38,7 @@ if (isset($_GET['machine_id'])) {
 
     <div class="col-sm-2">
        <label for="">Stock ID</label>      
-            <select tabindex="1" name="machine_stock_idp" id="machine_stock_id" class="form-control" required> 
+            <select tabindex="1" name="machine_stock_idp" id="machine_stock_id" class="form-control select2" required> 
                 <option <?=@($PartDe['machine_stock_id']=="HX-2022")?"selected":""?> value="HX-2022">HX-2022</option>   
 
                 <option <?=@($PartDe['machine_stock_id']=="HS-2022")?"selected":""?> value="HS-2022">HJ-2022</option>   
@@ -52,7 +52,7 @@ if (isset($_GET['machine_id'])) {
     <div class="col-sm-3">
         <label for="">Maker</label>     
 
-        <select tabindex="2" name="machine_maker" onchange="loadBrands(this.value)" id="machine_maker" class="form-control abcCustomNew vehicle_maker" required="required">
+        <select class="form-control select2" tabindex="2" name="machine_maker" onchange="loadBrands(this.value)" id="machine_maker" class="form-control abcCustomNew vehicle_maker" required="required">
 
           <option value="">~~SELECT~~</option>
 
@@ -71,7 +71,7 @@ if (isset($_GET['machine_id'])) {
 
         <label for="">Brand</label>     
 
-        <select tabindex="3" name="machine_brand" onchange="loadChassis(this.value)" id="vehicle_brand" class="form-control fuckJS vehicle_brand" required="required">
+        <select class="form-control select2" tabindex="3" name="machine_brand" onchange="loadChassis(this.value)" id="vehicle_brand" class="form-control fuckJS vehicle_brand" required="required">
 
          
 
@@ -97,7 +97,7 @@ if (isset($_GET['machine_id'])) {
 
         <label for="">Machine Type</label>     
 
-        <select tabindex="2" name="machine_type" id="machine_type" class="form-control abcCustomNew vehicle_machine" required="required">
+        <select class="form-control select2" tabindex="2" name="machine_type" id="machine_type" class="form-control abcCustomNew vehicle_machine" required="required">
 
           <option value="">~~SELECT~~</option>
 
@@ -118,7 +118,7 @@ if (isset($_GET['machine_id'])) {
         <input  name="machine_hours" id="machine_hours" class="form-control" type="number" min="0"> 
 <!-- 
 
-        <select  name="machine_cc" id="machine_cc" class="form-control" required="required">
+        <select  name="machine_cc" id="machine_cc" class="form-control select2" required="required">
 
          <option value="">Select</option>
 
@@ -145,7 +145,7 @@ if (isset($_GET['machine_id'])) {
   </div>
   <div class="col-sm-3">
         <label for="">Year</label>      
-        <select  name="machine_year" id="machine_year" class="form-control machine_reg_month" required="required" onchange="validateyears()">
+        <select class="form-control select2"  name="machine_year" id="machine_year" class="form-control machine_reg_month" required="required" onchange="validateyears()">
           <option value="">~~SELECT~~</option>
           <?php
 
@@ -166,7 +166,7 @@ if (isset($_GET['machine_id'])) {
   <div class="col-sm-2">
 
         <label for="">Manufacture Year.</label>      
-        <select  name="machine_manu_year" id="machine_manu_year" class="form-control vehicle_reg_month" required="required" onchange="validateyears()">
+        <select class="form-control select2"  name="machine_manu_year" id="machine_manu_year" class="form-control vehicle_reg_month" required="required" onchange="validateyears()">
 
           <option value="">~~SELECT~~</option>
 
@@ -205,7 +205,7 @@ if (isset($_GET['machine_id'])) {
     </div>
     <div class="col-sm-3">
         <label for="">Fuel</label>
-        <select  list="machine_fuel1" name="machine_fuel" id="machine_fuel" class="form-control" >
+        <select  list="machine_fuel1" name="machine_fuel" id="machine_fuel" class="form-control select2" >
 
           <option value="">~~SELECT~~</option>
 
@@ -233,7 +233,7 @@ if (isset($_GET['machine_id'])) {
      <div class="col-sm-2">
         <label for="">Steering</label>
        
-         <select  name="machine_steering" id="machine_steering" class="form-control" >
+         <select  name="machine_steering" id="machine_steering" class="form-control select2" >
 
           <option value="">Select</option>
 
@@ -259,7 +259,7 @@ if (isset($_GET['machine_id'])) {
   <div class="row">
     	<div class="col-sm-3">
     <label for="">Country</label>           
-    <select name="machine_country_id" id="machine_country_id" class="form-control" required>
+    <select name="machine_country_id" id="machine_country_id" class="form-control select2" required>
         <option value="">~~SELECT~~</option>
         <?php 
         $q = get($dbc, "countries ORDER BY country_name ASC");

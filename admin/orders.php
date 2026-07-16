@@ -135,7 +135,7 @@ require_once 'includes/header.php';
 			    <label for="clientName" class="col-sm-2 control-label">Select Account</label>
 			    <div class="col-sm-10">
 			    			<div class="input-group">
-			    				<select class="form-control" id="clientName" name="clientName" autofocus="true" required style="z-index: 1">
+			    				<select class="form-control select2" id="clientName" name="clientName" autofocus="true" required style="z-index: 1">
 						      	<option value="">~~SELECT~~</option>
 						      	<?php 
 						      	$sql = "SELECT * FROM customers WHERE customer_active = 1";
@@ -344,7 +344,7 @@ require_once 'includes/header.php';
 				  <div class="form-group row">
 				    <label for="clientContact" class="col-sm-3 control-label">Payment Type</label>
 				    <div class="col-sm-9">
-				      <select class="form-control" name="paymentType" id="paymentType">
+				      <select class="form-control select2" name="paymentType" id="paymentType">
 				      	<option value="2">Cash</option>
 				      	<option value="1">Cheque</option>
 				      	
@@ -355,7 +355,7 @@ require_once 'includes/header.php';
 				  <div class="form-group row">
 				    <label for="clientContact" class="col-sm-3 control-label">Payment Status</label>
 				    <div class="col-sm-9">
-				      <select class="form-control" name="paymentStatus" id="paymentStatus">
+				      <select class="form-control select2" name="paymentStatus" id="paymentStatus">
 				      	<option value="1">Full Payment</option>
 				      	
 				      	<option value="2">Advance Payment</option>
@@ -431,7 +431,7 @@ require_once 'includes/header.php';
 			    <label for="clientName" class="col-sm-2 control-label">Select Account</label>
 			    <div class="col-sm-10">
 			    			<div class="input-group">
-			    				<select class="form-control" id="clientName" name="clientName" autofocus="true">
+			    				<select class="form-control select2" id="clientName" name="clientName" autofocus="true">
 			    					<?php if(empty($data[2])): 
 			    						
 			    						?>
@@ -502,8 +502,8 @@ require_once 'includes/header.php';
 			  			<tr id="row<?php echo $x; ?>" class="<?php echo $arrayNumber; ?>">			  				
 			  				<td style="margin-left:20px;">
 			  					<div class="form-group">
-						<select class="form-control" data-show-subtext="true" data-live-search="true" name="productName[]" id="productName<?php echo $x; ?>" onchange="getProductData(<?php echo $x; ?>)">
-			  					<!-- <select class="form-control" name="productName[]" id="productName<?php echo $x; ?>" onchange="getProductData(<?php echo $x; ?>)" > -->
+						<select class="form-control select2" data-show-subtext="true" data-live-search="true" name="productName[]" id="productName<?php echo $x; ?>" onchange="getProductData(<?php echo $x; ?>)">
+			  					<!-- <select class="form-control select2" name="productName[]" id="productName<?php echo $x; ?>" onchange="getProductData(<?php echo $x; ?>)" > -->
 			  						<option value="">~~SELECT~~</option>
 			  						<?php
 			  							$productSql = "SELECT * FROM product WHERE active = 1 AND status = 1 AND quantity != 0";
@@ -631,7 +631,7 @@ require_once 'includes/header.php';
 				  <div class="form-group">
 				    <label for="clientContact" class="col-sm-3 control-label">Payment Type</label>
 				    <div class="col-sm-9">
-				      <select class="form-control" name="paymentType" id="paymentType" >
+				      <select class="form-control select2" name="paymentType" id="paymentType" >
 				      	<option value="">~~SELECT~~</option>
 				      	<option value="1" <?php if($data[11] == 1) {
 				      		echo "selected";
@@ -648,7 +648,7 @@ require_once 'includes/header.php';
 				  <div class="form-group">
 				    <label for="clientContact" class="col-sm-3 control-label">Payment Status</label>
 				    <div class="col-sm-9">
-				      <select class="form-control" name="paymentStatus" id="paymentStatus">
+				      <select class="form-control select2" name="paymentStatus" id="paymentStatus">
 				      	<option value="">~~SELECT~~</option>
 				      	<option value="1" <?php if($data[12] == 1) {
 				      		echo "selected";
@@ -717,7 +717,7 @@ require_once 'includes/header.php';
 			  <div class="form-group">
 			    <label for="clientContact" class="col-sm-3 control-label">Payment Type</label>
 			    <div class="col-sm-9">
-			      <select class="form-control" name="paymentType" id="paymentType" >
+			      <select class="form-control select2" name="paymentType" id="paymentType" >
 			      	<option value="">~~SELECT~~</option>
 			      	<option value="1">Cheque</option>
 			      	<option value="2">Cash</option>
@@ -728,7 +728,7 @@ require_once 'includes/header.php';
 			  <div class="form-group">
 			    <label for="clientContact" class="col-sm-3 control-label">Payment Status</label>
 			    <div class="col-sm-9">
-			      <select class="form-control" name="paymentStatus" id="paymentStatus">
+			      <select class="form-control select2" name="paymentStatus" id="paymentStatus">
 			      	<option value="">~~SELECT~~</option>
 			      	<option value="1">Full Payment</option>
 			      	<option value="2">Advance Payment</option>

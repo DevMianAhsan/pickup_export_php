@@ -20,7 +20,7 @@ include_once "inc/code.php";
 								</div>
 								<div class="form-group">
 									<label for="">Maker Name</label>
-									<select class="form-control" id="maker_id" name="maker_id"> 
+									<select class="form-control select2" id="maker_id" name="maker_id"> 
 										<option value="">~~SELECT~~</option>
 										<?php 
 										$q = get($dbc,"maker");
@@ -35,7 +35,7 @@ include_once "inc/code.php";
 								</div>
 								<div class="form-group">
 									<label for="">Brand Status</label>
-									<select class="form-control" id="brand_status" name="brand_status"> 
+									<select class="form-control select2" id="brand_status" name="brand_status"> 
 										<option value="">~~SELECT~~</option>
 										<option value="1">Active</option>
 										<option value="0">Inactive</option>

@@ -21,7 +21,7 @@ include_once "inc/code.php";
 								</div>
 								<div class="form-group">
 									<label for="">Interior Grade Status</label>
-									<select class="form-control" id="interior_grade_sts" name="interior_grade_sts"> 
+									<select class="form-control select2" id="interior_grade_sts" name="interior_grade_sts"> 
 										<option value="">~~SELECT~~</option>
 										<option value="1">Active</option>
 										<option value="0">Inactive</option>

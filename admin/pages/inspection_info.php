@@ -62,7 +62,7 @@
 						<label for="">Inspection Company</label>
 					</div><!-- col -->
 					<div class="col-sm-8">			
-						<select name="inspection_info_company" id="inspection_info_company" class="form-control">
+						<select name="inspection_info_company" id="inspection_info_company" class="form-control select2">
 							<option  value="">~~SELECT~~</option>
 							<?php $q = get($dbc,"inspection_company WHERE inspection_company_sts = '1'");
 							while($r = mysqli_fetch_assoc($q)): ?>
@@ -113,7 +113,7 @@
 						<label for="">Inspection Status</label>
 					</div><!-- col -->
 					<div class="col-sm-8">			
-						<select name="inspection_info_sts" id="inspection_info_sts" class="form-control">
+						<select name="inspection_info_sts" id="inspection_info_sts" class="form-control select2">
 							<option value="pass">Pass</option>
 							<option value="fail">Fail</option>
 						</select>
@@ -228,7 +228,7 @@
 						<label for="">Re Inspection Status</label>
 					</div><!-- col -->
 					<div class="col-sm-8">			
-						<select name="inspection_info_reinspection_sts" id="inspection_info_reinspection_sts" class="form-control">
+						<select name="inspection_info_reinspection_sts" id="inspection_info_reinspection_sts" class="form-control select2">
 							<option value="pass">Pass</option>
 							<option value="fail">Fail</option>
 						</select>

@@ -65,7 +65,7 @@ if ($date_now < $date2) {
 				 <div class="form-group row">
                        <div class="col-sm-9 mx-auto">
                        	<label>Select Services</label>
-                         <select type="date" class="form-control"  name="services_id"  required >
+                         <select type="date" class="form-control select2"  name="services_id"  required >
                    <option    value="">Select Services</option>
                           <?php
                             $result=mysqli_query($dbc,"SELECT * FROM vehicle_services where vehicle_services_sts=1 ");

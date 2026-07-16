@@ -31,7 +31,7 @@
 
 					<div class="col-sm-8">			
 
-						<select name="consignee_info_user_id" id="consignee_info_user_id" class="form-control">
+						<select name="consignee_info_user_id" id="consignee_info_user_id" class="form-control select2">
 
 							<option value="">~~SELECT~~</option>
 

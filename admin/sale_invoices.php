@@ -198,7 +198,7 @@ if ($date_now < $date2) {
 
 				  
 
-				     <select class="form-control" name="invoice_type" id="invoice_type" required>
+				     <select class="form-control select2" name="invoice_type" id="invoice_type" required>
 				     	<option <?=(@$fetchQuationData['invoice_type']=="general_invoice")?"selected":""?> value="general_invoice">General Invoice</option>
 				     	<option <?=(@$fetchQuationData['invoice_type']=="credit_invoice")?"selected":""?> value="credit_invoice">Credit Invoice</option>
 				     </select>
@@ -302,7 +302,7 @@ if ($date_now < $date2) {
 
 					 <label for="clientName" class="control-label">Select Consignee</label>
 
-						<select class="form-control" id="consignee_id" name="consignee_id" required>
+						<select class="form-control select2" id="consignee_id" name="consignee_id" required>
 
 							<option value="">~~SELECT~~</option>
 
@@ -352,7 +352,7 @@ if ($date_now < $date2) {
 
 				  
 
-						<select class="form-control" id="user_name" name="invoice_user" required>
+						<select class="form-control select2" id="user_name" name="invoice_user" required>
 
 							<option value="">~~SELECT~~</option>
 
@@ -931,7 +931,7 @@ if (mysqli_num_rows($services)>0) {
 			 	<div class="col-sm-4">
 			 		<div class="form-group">
 						<label for="invoice_currency">Currency</label>
-			<select required class="form-control" id="invoice_currency" name="invoice_currency">
+			<select required class="form-control select2" id="invoice_currency" name="invoice_currency">
 					
 							<?php $q=get($dbc,"currency WHERE currency_status=1 ");
 									while($r=mysqli_fetch_assoc($q)): ?>
@@ -1109,7 +1109,7 @@ if (mysqli_num_rows($services)>0) {
 
 						<div class="col-sm-9">					
 
-							<select name="invoice_sts" id="invoice_sts" class="form-control" required="required">
+							<select name="invoice_sts" id="invoice_sts" class="form-control select2" required="required">
 
 								<option value="">~~ SELECT ~~</option>
 

@@ -160,7 +160,7 @@
 
 	          	    	<label for="">Bank Status</label>	
 
-						<select class="form-control" id="bank_status" name="bank_status">
+						<select class="form-control select2" id="bank_status" name="bank_status">
 
 							<option value="">~~SElECT~~</option>
 

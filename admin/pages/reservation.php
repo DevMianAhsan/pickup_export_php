@@ -71,7 +71,7 @@
 						<label for="">Destination Country</label>
 					</div><!-- col -->
 					<div class="col-sm-8">			
-						<select required class="form-control" id="reservation_country" name="reservation_country">
+						<select required class="form-control select2" id="reservation_country" name="reservation_country">
 				    		 <option>Select Country</option>
 			                                <?php
 						                    	$sql = mysqli_query($dbc,"SELECT * FROM country_regulation GROUP BY country_regulation_country");
@@ -110,7 +110,7 @@
 						<label for="">Inspection Company</label>
 					</div><!-- col -->
 					<div class="col-sm-5">			
-						<select name="reservation_inspection" id="reservation_inspection" class="form-control">
+						<select name="reservation_inspection" id="reservation_inspection" class="form-control select2">
 							<option value="">~~SELECT~~</option>
 							<?php  $q = get($dbc,"inspection_company WHERE inspection_company_sts = '1'");
 							 while($r = mysqli_fetch_assoc($q)): ?>
@@ -143,7 +143,7 @@
 						<label for="">Sale Type</label>
 					</div><!-- col -->
 					<div class="col-sm-8">			
-						<select required class="form-control" id="reservation_sale_type" name="reservation_sale_type">
+						<select required class="form-control select2" id="reservation_sale_type" name="reservation_sale_type">
 							<option value="">Select</option>
 							<option value="FOB">FOB</option>
 							<option value="CIF">CIF</option>
@@ -163,7 +163,7 @@
 						<label for="">Shipment Type</label>
 					</div><!-- col -->
 					<div class="col-sm-8">
-						<select name="reservation_shipment_type" id="reservation_shipment_type" class="form-control" required="required">
+						<select name="reservation_shipment_type" id="reservation_shipment_type" class="form-control select2" required="required">
 							<option value="">~~SELECT~~</option>
 							<option value="roro">RORO</option>
 							<option value="container">Container</option>
@@ -420,7 +420,7 @@
 
 					<div class="col-sm-8">			
 
-						<select required class="form-control" id="reservation_currency" name="reservation_currency">
+						<select required class="form-control select2" id="reservation_currency" name="reservation_currency">
 							<option value="">Select</option>
 							<?php $q=get($dbc,"currency WHERE currency_status=1 ");
 									while($r=mysqli_fetch_assoc($q)): ?>
@@ -536,7 +536,7 @@
 
 					<div class="col-sm-8">			
 
-						<select required class="form-control" id="reservation_sts" name="reservation_sts">
+						<select required class="form-control select2" id="reservation_sts" name="reservation_sts">
 
 							<option value="">~~SElECT~~</option>
 

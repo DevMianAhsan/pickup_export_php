@@ -68,7 +68,7 @@
 	        	<label for="categoriesStatus" class="col-sm-4 control-label">Status: </label>
 	        	<label class="col-sm-1 control-label">: </label>
 				    <div class="col-sm-7">
-				      <select class="form-control" id="categoriesStatus" name="categoriesStatus">
+				      <select class="form-control select2" id="categoriesStatus" name="categoriesStatus">
 				      	<option value="">~~SELECT~~</option>
 				      	<option value="1">Available</option>
 				      	<option value="2">Not Available</option>
@@ -126,7 +126,7 @@
 		        	<label for="editCategoriesStatus" class="col-sm-4 control-label">Status: </label>
 		        	<label class="col-sm-1 control-label">: </label>
 					    <div class="col-sm-7">
-					      <select class="form-control" id="editCategoriesStatus" name="editCategoriesStatus">
+					      <select class="form-control select2" id="editCategoriesStatus" name="editCategoriesStatus">
 					      	<option value="">~~SELECT~~</option>
 					      	<option value="1">Available</option>
 					      	<option value="2">Not Available</option>

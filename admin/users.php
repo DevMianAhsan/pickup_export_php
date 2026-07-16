@@ -47,7 +47,7 @@ include_once "inc/code.php";
 			    </div>
 			    <label for="clientContact" class="col-sm-2 control-label">UserRole</label>
 			    <div class="col-sm-4">
-			    	  <select class="form-control" name="user_role">
+			    	  <select class="form-control select2" name="user_role">
 			    	  	<option value="admin">Admin</option>
 				     		<option value="subadmin">Sub Admin</option>
 				     		<option value="manager">Manager</option>
@@ -64,7 +64,7 @@ include_once "inc/code.php";
 			      <label for="clientContact" class="col-sm-2 control-label">Status </label>
 
 			    <div class="col-sm-4">
-			       <select class="form-control" name="status">
+			       <select class="form-control select2" name="status">
 			     	<option  <?=@($fetchusers['status']=="1")?"seleted":""?> value="1">Active</option>
 			     	<option  <?=@($fetchusers['status']=="0")?"seleted":""?> value="0">Not Active</option>
 			     </select>

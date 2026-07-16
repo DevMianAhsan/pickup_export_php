@@ -50,6 +50,26 @@
                 background-color: #ff1a1a; 
                 border-color: #ff1a1a;
         }
+        
+        /* Select2 active and hover styling */
+        .select2-container--default .select2-results__option--highlighted[aria-selected] {
+            background-color: #ff1a1a !important;
+            color: white !important;
+        }
+        .select2-container--default .select2-results__option[aria-selected=true] {
+            background-color: #cc0000 !important;
+            color: white !important;
+        }
+        .select2-container--default.select2-container--focus .select2-selection--single,
+        .select2-container--default.select2-container--focus .select2-selection--multiple {
+            border-color: #ff1a1a !important;
+        }
+        
+        /* Standard inputs active/focus outline */
+        .form-control:focus {
+            border-color: #ff1a1a !important;
+            box-shadow: 0 0 0 0.2rem rgba(255, 26, 26, 0.25) !important;
+        }
          .btn-admin2{
                 color: white; 
                 background-color: black; 

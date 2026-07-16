@@ -69,7 +69,7 @@ include_once "inc/code.php";
 								</div>
 								<div class="form-group">
 									<label for="">Status</label>
-									<select name="vehicle_services_sts" id="vehicle_services_sts" class="form-control">
+									<select name="vehicle_services_sts" id="vehicle_services_sts" class="form-control select2">
 										<option value="">~~SELECT~~</option>
 										<option value="1">Active</option>
 										<option value="0">Dective</option>

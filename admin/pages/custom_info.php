@@ -100,7 +100,7 @@
 
 	          	    	<label for="">Bank Status</label>	
 
-						<select class="form-control" id="customer_active" name="customer_active">
+						<select class="form-control select2" id="customer_active" name="customer_active">
 
 							<option value="">~~SElECT~~</option>
 

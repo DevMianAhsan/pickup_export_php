@@ -39,7 +39,7 @@ if (isset($_REQUEST['currency_id'])) {
 									<div class="col-sm-6">
 										
 									<label for="">Country</label>
-									<select class="form-control" id="country_id" name="country_id" required>
+									<select class="form-control select2" id="country_id" name="country_id" required>
 
 				    		 <option>Select Country</option>
 
@@ -73,7 +73,7 @@ if (isset($_REQUEST['currency_id'])) {
 									</div>
 									<div class="col-sm-6">
 										<label for="">Currency Status</label>
-										<select class="form-control" id="currency_status" name="currency_status" required> 
+										<select class="form-control select2" id="currency_status" name="currency_status" required> 
 										<option value="">~~SELECT~~</option>
 										<option <?=(@$fetchCurrency['currency_status']==1)?"selected":""?> value="1">Active</option>
 										<option <?=(@$fetchCurrency['currency_status']==0)?"selected":""?> value="0">Inactive</option>

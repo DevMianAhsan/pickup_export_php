@@ -18,7 +18,7 @@ include_once "inc/code.php";
 									<div class="col-sm-6">
 										
 									<label for="">Select Vehicle</label>
-									<select class="form-control" id="inquiryvehicle" name="inquiryvehicle"> 
+									<select class="form-control select2" id="inquiryvehicle" name="inquiryvehicle"> 
 										<option value="">Select</option>
 										<?php 
 										$q = get($dbc,"vehicle_info");
@@ -34,7 +34,7 @@ include_once "inc/code.php";
 									</div>
 									<div class="col-sm-6">
 									<label for="">Select Customer </label>
-									<select class="form-control" id="customer_id" name="customer_id"> 
+									<select class="form-control select2" id="customer_id" name="customer_id"> 
 										<option value="">Select Customer </option>
 										<?php 
 										$q = get($dbc,"customers WHERE customer_active = 1 AND customer_role = 'customer'");
@@ -54,7 +54,7 @@ include_once "inc/code.php";
 									<div class="col-sm-6">
 										
 									<label for="">Select Currency </label>
-									<select class="form-control" id="currency_id" name="currency_id"> 
+									<select class="form-control select2" id="currency_id" name="currency_id"> 
 										<option value="">Select Currency </option>
 										<?php 
 										$q = get($dbc,"currency WHERE currency_status = 1");

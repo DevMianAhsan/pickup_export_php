@@ -644,12 +644,14 @@ if ($resource === 'latest_discounted' || $resource === 'latest-discounted') {
             'id' => $itemId,
             'type' => $itemType,
             'stock_id' => $row['stock_id'] ?? null,
+            'title' => $row['maker_name'] . " " . $row['brand_name'] ?? null,
             'year' => $row['year'] ?? null,
-            'registration_year' => $row['registration_year'] ?? null,
             'fuel' => $row['fuel'] ?? null,
             'transmission' => $row['transmission'] ?? null,
             'driven' => $row['driven'] ?? null,
             'steering' => $row['steering'] ?? null,
+            'vehicle_mode' => $row['vehicle_mode'] ?? null,
+            'mileage' => $row['mileage'] ?? null,
             'featured_image' => $image,
             'country_id' => isset($row['country_id']) ? (int) $row['country_id'] : null,
             'country_name' => $row['country_name'] ?? null,
@@ -803,9 +805,8 @@ if ($resource === 'vehicle' || $resource === 'single_vehicle' || $resource === '
             'id' => (int) $item['machine_id'],
             'type' => 'machine',
             'stock_id' => $item['machine_stock_id'] ?? null,
-            'maker_id' => isset($item['machine_maker']) ? (int) $item['machine_maker'] : null,
+            'title' => $item['maker_name'] . " " . $item['brand_name'] ?? null,
             'maker_name' => $item['maker_name'] ?? null,
-            'brand_id' => isset($item['machine_brand']) ? (int) $item['machine_brand'] : null,
             'brand_name' => $item['brand_name'] ?? null,
             'type_name' => $item['machine_type_name'] ?? null,
             'chassis_no' => $item['machine_serial_no'] ?? null,
@@ -843,9 +844,8 @@ if ($resource === 'vehicle' || $resource === 'single_vehicle' || $resource === '
             'id' => (int) $item['vehicle_id'],
             'type' => 'vehicle',
             'stock_id' => $item['vehicle_stock_id'] ?? null,
-            'maker_id' => isset($item['vehicle_maker']) ? (int) $item['vehicle_maker'] : null,
+            'title' => $item['maker_name'] . " " . $item['brand_name'] ?? null,
             'maker_name' => $item['maker_name'] ?? null,
-            'brand_id' => isset($item['vehicle_brand']) ? (int) $item['vehicle_brand'] : null,
             'brand_name' => $item['brand_name'] ?? null,
             'type_name' => $item['body_type_name'] ?? null,
             'chassis_no' => $item['vehicle_chassis_no'] ?? null,
@@ -1317,6 +1317,7 @@ if ($resource === 'search') {
             'id' => $itemId,
             'type' => $row['item_type'],
             'stock_id' => $row['stock_id'] ?? null,
+            'title' => $row['maker_name'] . " " . $row['brand_name'] ?? null,
             'maker_name' => $row['maker_name'] ?? null,
             'brand_name' => $row['brand_name'] ?? null,
             'type_name' => $row['type_name'] ?? null,
@@ -1357,7 +1358,6 @@ if ($resource === 'search') {
         'vehicles' => $vehicles,
     ]);
 }
-
 
 if ($resource === 'search-parts') {
     requireApiToken();

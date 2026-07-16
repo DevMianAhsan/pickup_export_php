@@ -114,7 +114,7 @@
 
 					<div class="col-sm-5">			
 
-						<select name="auction_house2" id="auction_house2"  class="form-control" onchange="AuctionInfNow(this.value)">
+						<select name="auction_house2" id="auction_house2"  class="form-control select2" onchange="AuctionInfNow(this.value)">
 
 							<option value="">~~SELECT~~</option>
 
@@ -438,7 +438,7 @@ if(@$d['file_title'] == 'auctionpersonbill'){
 						<label for="">Loading Point</label>
 					</div><!-- col -->
 					<div class="col-sm-5">			
-						<select onchange='getSubYards(this.value,"#cp_person_sub_yard")' name="person_loading_point" id="person_loading_point" class="form-control">
+						<select onchange='getSubYards(this.value,"#cp_person_sub_yard")' name="person_loading_point" id="person_loading_point" class="form-control select2">
 						
 							<?php $q = mysqli_query($dbc,"SELECT DISTINCT auction_house_name FROM riksu_transportation ");
 							while ($r = mysqli_fetch_assoc($q)):?>
@@ -458,7 +458,7 @@ if(@$d['file_title'] == 'auctionpersonbill'){
 						<label for="">Sub Yards</label>
 					</div><!-- col -->
 					<div class="col-sm-5">			
-						<select  name="person_sub_yard" id="cp_person_sub_yard" class="form-control">
+						<select  name="person_sub_yard" id="cp_person_sub_yard" class="form-control select2">
 						</select>
 					</div><!-- col -->
 					<div class="col-sm-3">

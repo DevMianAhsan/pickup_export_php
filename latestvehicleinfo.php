@@ -38,7 +38,7 @@
 
 					<h4>
 						<?= strtoupper($maker['maker_name']) ?>
-						<?= $brand['brand_name'] ?>
+						<!-- <?= $brand['brand_name'] ?> -->
 					</h4>
 
 					<p>

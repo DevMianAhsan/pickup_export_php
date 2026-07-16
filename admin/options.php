@@ -20,7 +20,7 @@ include_once "inc/code.php";
 								</div>
 								<div class="form-group">
 									<label for="">Options Status</label>
-									<select class="form-control" id="option_sts" name="option_sts"> 
+									<select class="form-control select2" id="option_sts" name="option_sts"> 
 										<option value="">~~SELECT~~</option>
 										<option value="1">Active</option>
 										<option value="0">Inactive</option>

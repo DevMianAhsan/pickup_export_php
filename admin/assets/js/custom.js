@@ -1898,65 +1898,65 @@ $("#save_vehicle_docs").on('click',function() {
                 if (tbl == 'auction_grade') {
                     $("#auction_grade_id").val(data.auction_grade_id);
                     $("#auction_grade_name").val(data.auction_grade_name);
-                    $('#auction_grade_sts option[value="'+data.auction_grade_sts+'"]').prop("selected", true); 
+                    $('#auction_grade_sts option[value="'+data.auction_grade_sts+'"]').prop("selected", true).trigger('change'); 
                 }else if (tbl == 'maker') {
                     $("#maker_id").val(data.maker_id);
                     $("#maker_name").val(data.maker_name);
                     $("#maker_img").val(data.maker_img);
-                    $('#maker_sts option[value="'+data.maker_sts+'"]').prop("selected", true); 
+                    $('#maker_sts option[value="'+data.maker_sts+'"]').prop("selected", true).trigger('change'); 
                 }else if (tbl == 'color_code') {
                     $("#color_code_id").val(data.color_code_id);
                     $("#color_code_name").val(data.color_code_name);
                     $("#color_name").val(data.color_name);
-                    $('#color_code_sts option[value="'+data.color_code_sts+'"]').prop("selected", true); 
+                    $('#color_code_sts option[value="'+data.color_code_sts+'"]').prop("selected", true).trigger('change'); 
                 }else if (tbl == 'cc') {
                     $("#cc_id").val(data.cc_id);
                     $("#cc_name").val(data.cc_name);
-                    $('#cc_sts option[value="'+data.cc_sts+'"]').prop("selected", true); 
+                    $('#cc_sts option[value="'+data.cc_sts+'"]').prop("selected", true).trigger('change'); 
                 }else if (tbl == 'drive') {
                     $("#drive_id").val(data.drive_id);
                     $("#drive_name").val(data.drive_name);
-                    $('#drive_sts option[value="'+data.drive_sts+'"]').prop("selected", true); 
+                    $('#drive_sts option[value="'+data.drive_sts+'"]').prop("selected", true).trigger('change'); 
                 }else if (tbl == 'transmission') {
                     $("#transmission_id").val(data.transmission_id);
                     $("#transmission_name").val(data.transmission_name);
-                    $('#transmission_sts option[value="'+data.transmission_sts+'"]').prop("selected", true); 
+                    $('#transmission_sts option[value="'+data.transmission_sts+'"]').prop("selected", true).trigger('change'); 
                 }else if (tbl == 'interior_grade') {
                     $("#interior_grade_id").val(data.interior_grade_id);
                     $("#interior_grade_name").val(data.interior_grade_name);
-                    $('#interior_grade_sts option[value="'+data.interior_grade_sts+'"]').prop("selected", true); 
+                    $('#interior_grade_sts option[value="'+data.interior_grade_sts+'"]').prop("selected", true).trigger('change'); 
                 }else if (tbl == 'exterior_grade') {
                     $("#exterior_grade_id").val(data.exterior_grade_id);
                     $("#exterior_grade_name").val(data.exterior_grade_name);
-                    $('#exterior_grade_sts option[value="'+data.exterior_grade_sts+'"]').prop("selected", true); 
+                    $('#exterior_grade_sts option[value="'+data.exterior_grade_sts+'"]').prop("selected", true).trigger('change'); 
                 }else if (tbl == 'seats') {
                     $("#seats_id").val(data.seats_id);
                     $("#seats_name").val(data.seats_name);
-                    $('#seats_sts option[value="'+data.seats_sts+'"]').prop("selected", true); 
+                    $('#seats_sts option[value="'+data.seats_sts+'"]').prop("selected", true).trigger('change'); 
                 }else if (tbl == 'doors') {
                     $("#doors_id").val(data.doors_id);
                       $("#doors_name").focus();
                     $("#doors_name").val(data.doors_name);
-                    $('#doors_sts option[value="'+data.doors_sts+'"]').prop("selected", true); 
+                    $('#doors_sts option[value="'+data.doors_sts+'"]').prop("selected", true).trigger('change'); 
                 }else if (tbl == 'options') {
                     $("#option_id").val(data.option_id);
                     $("#option_id").focus();
                     $("#option_name").val(data.option_name);
-                    $('#option_sts option[value="'+data.option_sts+'"]').prop("selected", true); 
+                    $('#option_sts option[value="'+data.option_sts+'"]').prop("selected", true).trigger('change'); 
                 }else if (tbl == 'fuel') {
                     $("#fuel_id").val(data.fuel_id);
                      $("#fuel_name").focus();
                     $("#fuel_name").val(data.fuel_name);
-                    $('#fuel_sts option[value="'+data.fuel_sts+'"]').prop("selected", true); 
+                    $('#fuel_sts option[value="'+data.fuel_sts+'"]').prop("selected", true).trigger('change'); 
                 }else if (tbl == 'package') {
                     $("#pack_id").val(data.pack_id);
                     ("#pack_name").focus();
                     $("#pack_name").val(data.pack_name);
-                    $('#pack_sts option[value="'+data.pack_sts+'"]').prop("selected", true); 
+                    $('#pack_sts option[value="'+data.pack_sts+'"]').prop("selected", true).trigger('change'); 
                 }else if (tbl == 'bidders') {
                     $("#bidder_id").val(data.bidders_id);
                     $("#bidder_name").val(data.bidders_name);
-                    $('#bidder_sts option[value="'+data.bidders_sts+'"]').prop("selected", true); 
+                    $('#bidder_sts option[value="'+data.bidders_sts+'"]').prop("selected", true).trigger('change'); 
                 }else if (tbl == 'auction_home') {
                     $("#auction_home_id").val(data.auction_home_id);
                     $("#auction_home_name").val(data.auction_home_name);
@@ -1983,15 +1983,15 @@ $("#save_vehicle_docs").on('click',function() {
                     $("#business_type").val(data.business_type);
                     $("#pos").val(data.pos);
                     var auction_day =data.auction_day.toLowerCase();
-                    $('#auction_day option[value="'+auction_day+'"]').prop("selected", true);
-                    $('#auction_home_sts option[value="'+data.auction_home_sts+'"]').prop("selected", true);
+                    $('#auction_day option[value="'+auction_day+'"]').prop("selected", true).trigger('change');
+                    $('#auction_home_sts option[value="'+data.auction_home_sts+'"]').prop("selected", true).trigger('change');
                 }else if (tbl == 'consignee') {
                     $("#consignee_id").val(data.consignee_id);
                      $("#consignee_name").focus();
                     $("#consignee_name").val(data.consignee_name);
-                    $('#consignee_sts option[value="'+data.consignee_sts+'"]').prop("selected", true); 
-                    $('#customer_id option[value="'+data.customer_id+'"]').prop("selected", true);
-                    $("#consignee_country").val(data.consignee_country)
+                    $('#consignee_sts option[value="'+data.consignee_sts+'"]').prop("selected", true).trigger('change'); 
+                    $('#customer_id option[value="'+data.customer_id+'"]').prop("selected", true).trigger('change');
+                    $("#consignee_country").val(data.consignee_country).trigger('change')
                     $("#consignee_contact_person").val(data.consignee_contact_person)
                     $("#consignee_state").val(data.consignee_state)
                     $("#consignee_city").val(data.consignee_city)
@@ -2006,7 +2006,7 @@ $("#save_vehicle_docs").on('click',function() {
                     $("#consignee_fax").val(data.consignee_fax)
                     $("#consignee_email").val(data.consignee_email)
                    // $("#consignee_dest_port").val(data.consignee_dest_port)
-                    $('#consignee_dest_port option[value="'+data.consignee_dest_port+'"]').prop("selected", true); 
+                    $('#consignee_dest_port option[value="'+data.consignee_dest_port+'"]').prop("selected", true).trigger('change'); 
                     
                     $("#consignee_final_dest").val(data.consignee_final_dest) 
                 }else if (tbl == 'inspection_company') {
@@ -2019,7 +2019,7 @@ $("#save_vehicle_docs").on('click',function() {
                     $("#inspection_address").val(data.inspection_address);
                     $("#inspection_website").val(data.inspection_website);
                      $('#inspection_company_name').focus(); 
-                    $('#inspection_company_sts option[value="'+data.inspection_company_sts+'"]').prop("selected", true); 
+                    $('#inspection_company_sts option[value="'+data.inspection_company_sts+'"]').prop("selected", true).trigger('change'); 
                 }else if (tbl == 'inspection_transportation') {
                      $('#inspection_trans_for').focus(); 
                     $("#inspection_trans_id").val(data.inspection_trans_id);
@@ -2028,14 +2028,14 @@ $("#save_vehicle_docs").on('click',function() {
                     $("#inspection_trans_fee_tax").val(data.inspection_trans_fee_tax);
                      $("#inspection_validity_for").val(data.inspection_validity_for);
                     $("#inspection_trans_others").val(data.inspection_trans_others);
-                    $('#inspection_trans_sts option[value="'+data.inspection_trans_sts+'"]').prop("selected", true); 
+                    $('#inspection_trans_sts option[value="'+data.inspection_trans_sts+'"]').prop("selected", true).trigger('change'); 
                
-                    $('#inspection_trans_company option[value="'+data.inspection_trans_company+'"]').prop("selected", true); 
+                    $('#inspection_trans_company option[value="'+data.inspection_trans_company+'"]').prop("selected", true).trigger('change'); 
                 }
                 else if (tbl == 'transportation') {
                     $("#transportation_id").val(data.transportation_id);
                     $("#transportation_name").val(data.transportation_name);
-                    $('#transportation_sts option[value="'+data.transportation_sts+'"]').prop("selected", true); 
+                    $('#transportation_sts option[value="'+data.transportation_sts+'"]').prop("selected", true).trigger('change'); 
                 }else if (tbl == 'services_company') {
                      $('#services_company_name').focus(); 
 
@@ -2047,19 +2047,19 @@ $("#save_vehicle_docs").on('click',function() {
                     $("#services_company_email").val(data.services_company_email);
                     $("#services_company_address").val(data.services_company_address);
                     $("#services_company_website").val(data.services_company_website);
-                    $('#services_company_sts option[value="'+data.services_company_sts+'"]').prop("selected", true); 
+                    $('#services_company_sts option[value="'+data.services_company_sts+'"]').prop("selected", true).trigger('change'); 
                 }else if (tbl == 'airmail_transportation') {
                     $("#airmail_trans_id").val(data.airmail_trans_id);
-                    $('#airmail_trans_company option[value="'+data.airmail_trans_company+'"]').prop("selected", true); 
+                    $('#airmail_trans_company option[value="'+data.airmail_trans_company+'"]').prop("selected", true).trigger('change'); 
                     $('#airmail_trans_company').focus(); 
                     var airmail_trans_country=data.airmail_trans_country.toUpperCase();
-                    $('#airmail_trans_country option[value="'+airmail_trans_country+'"]').prop("selected", true); 
+                    $('#airmail_trans_country option[value="'+airmail_trans_country+'"]').prop("selected", true).trigger('change'); 
                     $("#airmail_trans_type").val(data.airmail_trans_type);
                     $("#airmail_trans_weight").val(data.airmail_trans_weight);
                     $("#airmail_trans_fee").val(data.airmail_trans_fee);
                     $("#airmail_trans_fee_tax").val(data.airmail_trans_fee_tax);
                     $("#airmail_trans_others").val(data.airmail_trans_others);
-                    $('#airmail_trans_sts option[value="'+data.airmail_trans_sts+'"]').prop("selected", true); 
+                    $('#airmail_trans_sts option[value="'+data.airmail_trans_sts+'"]').prop("selected", true).trigger('change'); 
                 }
                 else if (tbl == 'vehicle_expense') {
                      $("#vehicle_expense_name").focus();
@@ -2081,7 +2081,7 @@ $("#save_vehicle_docs").on('click',function() {
                     $("#customer_skype").val(data.customer_skype)
                     $("#customer_city").val(data.customer_city)
                     $("#customer_address").val(data.customer_address)
-                    $('#customer_active option[value="'+data.customer_active+'"]').prop("selected", true);
+                    $('#customer_active option[value="'+data.customer_active+'"]').prop("selected", true).trigger('change');
                     $("#customer_street").val(data.customer_street)
                     $("#customer_floor").val(data.customer_floor)
                     $("#customer_state").val(data.customer_state)
@@ -2160,8 +2160,8 @@ $("#save_vehicle_docs").on('click',function() {
                     $("#country_regulation_inspection").val(data.country_regulation_inspection);
                     $("#country_regulation_fee").val(data.country_regulation_fee);
                     $("#country_regulation_country").val(data.country_regulation_country);
-                    $('#country_regulation_continent option[value="'+data.country_regulation_continent+'"]').prop("selected", true);
-                    $('#country_regulation_hand option[value="'+data.country_regulation_hand+'"]').prop("selected", true);
+                    $('#country_regulation_continent option[value="'+data.country_regulation_continent+'"]').prop("selected", true).trigger('change');
+                    $('#country_regulation_hand option[value="'+data.country_regulation_hand+'"]').prop("selected", true).trigger('change');
                     $("#container_20ft").val(data.container_20ft).focus();
                     $("#container_40ft").val(data.container_40ft);
                     $("#m3_0_14").val(data.m3_0_14);
@@ -2169,18 +2169,18 @@ $("#save_vehicle_docs").on('click',function() {
                 }else if (tbl == 'vehicle_feature') {
                     $("#vehicle_feature_name").val(data.vehicle_feature_name);
                     $("#vehicle_feature_id").val(data.vehicle_feature_id);
-                    $('#vehicle_feature_category option[value="'+data.vehicle_feature_category+'"]').prop("selected", true);
+                    $('#vehicle_feature_category option[value="'+data.vehicle_feature_category+'"]').prop("selected", true).trigger('change');
                 }else if (tbl == 'brands') {
                     $("#brand_name").val(data.brand_name);
                     $("#brand_id").val(data.brand_id);
-                    $('#maker_id option[value="'+data.maker_id+'"]').prop("selected", true);
-                    $('#brand_status option[value="'+data.brand_status+'"]').prop("selected", true);
+                    $('#maker_id option[value="'+data.maker_id+'"]').prop("selected", true).trigger('change');
+                    $('#brand_status option[value="'+data.brand_status+'"]').prop("selected", true).trigger('change');
                 }else if (tbl == 'models') {
                     $("#model_id").val(data.model_id);
                     $("#model_name").val(data.model_name);
                     $("#brand_m3").val(data.brand_m3);
-                    $('#brand_id option[value="'+data.brand_id+'"]').prop("selected", true);
-                    $('#maker_id option[value="'+data.maker_id+'"]').prop("selected", true);
+                    $('#brand_id option[value="'+data.brand_id+'"]').prop("selected", true).trigger('change');
+                    $('#maker_id option[value="'+data.maker_id+'"]').prop("selected", true).trigger('change');
                 }else if (tbl == 'shipper') {
                     $("#shipper_name").focus();
                     $("#shipper_id").val(data.shipper_id);
@@ -2198,8 +2198,8 @@ $("#save_vehicle_docs").on('click',function() {
                     $("#shipper_mobile").val(data.shipper_mobile);
                     $("#shipper_fax").val(data.shipper_fax);
                     var shipper_country=data.shipper_country.toUpperCase();
-                    $('#shipper_country option[value="'+shipper_country+'"]').prop("selected", true);
-                    $('#shipper_sts option[value="'+data.shipper_sts+'"]').prop("selected", true);
+                    $('#shipper_country option[value="'+shipper_country+'"]').prop("selected", true).trigger('change');
+                    $('#shipper_sts option[value="'+data.shipper_sts+'"]').prop("selected", true).trigger('change');
                     $("#shipper_web").val(data.shipper_web)
                 }else if (tbl == 'airmail_files') {
                     $("#vehicle_id").val(data.vehicle_id);
@@ -2216,7 +2216,7 @@ $("#save_vehicle_docs").on('click',function() {
                     $("#ricksu_company_contact_person").val(data.ricksu_company_contact_person)
                     $("#ricksu_company_contact").val(data.ricksu_company_contact)
                     $("#ricksu_company_fax").val(data.ricksu_company_fax)
-                    $('#ricksu_company_sts option[value="'+data.ricksu_company_sts+'"]').prop("selected", true);
+                    $('#ricksu_company_sts option[value="'+data.ricksu_company_sts+'"]').prop("selected", true).trigger('change');
                 }else if (tbl == 'riksu_transportation') {
                         $("#auction_house_name").focus();
                     $("#auction_house_name").val(data.auction_house_name)
@@ -2227,7 +2227,7 @@ $("#save_vehicle_docs").on('click',function() {
                     $("#running_fee").val(data.running_fee)
                     $("#ricksu_trans_id").val(data.id)
                     $("#ricksu_btn").html("UPDATE")
-                    $('#riksu_company_id option[value="'+data.riksu_company_id+'"]').prop("selected", true);
+                    $('#riksu_company_id option[value="'+data.riksu_company_id+'"]').prop("selected", true).trigger('change');
                 }else if (tbl == 'shipment_company') {
                        $("#shipment_company_name").focus();
                     $("#shipment_company_id").val(data.shipment_company_id);
@@ -2245,7 +2245,7 @@ $("#save_vehicle_docs").on('click',function() {
                     $("#shipment_company_mobile").val(data.shipment_company_mobile);
                     $("#shipment_company_fax").val(data.shipment_company_fax);
                     $("#shipment_company_country").val(data.shipment_company_country);
-                    $('#shipment_company_sts option[value="'+data.shipment_company_sts+'"]').prop("selected", true);
+                    $('#shipment_company_sts option[value="'+data.shipment_company_sts+'"]').prop("selected", true).trigger('change');
                     $("#shipment_company_web").val(data.shipment_company_web)
                 }else if (tbl == 'vehicle_services') {
                     $("#vehicle_services_name").focus();
@@ -2253,13 +2253,13 @@ $("#save_vehicle_docs").on('click',function() {
                     $("#vehicle_info_id").val(data.vehicle_info_id);
                     $("#vehicle_services_name").val(data.vehicle_services_name);
                     $("#vehicle_services_amount").val(data.vehicle_services_amount);
-                    $('#vehicle_services_sts option[value="'+data.vehicle_services_sts+'"]').prop("selected", true);
+                    $('#vehicle_services_sts option[value="'+data.vehicle_services_sts+'"]').prop("selected", true).trigger('change');
                 }else if (tbl == 'body_type') {
                      $("#body_type_name").focus();
                     $("#body_type_id").val(data.body_type_id);
                     $("#body_type_name").val(data.body_type_name);
                     $("#body_type_img").val(data.body_type_img);
-                    $('#body_type_sts option[value="'+data.body_type_sts+'"]').prop("selected", true); 
+                    $('#body_type_sts option[value="'+data.body_type_sts+'"]').prop("selected", true).trigger('change'); 
                 }else if (tbl == 'nexco_offices') {
                     
                     $("#office_id").val(data.office_id);
@@ -2552,20 +2552,21 @@ function loadVehicle(load_vehicle_idMain, action) {
                 // loadBrands(msg[0].vehicle_maker);
                 // loadChassis(msg[0].vehicle_brand);
                 $("#vehicle_stock_pre").hide();
+                $("#vehicle_stock_pre").next('.select2-container').hide();
                 $("#vehicle_stock_pre").prop("required",false);
                 $(".customStockIDEDIT").attr('class', 'col-sm-12')
                 $("#vehicle_stock_id").val(msg[0].vehicle_stock_id)
-                $('#vehicle_maker option[value="'+msg[0].vehicle_maker+'"]').prop("selected", true);
+                $('#vehicle_maker option[value="'+msg[0].vehicle_maker+'"]').prop("selected", true).trigger('change');
                 //$('#vehicle_brand option[value="'+msg[0].vehicle_brand+'"]').prop('selected', false).trigger('change');
-                 $('#vehicle_manu_year option[value="'+msg[0].vehicle_manu_year+'"]').prop("selected", true);
+                 $('#vehicle_manu_year option[value="'+msg[0].vehicle_manu_year+'"]').prop("selected", true).trigger('change');
                // $("#vehicle_manu_month").val(msg[0].vehicle_manu_month)
-                 $('#vehicle_reg_year option[value="'+msg[0].vehicle_reg_year+'"]').prop("selected", true);
-                  $('#vehicle_reg_month option[value="'+msg[0].vehicle_reg_month+'"]').prop("selected", true);
-                   $('#vehicle_manu_month option[value="'+msg[0].vehicle_manu_month+'"]').prop("selected", true);
+                 $('#vehicle_reg_year option[value="'+msg[0].vehicle_reg_year+'"]').prop("selected", true).trigger('change');
+                  $('#vehicle_reg_month option[value="'+msg[0].vehicle_reg_month+'"]').prop("selected", true).trigger('change');
+                   $('#vehicle_manu_month option[value="'+msg[0].vehicle_manu_month+'"]').prop("selected", true).trigger('change');
                // $("#vehicle_reg_month").val(msg[0].vehicle_reg_month)
                  $("#vehicle_chassis_no").val(msg[0].vehicle_chassis_no)
-                 $('#vehicle_drive option[value="'+msg[0].vehicle_drive+'"]').prop("selected", true);
-                 $('#vehicle_grade option[value="'+msg[0].vehicle_grade+'"]').prop("selected", true);
+                 $('#vehicle_drive option[value="'+msg[0].vehicle_drive+'"]').prop("selected", true).trigger('change');
+                 $('#vehicle_grade option[value="'+msg[0].vehicle_grade+'"]').prop("selected", true).trigger('change');
                 
                 $("#vehicle_engine_no").val(msg[0].vehicle_engine_no)
                 $("#vehicle_engine_type").val(msg[0].vehicle_engine_type)
@@ -2576,7 +2577,7 @@ function loadVehicle(load_vehicle_idMain, action) {
                 $("#vehicle_km2").val(msg[0].vehicle_km2)
     
                 $("#vehicle_maker").trigger('change');
-                $("#vehicle_cc").val(msg[0].vehicle_cc);
+                $("#vehicle_cc").val(msg[0].vehicle_cc).trigger('change');
                 
                 setTimeout(function(){ $('#vehicle_brand').append(`<option selected value="${msg[0].vehicle_brand}"> 
                                       ${msg[0].brand_name}
@@ -2595,24 +2596,24 @@ function loadVehicle(load_vehicle_idMain, action) {
                     }, 4000);
               
                          
-                $('#vehicle_option option[value="'+msg[0].vehicle_option+'"]').prop("selected", true);
-                $('#vehicle_door option[value="'+msg[0].vehicle_door+'"]').prop("selected", true);
+                $('#vehicle_option option[value="'+msg[0].vehicle_option+'"]').prop("selected", true).trigger('change');
+                $('#vehicle_door option[value="'+msg[0].vehicle_door+'"]').prop("selected", true).trigger('change');
                 $("#vehicle_seat").val(msg[0].vehicle_seat)
-                $('#vehicle_seat option[value="'+msg[0].vehicle_seat+'"]').prop("selected", true);
+                $('#vehicle_seat option[value="'+msg[0].vehicle_seat+'"]').prop("selected", true).trigger('change');
                 $("#vehicle_color").val(msg[0].vehicle_color)
                 $("#vehicle_color_name").val(msg[0].vehicle_color_name)
-                $('#vehicle_color_name option[value="'+msg[0].vehicle_color_name+'"]').prop("selected", true);
+                $('#vehicle_color_name option[value="'+msg[0].vehicle_color_name+'"]').prop("selected", true).trigger('change');
                 $("#vehicle_interior_color").val(msg[0].vehicle_interior_color)
 
                 $("#vehicle_note").val(msg[0].vehicle_note)
                 $("#vehicle_url").val(msg[0].vehicle_url)
                 $("#vehicle_est_price").val(msg[0].vehicle_est_price)
-                $('#vehicle_type option[value="'+msg[0].vehicle_type+'"]').prop("selected", true);
-                $('#country_id option[value="'+msg[0].country_id+'"]').prop("selected", true);
-                $("#vehicle_mode").val(msg[0].vehicle_type);		$("#vehicle_auctionhouse").val(msg[0].vehicle_auctionhouse);		$("#buying_date").val(msg[0].buying_date);		$("#buying_price").val(msg[0].buying_price);		$("#lot_number").val(msg[0].lot_number);
+                $('#vehicle_type option[value="'+msg[0].vehicle_type+'"]').prop("selected", true).trigger('change');
+                $('#country_id option[value="'+msg[0].country_id+'"]').prop("selected", true).trigger('change');
+                $("#vehicle_mode").val(msg[0].vehicle_type).trigger('change');		$("#vehicle_auctionhouse").val(msg[0].vehicle_auctionhouse);		$("#buying_date").val(msg[0].buying_date);		$("#buying_price").val(msg[0].buying_price);		$("#lot_number").val(msg[0].lot_number);
 
-                $('#vehicle_discount option[value="'+msg[0].vehicle_discount+'"]').prop("selected", true);
-                $("#vehicle_mode").val(msg[0].vehicle_mode);
+                $('#vehicle_discount option[value="'+msg[0].vehicle_discount+'"]').prop("selected", true).trigger('change');
+                $("#vehicle_mode").val(msg[0].vehicle_mode).trigger('change');
             }
         }    
     });
@@ -2644,11 +2645,11 @@ function loadAuction(load_auction_idMain, action) {
             }else if (action == 'edit') {
 
                 AuctionInfNow(msg[0].auction_id);
-                $('#auction_loading_point option[value="'+msg[0].auction_loading_point+'"]').prop("selected", true);
+                $('#auction_loading_point option[value="'+msg[0].auction_loading_point+'"]').prop("selected", true).trigger('change');
                 $("#auction_id").val(msg[0].auction_id);
                 $("#auction_house").val(msg[0].auction_house);
                  $("#auction_house").trigger('change');
-                   $('#auction_house_type option[value="'+msg[0].auction_house_type+'"]').prop("selected", true);
+                   $('#auction_house_type option[value="'+msg[0].auction_house_type+'"]').prop("selected", true).trigger('change');
                 
                 $("#auction_date").val(msg[0].auction_date);
                 $("#auction_fee").val(msg[0].auction_fee);
@@ -2668,7 +2669,7 @@ function loadAuction(load_auction_idMain, action) {
                 $("#auction_recycle_fee_tax").val(msg[0].auction_recycle_fee_tax);
                 getSubYards(msg[0].auction_loading_point,"#auction_sub_yard");
                 setTimeout(function() {
-                $('#auction_sub_yard option[value="'+msg[0].auction_sub_yard+'"]').prop("selected", true);
+                $('#auction_sub_yard option[value="'+msg[0].auction_sub_yard+'"]').prop("selected", true).trigger('change');
                 
                 },2000);
 
@@ -2706,10 +2707,10 @@ function loadAuctionPerson(load_auction_idMain, action) {
 
 
                 $("#auction_person_id").val(msg[0].auction_person_id);
-                $('#auction_person  option[value="'+msg[0].customer_id+'"]').prop("selected", true);
-                $('#auction_house2  option[value="'+msg[0].auction_id+'"]').prop("selected", true);
+                $('#auction_person  option[value="'+msg[0].customer_id+'"]').prop("selected", true).trigger('change');
+                $('#auction_house2  option[value="'+msg[0].auction_id+'"]').prop("selected", true).trigger('change');
                 $("#posnumber2").val(msg[0].pos_number);
-                $('#person_loading_point option[value="'+msg[0].person_loading_point+'"]').prop("selected", true);
+                $('#person_loading_point option[value="'+msg[0].person_loading_point+'"]').prop("selected", true).trigger('change');
                 $("#win_fee2").val(msg[0].buyingprice);
                 $("#win_fee2_tax").val(msg[0].buyingprice_tax);
                 $("#commission_fee2").val(msg[0].commission);
@@ -2731,12 +2732,12 @@ function loadAuctionPerson(load_auction_idMain, action) {
                 setTimeout(function() {
                     if (msg[0].trade_type=="person") {
                          customer_infoall(msg[0].customer_id);
-                           $('#person_sub_yard option[value="'+msg[0].person_sub_yard+'"]').prop("selected", true);
+                           $('#person_sub_yard option[value="'+msg[0].person_sub_yard+'"]').prop("selected", true).trigger('change');
                
                     }else{
                          customer_infoall(msg[0].customer_id);
                         AuctionInfNow(msg[0].auction_id)
-                     $('#cp_person_sub_yard option[value="'+msg[0].cp_person_sub_yard+'"]').prop("selected", true);
+                     $('#cp_person_sub_yard option[value="'+msg[0].cp_person_sub_yard+'"]').prop("selected", true).trigger('change');
                    
                     }
                 
@@ -2850,23 +2851,23 @@ console.log(user_role);
                 $('#reservation_note').val(msg[0].reservation_note);
                 $('#reservation_sts').val(msg[0].reservation_sts);
                 var reservation_sale_type=msg[0].reservation_sale_type.toUpperCase();
-                $('#reservation_sale_type option[value="'+reservation_sale_type+'"]').prop("selected", true);
+                $('#reservation_sale_type option[value="'+reservation_sale_type+'"]').prop("selected", true).trigger('change');
                 $('#reservation_final_destin').val(msg[0].reservation_final_destin);
-                $('#reservation_shipment_type option[value="'+reservation_shipment_type+'"]').prop("selected", true);
+                $('#reservation_shipment_type option[value="'+reservation_shipment_type+'"]').prop("selected", true).trigger('change');
                 
                 $('#reservation_transportation_cost').val(msg[0].reservation_transportation_cost);
                 var reservation_country=msg[0].reservation_country.toUpperCase();
-                $('#reservation_country option[value="'+reservation_country+'"]').prop("selected", true);
-                $('#reservation_inspection option[value="'+msg[0].reservation_inspection+'"]').prop("selected", true);
+                $('#reservation_country option[value="'+reservation_country+'"]').prop("selected", true).trigger('change');
+                $('#reservation_inspection option[value="'+msg[0].reservation_inspection+'"]').prop("selected", true).trigger('change');
                // $('#reservation_inspection').val(msg[0].reservation_inspection);
                 $('#reservation_inspection_fee').val(msg[0].reservation_inspection_fee);
                 $('#reservation_inspection_fee_tax').val(msg[0].reservation_inspection_fee_tax);
                 $('#reservation_freight').val(msg[0].reservation_freight);
-                $('#reservation_currency option[value="'+msg[0].reservation_currency+'"]').prop("selected", true);
+                $('#reservation_currency option[value="'+msg[0].reservation_currency+'"]').prop("selected", true).trigger('change');
                $('#reservation_country').trigger('change');
                 
                 setTimeout(function() {
-                    $('#reservation_port option[value="'+msg[0].reservation_port+'"]').prop("selected", true);
+                    $('#reservation_port option[value="'+msg[0].reservation_port+'"]').prop("selected", true).trigger('change');
                     getTotalCostPrice();
                 },2000);
                  $("#formData4_save").text('Update');
@@ -2916,13 +2917,13 @@ function loadRicksu(load_ricksu_idMain, action) {
                 var loading =msg[0].ricksu_loading_point.toLowerCase();
           
                 var ricksu_delievery =msg[0].ricksu_delievery_point.toLowerCase();
-                $('#ricksu_loading_point option[value="'+loading+'"]').prop("selected", true);
+                $('#ricksu_loading_point option[value="'+loading+'"]').prop("selected", true).trigger('change');
                 $("#ricksu_delievery_point").append("<option selected value='"+ricksu_delievery+"'>"+msg[0].ricksu_delievery_point+"</option>");
                 $("#ricksu_sub_yard").append("<option selected value='"+msg[0].sub_yard_name+"'>"+msg[0].sub_yard_name+"</option>");
                 $('#ricksu_delievery_point').trigger('change');
                   setTimeout(function() {
                         
-                    $('#ricksu_dp_sub_yards option[value="'+msg[0].ricksu_dp_sub_yards+'"]').prop("selected", true);
+                    $('#ricksu_dp_sub_yards option[value="'+msg[0].ricksu_dp_sub_yards+'"]').prop("selected", true).trigger('change');
                
                     
                 
@@ -3071,9 +3072,9 @@ function loadConsignee(load_consignee_idMain, action) {
                       $("#notify_id_trade").fadeOut('slow');  
                            document.getElementById("same_as_consignee").checked = true;    
                 }
-                $('#customer_id_trade option[value="'+msg[0].consignee_info_customer+'"]').prop("selected", true);
-                $('#consignee_id_trade option[value="'+msg[0].consignee_info_consignee+'"]').prop("selected", true);
-                $('#customer_notify option[value="'+msg[0].consignee_info_party_name+'"]').prop("selected", true);
+                $('#customer_id_trade option[value="'+msg[0].consignee_info_customer+'"]').prop("selected", true).trigger('change');
+                $('#consignee_id_trade option[value="'+msg[0].consignee_info_consignee+'"]').prop("selected", true).trigger('change');
+                $('#customer_notify option[value="'+msg[0].consignee_info_party_name+'"]').prop("selected", true).trigger('change');
                 
               
             }
@@ -3107,7 +3108,7 @@ function loadInspection(load_inspection_idMain, action) {
             }else if (action == 'edit') {
                 
 
-                $('#inspection_info_for option[value="'+msg[0].inspection_info_for+'"]').prop("selected", true);
+                $('#inspection_info_for option[value="'+msg[0].inspection_info_for+'"]').prop("selected", true).trigger('change');
                 $('#inspection_info_id').val(msg[0].inspection_info_id); 
                 $('#inspection_info_company').val(msg[0].inspection_info_company);
                 $('#inspection_info_point').val(msg[0].inspection_info_point);
@@ -3172,18 +3173,18 @@ function loadShipment(load_shipment_idMain, action) {
                 $("#shipment_idTable").empty().append(shipment_infoTable);
             }else if (action == 'edit') {
                 $('#shipment_id').val(msg[0].shipment_id);
-                $('#shipment_company option[value="'+msg[0].shipment_company+'"]').prop("selected", true);
-                $('#shipper option[value="'+msg[0].shipper_id+'"]').prop("selected", true);
-                $('#shipment_country option[value="'+msg[0].shipment_country+'"]').prop("selected", true);
+                $('#shipment_company option[value="'+msg[0].shipment_company+'"]').prop("selected", true).trigger('change');
+                $('#shipper option[value="'+msg[0].shipper_id+'"]').prop("selected", true).trigger('change');
+                $('#shipment_country option[value="'+msg[0].shipment_country+'"]').prop("selected", true).trigger('change');
                 $('#shipment_ship_name').val(msg[0].shipment_ship_name);
-                $('#shipment_type option[value="'+msg[0].shipment_type+'"]').prop("selected", true);
+                $('#shipment_type option[value="'+msg[0].shipment_type+'"]').prop("selected", true).trigger('change');
                 $('#shipment_consignee').val(msg[0].shipment_consignee);
                 $('#shipment_notify_party_name').val(msg[0].shipment_notify_party_name);
-                 $('#shipment_destination option[value="'+msg[0].shipment_destination+'"]').prop("selected", true);
+                 $('#shipment_destination option[value="'+msg[0].shipment_destination+'"]').prop("selected", true).trigger('change');
                 $('#shipment_destination').val(msg[0].shipment_destination);
                 $('#shipment_access_with_cargo').val(msg[0].shipment_access_with_cargo);
                 $('#shipment_order_no').val(msg[0].shipment_order_no);
-                 $('#shipment_landing_country option[value="'+msg[0].shipment_landing_country+'"]').prop("selected", true);
+                 $('#shipment_landing_country option[value="'+msg[0].shipment_landing_country+'"]').prop("selected", true).trigger('change');
                 $('#shipment_country').trigger('change');
                  $('#shipment_landing_country').trigger('change');
              //$('#shipment_port_of_landing').val(msg[0].shipment_port_of_landing);
@@ -3296,9 +3297,9 @@ function loadAirmail(load_airmail_idMain, action) {
                 $("#airmail_request_by").val(msg[0].airmail_request_by)
                 $("#airmail_parcel_weight").val(msg[0].airmail_parcel_weight)
                 $("#airmail_services_company").val(msg[0].airmail_services_company)
-                $('#airmail_services_parcel_type option[value="'+msg[0].airmail_services_parcel_type+'"]').prop("selected", true);
+                $('#airmail_services_parcel_type option[value="'+msg[0].airmail_services_parcel_type+'"]').prop("selected", true).trigger('change');
                 $("#airmail_tracking_no").val(msg[0].airmail_tracking_no)
-                $('#airmail_country option[value="'+msg[0].airmail_country+'"]').prop("selected", true);
+                $('#airmail_country option[value="'+msg[0].airmail_country+'"]').prop("selected", true).trigger('change');
                 $("#airmail_receiver_name").val(msg[0].airmail_receiver_name)
                 $("#airmail_state").val(msg[0].airmail_state)
                 $("#airmail_suburb").val(msg[0].airmail_suburb)
@@ -3314,8 +3315,8 @@ function loadAirmail(load_airmail_idMain, action) {
                 $("#airmail_note").val(msg[0].airmail_note);
                 $("#airmail_decline_note").val(msg[0].airmail_decline_note)
                 $("#airmail_receiver_note").val(msg[0].airmail_receiver_note)
-                $('#airmail_payment_status option[value="'+msg[0].airmail_payment_status+'"]').prop("selected", true);
-                $('#airmail_approval_status option[value="'+msg[0].airmail_approval_status+'"]').prop("selected", true);
+                $('#airmail_payment_status option[value="'+msg[0].airmail_payment_status+'"]').prop("selected", true).trigger('change');
+                $('#airmail_approval_status option[value="'+msg[0].airmail_approval_status+'"]').prop("selected", true).trigger('change');
                 $("#airmail_con_approve_by").val(msg[0].username)
                 $("#airmail_time").val(msg[0].airmail_time)
 

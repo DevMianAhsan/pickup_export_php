@@ -94,7 +94,7 @@
 					<label for="">Discharge Port</label>
 					<input type="text" readonly name="shipment_port_of_discharge_nm" id="shipment_port_of_discharge_nm" class="form-control ">
 					<input type="hidden"  name="shipment_port_of_discharge" id="shipment_port_of_discharge" class="form-control ">
-					<!-- <select name="shipment_port_of_discharge" id="shipment_port_of_discharge" class="form-control" required>
+					<!-- <select name="shipment_port_of_discharge" id="shipment_port_of_discharge" class="form-control select2" required>
 							<option value="">~~SELECT~~</option>
 							
 						</select>	 -->
@@ -116,7 +116,7 @@
 					</div><!-- col -->
 					<div class="col-sm-4">
 						<label for="">Shipment Type</label>
-						<select name="shipment_type" id="shipment_type" class="form-control" required="required">
+						<select name="shipment_type" id="shipment_type" class="form-control select2" required="required">
 							<option value="">~~SELECT~~</option>
 							<option value="roro">RORO</option>
 							<option value="container">Container</option>

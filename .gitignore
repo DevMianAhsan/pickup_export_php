@@ -13,3 +13,4 @@
 **/db_connect.php
 *.env
 /api/config.php
+/api/videos.php

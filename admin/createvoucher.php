@@ -33,7 +33,7 @@ include_once "inc/code.php";
 			    <label for="clientName" class="col-sm-2 control-label">Select Account</label>
 			    <div class="col-sm-10">
 			    			<div class="input-group">
-			    				<select class="form-control" id="clientName" name="customer_id" autofocus="true" required style="z-index: 1">
+			    				<select class="form-control select2" id="clientName" name="customer_id" autofocus="true" required style="z-index: 1">
 						      	<option value="">~~SELECT~~</option>
 						      	<?php 
 						      	$sql = "SELECT * FROM customers WHERE customer_active = 1";

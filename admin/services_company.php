@@ -33,7 +33,7 @@ include_once "inc/code.php";
 								</div>
 								<div class="form-group">
 									<label for="">Services Company Status</label>
-									<select class="form-control" id="services_company_sts" name="services_company_sts"> 
+									<select class="form-control select2" id="services_company_sts" name="services_company_sts"> 
 										<option value="">~~SELECT~~</option>
 										<option value="1">Active</option>
 										<option value="0">Inactive</option>

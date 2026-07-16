@@ -62,7 +62,7 @@ include_once "inc/code.php";
 
 											<label for="">Assign Customer</label>
 
-											<select class="form-control" id="customer_id" name="customer_id"> 
+											<select class="form-control select2" id="customer_id" name="customer_id"> 
 
 												<option value="">~~SELECT~~</option>
 
@@ -252,7 +252,7 @@ include_once "inc/code.php";
 											<label for="">DESTINATION PORT</label>
 
 										<!-- 	<input type="text" class="form-control" id="consignee_dest_port" name="consignee_dest_port"> -->
-									<select class="form-control" id="consignee_dest_port" name="consignee_dest_port" required>
+									<select class="form-control select2" id="consignee_dest_port" name="consignee_dest_port" required>
 										 	<option>Select Country First</option>
 										 	<?php 	$sql = mysqli_query($dbc,"SELECT * FROM country_regulation GROUP BY country_regulation_country");
 
@@ -286,7 +286,7 @@ include_once "inc/code.php";
 
 											<label for="">Consignee Status</label>
 
-											<select class="form-control" id="consignee_sts" required name="consignee_sts"> 
+											<select class="form-control select2" id="consignee_sts" required name="consignee_sts"> 
 
 												<option value="">~~SELECT~~</option>
 

@@ -76,7 +76,7 @@
 							
 							
 								<label for="">Notify Party</label>
-					<select class="form-control " name="customer_notify" id="customer_notify">
+					<select class="form-control select2" name="customer_notify" id="customer_notify">
 						<option>Select Notify Party</option>
 
 					<?php $q = get($dbc,"consignee WHERE consignee_type='notify_party' AND customer_id='".@$checkShip['invoice_customer']."'");

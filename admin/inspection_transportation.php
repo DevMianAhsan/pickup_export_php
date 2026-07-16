@@ -31,7 +31,7 @@ include_once "inc/code.php";
 										
 									<label for="">Inspection Company</label>
 									
-									<select class="form-control" id="inspection_trans_company" name="inspection_trans_company">
+									<select class="form-control select2" id="inspection_trans_company" name="inspection_trans_company">
 										<option >Select Inspection Company</option>
 										<?php $q=get($dbc,"inspection_company WHERE inspection_company_sts='1'"); 
 											while ($r=mysqli_fetch_assoc($q)) {
@@ -97,7 +97,7 @@ include_once "inc/code.php";
 
 									<div class="col-sm-12">
 										<label for=""> Status</label>
-									<select class="form-control" id="inspection_trans_sts" name="inspection_trans_sts"> 
+									<select class="form-control select2" id="inspection_trans_sts" name="inspection_trans_sts"> 
 										<option value="">~~SELECT~~</option>
 										<option value="1">Active</option>
 										<option value="0">Inactive</option>

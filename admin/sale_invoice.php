@@ -135,7 +135,7 @@ if ($date_now < $date2) {
 					<div class="form-group row">
 				    <label for="clientName" class="col-sm-3 control-label">Select Users</label>
 				    <div class="col-sm-8">
-						<select class="form-control" id="user_name" name="invoice_user" required>
+						<select class="form-control select2" id="user_name" name="invoice_user" required>
 							<option value="">~~SELECT~~</option>
 							<?php 
 							     	$sql = "SELECT * FROM users";
@@ -174,7 +174,7 @@ if ($date_now < $date2) {
 					<div class="form-group row">
 				    <label for="port_name" class="col-sm-3 control-label">Port Name</label>
 				    <div class="col-sm-8">
-						<select class="form-control" id="port_name" name="port_name">
+						<select class="form-control select2" id="port_name" name="port_name">
 							<option value="">~~SELECT~~</option>
 						</select>
 				   	</div>
@@ -433,7 +433,7 @@ if ($date_now < $date2) {
 					  		<label for="">Invoice Status</label>
 						</div>
 						<div class="col-sm-9">					
-							<select name="invoice_sts" id="invoice_sts" class="form-control" required="required">
+							<select name="invoice_sts" id="invoice_sts" class="form-control select2" required="required">
 								<option value="">~~ SELECT ~~</option>
 								<option value="1">Completed</option>
 								<option value="2">Pending</option>
