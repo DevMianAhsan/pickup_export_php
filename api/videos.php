@@ -67,8 +67,8 @@
   </div>
 
   <script>
-     const channelId = 'UCBvOhii-3p-BBaJaMPIHEAA';  
-    const apiKey = 'AIzaSyANRTbHANRvsBL-9dPWZN3fSvbaIZhX1Ig';   
+     const channelId = '';  
+    const apiKey = '';   
     
 
     const grid = document.getElementById('videos-grid');
