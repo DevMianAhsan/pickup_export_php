@@ -15618,25 +15618,16 @@ if (isset($_POST['vehicle_feature_list'])) {
 
 
 	if ($_POST['vehicle_id'] != "") {
-
-
-
 		if (update_data($dbc, "vehicle_info", $data, "vehicle_id", $_POST['vehicle_id'])) {
-
-
-
-			echo 'Vehicle Features Added Successfully';
-
-
-
-			redirect("../trade.php?vehicle_id=$_POST[vehicle_id]#customer_info", 3000);
-
-
-
+			echo json_encode(['sts' => 'success', 'msg' => 'Vehicle Features Added Successfully']);
+			exit();
+		} else {
+			echo json_encode(['sts' => 'error', 'msg' => mysqli_error($dbc)]);
+			exit();
 		}
-
-
-
+	} else {
+		echo json_encode(['sts' => 'error', 'msg' => 'Vehicle ID is missing']);
+		exit();
 	}
 
 

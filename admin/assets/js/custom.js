@@ -1835,20 +1835,15 @@ $("#save_vehicle_docs").on('click',function() {
                 // $('#featureBtn').text("Loading...");
             },
             success:function (msg) {
-               // alert(msg)
-                $(".msg").addClass("alert alert-success").text(msg.msg).fadeIn(3000).fadeOut(4000);
-                $('#featureBtn').text("Save Changes").attr("disabled",false);
-                $('#formData15').each(function(){
-                    this.reset();
-                });
-                
-                $(".nav_vehicle_info").removeClass('active').addClass('completed');
-                $("#vehicle-tab").removeClass('active');
-                $("#vehicle_info").removeClass('show active');
-                
-                $(".nav_auction_info").addClass('active');
-                $("#auction-tab").addClass('active');
-                $("#auction_info").addClass('show active');
+                $('#featureBtn').attr("disabled",false);
+                if (msg.sts == 'success') {
+                    Swal.fire({ title: 'Success', text: msg.msg, icon: 'success', timer: 2000, showConfirmButton: false }).then(function() {
+                        var vid = $(".vehicle_idMain").val();
+                        window.location.href = 'trade.php?vehicle_id=' + vid;
+                    });
+                } else {
+                    Swal.fire({ title: 'Error', text: msg.msg, icon: 'error', showConfirmButton: true });
+                }
             }
         });//ajax call
     });//main
