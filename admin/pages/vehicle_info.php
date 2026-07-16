@@ -1,13 +1,13 @@
 <!-- <script src="https://code.jquery.com/jquery-3.5.1.js"></script> -->
- <?php  
+<?php
 
-	require_once("custom/vendor/autoload.php");
+require_once("custom/vendor/autoload.php");
 
 ?>
-<?php  @$id = $_GET['vehicle_id'];
- 
-                      @$stock = fetchRecord($dbc,"vehicle_info","vehicle_id",$_GET['vehicle_id']);
- ?>
+<?php @$id = $_GET['vehicle_id'];
+
+@$stock = fetchRecord($dbc, "vehicle_info", "vehicle_id", $_GET['vehicle_id']);
+?>
 
 <style>
 	input.form-control,
@@ -22,745 +22,791 @@
 </style>
 
 <div class="row d-none">
-	<div  class="col-12">
-		<button type="button" onclick="refreshForm('vehicle',<?=@$id?>)" class="btn btn-sm btn-primary">Refresh</button>
+	<div class="col-12">
+		<button type="button" onclick="refreshForm('vehicle',<?= @$id ?>)" class="btn btn-sm btn-primary">Refresh</button>
 	</div>
 </div>
 
 <form action="php_action/custom_action.php" method="POST" role="form" id="formData1">
 
-        <?php 
+	<?php
 
-	        @$id = $_GET['vehicle_id'];
+	@$id = $_GET['vehicle_id'];
 
-			$q = mysqli_query($dbc,"SELECT vehicle_id FROM vehicle_info ORDER BY vehicle_id DESC");
+	$q = mysqli_query($dbc, "SELECT vehicle_id FROM vehicle_info ORDER BY vehicle_id DESC");
 
-			$abc = mysqli_num_rows($q)+1;
+	$abc = mysqli_num_rows($q) + 1;
 
-	    ?>
+	?>
 
-	    <div class="vehicel_main_form">
+	<div class="vehicel_main_form">
 
-	<input type="text" value="<?=@$id?>" class="vehicle_idMain d-none" name="vehicle_id">
+		<input type="text" value="<?= @$id ?>" class="vehicle_idMain d-none" name="vehicle_id">
 
-	<div class="row">
+		<div class="row">
 
-		<div class="col-sm-4">
+			<div class="col-sm-4">
 
-			<div class="form-group">
+				<div class="form-group">
 
-				<label for="">Stock ID</label>			
+					<label for="">Stock ID</label>
 
-				<div class="row">
+					<div class="row">
 
-					<div class="col-sm-6">
+						<div class="col-sm-6">
 
-						<select tabindex="1" name="vehicle_stock_pre" id="vehicle_stock_pre" class="form-control" required>	
-
-
-								<option value="HX-<?=date('y')?>">HX-<?=date('y')?></option>	 
-
-								<option value="HS-<?=date('y')?>">HJ-<?=date('y')?></option>	 
-
-								<option value="HT-<?=date('y')?>">HD-<?=date('y')?></option>	
-
-								<option value="HL-<?=date('y')?>">NL-<?=date('y')?></option>	
-
-						</select>
-
-					</div><!-- col -->
-
-					<div class="col-sm-6 customStockIDEDIT">
-
-						<input type="text" value="<?=sprintf("%03d", $abc)?>" readonly name="vehicle_stock_id" id="vehicle_stock_id" class="form-control form-control-sm">
-
-					</div><!-- col -->
+							<select tabindex="1" name="vehicle_stock_pre" id="vehicle_stock_pre" class="form-control"
+								required>
 
 
+								<option value="HX-<?= date('y') ?>">HX-<?= date('y') ?></option>
 
-				</div> <!-- inner row -->
+								<option value="HS-<?= date('y') ?>">HJ-<?= date('y') ?></option>
 
-			</div><!-- form group -->
+								<option value="HT-<?= date('y') ?>">HD-<?= date('y') ?></option>
 
-			<div class="form-group">
+								<option value="HL-<?= date('y') ?>">NL-<?= date('y') ?></option>
 
-				<label for="">Manufacture Year.</label>			
+							</select>
 
-				<div class="row">
+						</div><!-- col -->
 
-					<div class="col-sm-6">
+						<div class="col-sm-6 customStockIDEDIT">
 
-						<!-- <input list="manu_year" name="vehicle_manu_year" id="vehicle_manu_year" class="form-control"> -->
+							<input type="text" value="<?= sprintf("%03d", $abc) ?>" readonly name="vehicle_stock_id"
+								id="vehicle_stock_id" class="form-control form-control-sm">
 
-						<select tabindex="1" list="manu_year" onchange="validateyears()" name="vehicle_manu_year" id="vehicle_manu_year" class="form-control" >
+						</div><!-- col -->
 
-						<!-- <datalist id="manu_year"> -->
 
-							<option value="">~~SELECT~~</option>
 
-							<?php
+					</div> <!-- inner row -->
 
-								$date = date('Y');
+				</div><!-- form group -->
 
-								for ($i = $date; $i >= 1900; $i--) {?>
+				<div class="form-group">
 
-									<option value="<?=$i?>"><?=$i?></option>
+					<label for="">Manufacture Year.</label>
+
+					<div class="row">
+
+						<div class="col-sm-6">
+
+							<!-- <input list="manu_year" name="vehicle_manu_year" id="vehicle_manu_year" class="form-control"> -->
+
+							<select tabindex="1" list="manu_year" onchange="validateyears()" name="vehicle_manu_year"
+								id="vehicle_manu_year" class="form-control">
+
+								<!-- <datalist id="manu_year"> -->
+
+								<option value="">~~SELECT~~</option>
 
 								<?php
 
-									} 
+								$date = date('Y');
 
-				     			?>
+								for ($i = $date; $i >= 1900; $i--) { ?>
 
-						<!-- </datalist> -->
+									<option value="<?= $i ?>"><?= $i ?></option>
 
-						</select>
+									<?php
 
-					</div><!-- ccol -->
+								}
 
-					<div class="col-sm-6">
+								?>
 
-						<!-- <input type="text" name="vehicle_manu_month" id="vehicle_manu_month" class="form-control form-control-sm"> -->
+								<!-- </datalist> -->
 
-						
+							</select>
 
-					<select tabindex="2" name="vehicle_manu_month" id="vehicle_manu_month" onchange="validatemonth()" class="form-control" >
+						</div><!-- ccol -->
 
-							<option data-id="0" value="">~~SELECT~~</option>
+						<div class="col-sm-6">
 
-							<option data-id="1" value="jan">Jan</option>
-
-							<option data-id="2" value="feb">Feb</option>
-
-							<option data-id="3" value="march">March</option>
-
-							<option data-id="4" value="april">April</option>
-
-							<option data-id="5" value="may">May</option>
-
-							<option data-id="6" value="june">June</option>
-
-							<option data-id="7" value="july">July</option>
-
-							<option data-id="8" value="august">August</option>
-
-							<option data-id="9" value="september">September</option>
-
-							<option data-id="10" value="october">October</option>
-
-							<option data-id="11" value="november">November</option>
-
-							<option data-id="12" value="necember">December</option>
-
-					</select>
-
-					</div><!-- ccol -->
-
-				</div>
-
-			</div><!-- form group -->
+							<!-- <input type="text" name="vehicle_manu_month" id="vehicle_manu_month" class="form-control form-control-sm"> -->
 
 
 
-			<!-- <div class="form-group">
+							<select tabindex="2" name="vehicle_manu_month" id="vehicle_manu_month"
+								onchange="validatemonth()" class="form-control">
+
+								<option data-id="0" value="">~~SELECT~~</option>
+
+								<option data-id="1" value="jan">Jan</option>
+
+								<option data-id="2" value="feb">Feb</option>
+
+								<option data-id="3" value="march">March</option>
+
+								<option data-id="4" value="april">April</option>
+
+								<option data-id="5" value="may">May</option>
+
+								<option data-id="6" value="june">June</option>
+
+								<option data-id="7" value="july">July</option>
+
+								<option data-id="8" value="august">August</option>
+
+								<option data-id="9" value="september">September</option>
+
+								<option data-id="10" value="october">October</option>
+
+								<option data-id="11" value="november">November</option>
+
+								<option data-id="12" value="necember">December</option>
+
+							</select>
+
+						</div><!-- ccol -->
+
+					</div>
+
+				</div><!-- form group -->
+
+
+
+				<!-- <div class="form-group">
 
 				<label for="vehicle_mode">Manufacturing Month</label>
 
 			</div> -->
 
-	  		<div class="form-group">
+				<div class="form-group">
 
-				<label for="">Chassis Code</label>			
+					<label for="">Chassis Code</label>
 
-				<!-- <input type="text"  class="form-control form-control-sm"> -->
+					<!-- <input type="text"  class="form-control form-control-sm"> -->
 
-				<select name="vehicle_chassis_code" id="vehicle_chassis_code" class="form-control" required="required" style="text-transform: uppercase ">
+					<select name="vehicle_chassis_code" id="vehicle_chassis_code" class="form-control"
+						required="required" style="text-transform: uppercase ">
 
-					<option value="">~~SELECT~~</option>
+						<option value="">~~SELECT~~</option>
 
-					<?php $q = get($dbc,"models WHERE model_sts = '1'");
+						<?php $q = get($dbc, "models WHERE model_sts = '1'");
 
-					while($r = mysqli_fetch_assoc($q)): ?>
+						while ($r = mysqli_fetch_assoc($q)): ?>
 
-						<option value="<?=$r['model_id']?>" style="text-transform: uppercase!important;"><?=$r['model_name']?></option>
+							<option value="<?= $r['model_id'] ?>" style="text-transform: uppercase!important;">
+								<?= $r['model_name'] ?></option>
 
-							<?php endwhile ?>
+						<?php endwhile ?>
 
-				</select>
+					</select>
 
-			</div><!-- form group -->
+				</div><!-- form group -->
 
-			<div class="form-group">
+				<div class="form-group">
 
-				<label for="">Engine No.</label>			
+					<label for="">Engine No.</label>
 
-				<input type="text" name="vehicle_engine_no" id="vehicle_engine_no" class="form-control form-control-sm text-capitalize">
+					<input type="text" name="vehicle_engine_no" id="vehicle_engine_no"
+						class="form-control form-control-sm text-capitalize">
 
-			</div><!-- form group -->
+				</div><!-- form group -->
 
-			<div class="form-group">
+				<div class="form-group">
 
-				<label for="">Transmission</label>
+					<label for="">Transmission</label>
 
-				<!-- <input list="vehicle_transmission1" required="required" name="vehicle_transmission" id="vehicle_transmission" class="form-control"> -->
+					<!-- <input list="vehicle_transmission1" required="required" name="vehicle_transmission" id="vehicle_transmission" class="form-control"> -->
 
-				<select list="vehicle_transmission1" required="required" name="vehicle_transmission" id="vehicle_transmission" class="form-control">
-					<option value="">Select</option>
+					<select list="vehicle_transmission1" required="required" name="vehicle_transmission"
+						id="vehicle_transmission" class="form-control">
+						<option value="">Select</option>
 
-					<?php $q = get($dbc,"transmission WHERE transmission_sts = '1'");
-					while($r = mysqli_fetch_assoc($q)): ?>
-						<option <?=@(ucwords($r['transmission_name'])==ucwords($stock['vehicle_transmission']))?"selected":""?> value="<?=$r['transmission_name']?>"><?=$r['transmission_name']?></option>
-							<?php endwhile ?>
-				</select>			
+						<?php $q = get($dbc, "transmission WHERE transmission_sts = '1'");
+						while ($r = mysqli_fetch_assoc($q)): ?>
+							<option
+								<?= @(ucwords($r['transmission_name']) == ucwords($stock['vehicle_transmission'])) ? "selected" : "" ?>
+								value="<?= $r['transmission_name'] ?>"><?= $r['transmission_name'] ?></option>
+						<?php endwhile ?>
+					</select>
 
-			</div><!-- form group -->
+				</div><!-- form group -->
 
-			<div class="form-group">
+				<div class="form-group">
 
-				<label for="">Interior Grade</label>
+					<label for="">Interior Grade</label>
 
-				<!-- <input list="vehicle_interior1" autocomplete="off" name="vehicle_interior" id="vehicle_interior" class="form-control"> -->
+					<!-- <input list="vehicle_interior1" autocomplete="off" name="vehicle_interior" id="vehicle_interior" class="form-control"> -->
 
-				<select list="vehicle_interior1" autocomplete="off" name="vehicle_interior" id="vehicle_interior" class="form-control">
+					<select list="vehicle_interior1" autocomplete="off" name="vehicle_interior" id="vehicle_interior"
+						class="form-control">
 
-					<option value="">~~SELECT~~</option>
+						<option value="">~~SELECT~~</option>
 
-					<?php $q = get($dbc,"interior_grade WHERE interior_grade_sts = '1'");
+						<?php $q = get($dbc, "interior_grade WHERE interior_grade_sts = '1'");
 
-					while($r = mysqli_fetch_assoc($q)): ?>
+						while ($r = mysqli_fetch_assoc($q)): ?>
 
-						<option <?=@(ucwords($r['interior_grade_name'])==ucwords($stock['vehicle_interior']))?"selected":""?> class="text-capitalize" value="<?=ucwords($r['interior_grade_name'])?>"><?=ucwords($r['interior_grade_name'])?></option>
+							<option
+								<?= @(ucwords($r['interior_grade_name']) == ucwords($stock['vehicle_interior'])) ? "selected" : "" ?>
+								class="text-capitalize" value="<?= ucwords($r['interior_grade_name']) ?>">
+								<?= ucwords($r['interior_grade_name']) ?></option>
 
-					<?php endwhile ?>
+						<?php endwhile ?>
 
-				</select>			
+					</select>
 
-			</div><!-- form group -->
+				</div><!-- form group -->
 
-			<div class="form-group">
+				<div class="form-group">
 
-				<label for="">Seats</label>
+					<label for="">Seats</label>
 
-				<!-- <input list="vehicle_seat1" name="vehicle_seat" id="vehicle_seat" class="form-control"> -->
+					<!-- <input list="vehicle_seat1" name="vehicle_seat" id="vehicle_seat" class="form-control"> -->
 
-				<select  list="vehicle_seat1" name="vehicle_seat" id="vehicle_seat" class="form-control">
+					<select list="vehicle_seat1" name="vehicle_seat" id="vehicle_seat" class="form-control">
 
-					<option value="">~~SELECT~~</option>
+						<option value="">~~SELECT~~</option>
 
-					<?php $q = get($dbc,"seats WHERE seats_sts = '1'");
+						<?php $q = get($dbc, "seats WHERE seats_sts = '1'");
 
-					while($r = mysqli_fetch_assoc($q)): ?>
+						while ($r = mysqli_fetch_assoc($q)): ?>
 
-						<option value="<?=$r['seats_name']?>"><?=$r['seats_name']?></option>
+							<option value="<?= $r['seats_name'] ?>"><?= $r['seats_name'] ?></option>
 
-							<?php endwhile ?>
+						<?php endwhile ?>
 
-				</select>			
+					</select>
 
-			</div><!-- form group -->
+				</div><!-- form group -->
 
-		
 
-		<div class="form-group">
 
-				<label for="">Color Name</label>
+				<div class="form-group">
 
-				<select list="vehicle_color_name1" autocomplete="off" onchange="loadcolorCode(this.value)" name="vehicle_color_name" id="vehicle_color_name" required="required" class="form-control">
+					<label for="">Color Name</label>
 
-					<option value="">~~SELECT~~</option>
+					<select list="vehicle_color_name1" autocomplete="off" onchange="loadcolorCode(this.value)"
+						name="vehicle_color_name" id="vehicle_color_name" required="required" class="form-control">
 
-						<?php $q = mysqli_query($dbc,"SELECT DISTINCT color_name FROM color_code WHERE color_code_sts = '1'");
+						<option value="">~~SELECT~~</option>
 
-						while($r = mysqli_fetch_assoc($q)): ?>
+						<?php $q = mysqli_query($dbc, "SELECT DISTINCT color_name FROM color_code WHERE color_code_sts = '1'");
 
-					<option value="<?=$r['color_name']?>"><?=$r['color_name']?></option>
+						while ($r = mysqli_fetch_assoc($q)): ?>
 
-					<?php endwhile ?>
+							<option value="<?= $r['color_name'] ?>"><?= $r['color_name'] ?></option>
 
-				</select>			
+						<?php endwhile ?>
 
-			</div><!-- form group -->
+					</select>
 
-			<div class="form-group">
+				</div><!-- form group -->
 
-				<label for="">Lenght(cm)</label>			
+				<div class="form-group">
 
-				<input type="number" name="vehicle_length" id="vehicle_length" required="required" class="form-control form-control-sm forM3">
+					<label for="">Lenght(cm)</label>
 
-			</div><!-- form group -->
+					<input type="number" name="vehicle_length" id="vehicle_length" required="required"
+						class="form-control form-control-sm forM3">
 
-			<div class="form-group">
+				</div><!-- form group -->
 
-				<label for="">M3</label>			
+				<div class="form-group">
 
-				<input type="text" name="vehicle_m3" required="required" id="vehicle_m3" class="form-control form-control-sm">
+					<label for="">M3</label>
 
-			</div><!-- form group -->
+					<input type="text" name="vehicle_m3" required="required" id="vehicle_m3"
+						class="form-control form-control-sm">
 
-			<div class="form-group">
+				</div><!-- form group -->
 
-				<label for="">Accessories</label>			
+				<div class="form-group">
 
-				<input type="text" name="vehicle_access" required="required" id="vehicle_access" class="form-control form-control-sm">
+					<label for="">Accessories</label>
 
-			</div><!-- form group -->
+					<input type="text" name="vehicle_access" required="required" id="vehicle_access"
+						class="form-control form-control-sm">
 
+				</div><!-- form group -->
 
 
-			<!-- Notes -->
 
+				<!-- Notes -->
 
 
-		</div><!-- col -->
 
-		<div class="col-sm-4">
+			</div><!-- col -->
 
-			<div class="form-group">
+			<div class="col-sm-4">
 
-				<label for="">Maker</label>			
+				<div class="form-group">
 
-				<select tabindex="2" name="vehicle_maker" onchange="loadBrands(this.value)" id="vehicle_maker" class="form-control abcCustomNew vehicle_maker" required="required">
+					<label for="">Maker</label>
 
-					<option value="">~~SELECT~~</option>
+					<select tabindex="2" name="vehicle_maker" onchange="loadBrands(this.value)" id="vehicle_maker"
+						class="form-control abcCustomNew vehicle_maker" required="required">
 
-					<?php $q = get($dbc,"maker WHERE maker_sts = '1' ORDER BY maker_name ASC");
+						<option value="">~~SELECT~~</option>
 
-					while($r = mysqli_fetch_assoc($q)): ?>
+						<?php $q = get($dbc, "maker WHERE maker_sts = '1' ORDER BY maker_name ASC");
 
-						<option value="<?=$r['maker_id']?>"><?=strtoupper($r['maker_name'])?></option>
+						while ($r = mysqli_fetch_assoc($q)): ?>
 
-							<?php endwhile ?>
+							<option value="<?= $r['maker_id'] ?>"><?= strtoupper($r['maker_name']) ?></option>
 
-				</select>
+						<?php endwhile ?>
 
-			</div><!-- form group -->
-			<script>
-				function loadBrands(makers) {
-			        $.ajax({
-			        url:'php_action/custom_action.php',
-			            type:"POST",
-			            data:{makers:makers},
-			            dataType:"json",
-			            success:function(response) {
-			                var model = "<option>~~SELECT~~</option>";
-			                $.each(response, function (index, value) {
-			                    model += '<option class="text-capitalize" value="'+value['brand_id']+'">'+value['brand_name']+'</option>';
-			                });
-			                var vehicle_idMain = $("#vehicle_idMain").val();
-			                $("#vehicle_brand").empty().append(model);
-			            }
-			        });
-			       
-				}
+					</select>
 
-				function loadChassis(vehicle_brand) {
-				    $.ajax({
-				    url:'php_action/custom_action.php',
-				        type:"POST",
-				        data:{vehicle_brand1 : vehicle_brand},
-				        dataType:"json",
-				        success:function(response) {
-				            console.log(response)
-				            var fucked = "<option>~~SELECT~~</option>";
-				            $.each(response, function (index, value) {
-				                fucked += '<option class="text-capitalize" style="text-transform: uppercase!important;" value="'+value['model_id']+'">'+value['model_name']+'</option>';
-				            });
-				            $("#vehicle_chassis_code").empty().append(fucked);
-				        }
-				    });
-				}
-				    
-			</script>
+				</div><!-- form group -->
+				<script>
+					function loadBrands(makers) {
+						$.ajax({
+							url: 'php_action/custom_action.php',
+							type: "POST",
+							data: { makers: makers },
+							dataType: "json",
+							success: function (response) {
+								var model = "<option>~~SELECT~~</option>";
+								$.each(response, function (index, value) {
+									model += '<option class="text-capitalize" value="' + value['brand_id'] + '">' + value['brand_name'] + '</option>';
+								});
+								var vehicle_idMain = $("#vehicle_idMain").val();
+								$("#vehicle_brand").empty().append(model);
+							}
+						});
 
-			<div class="form-group">
+					}
 
-				<label for="">Registration Year.</label>			
+					function loadChassis(vehicle_brand) {
+						$.ajax({
+							url: 'php_action/custom_action.php',
+							type: "POST",
+							data: { vehicle_brand1: vehicle_brand },
+							dataType: "json",
+							success: function (response) {
+								console.log(response)
+								var fucked = "<option>~~SELECT~~</option>";
+								$.each(response, function (index, value) {
+									fucked += '<option class="text-capitalize" style="text-transform: uppercase!important;" value="' + value['model_id'] + '">' + value['model_name'] + '</option>';
+								});
+								$("#vehicle_chassis_code").empty().append(fucked);
+							}
+						});
+					}
 
-				<!-- <input list="vehicle_reg_month1" name="vehicle_reg_month" id="vehicle_reg_month" class="form-control" required="required" readonly> -->
+				</script>
 
-				<select list="vehicle_reg_month1" name="vehicle_reg_year" id="vehicle_reg_year" class="form-control vehicle_reg_month" required="required" onchange="validateyears()">
+				<div class="form-group">
 
-					<option value="">~~SELECT~~</option>
+					<label for="">Registration Year.</label>
 
-					<?php
+					<!-- <input list="vehicle_reg_month1" name="vehicle_reg_month" id="vehicle_reg_month" class="form-control" required="required" readonly> -->
 
-						$date = date('Y');
+					<select list="vehicle_reg_month1" name="vehicle_reg_year" id="vehicle_reg_year"
+						class="form-control vehicle_reg_month" required="required" onchange="validateyears()">
 
-						for ($i = $date; $i >= 1900; $i--) {?>
-
-							<option value="<?=$i?>"><?=$i?></option>
+						<option value="">~~SELECT~~</option>
 
 						<?php
 
-							} 
+						$date = date('Y');
 
-		     			?>
+						for ($i = $date; $i >= 1900; $i--) { ?>
 
-				</select>
+							<option value="<?= $i ?>"><?= $i ?></option>
 
-			</div><!-- form group -->
+							<?php
 
-			<div class="form-group">
+						}
 
-				<label for="">Chassis No.</label>			
+						?>
 
-				<input type="text" name="vehicle_chassis_no" id="vehicle_chassis_no" class="form-control form-control-sm vehicle_chassis_no">
+					</select>
 
-			</div><!-- form group -->
+				</div><!-- form group -->
 
-			<div class="form-group">
+				<div class="form-group">
 
-				<label for="">Engine CC</label>
+					<label for="">Chassis No.</label>
 
-				<!-- <input list="vehicle_cc1" name="vehicle_cc" id="vehicle_cc" class="form-control" required="required"> -->
+					<input type="text" name="vehicle_chassis_no" id="vehicle_chassis_no"
+						class="form-control form-control-sm vehicle_chassis_no">
 
-				<select list="vehicle_cc1" name="vehicle_cc" id="vehicle_cc" class="form-control" required="required">
+				</div><!-- form group -->
 
-				 <option value="">~~SELECT~~</option>
+				<div class="form-group">
 
-					<?php $q = get($dbc,"cc WHERE cc_sts = '1'");
+					<label for="">Engine CC</label>
 
-					while($r = mysqli_fetch_assoc($q)): ?>
+					<!-- <input list="vehicle_cc1" name="vehicle_cc" id="vehicle_cc" class="form-control" required="required"> -->
 
-						<option value="<?=$r['cc_name']?>"><?=$r['cc_name']?></option>
+					<select list="vehicle_cc1" name="vehicle_cc" id="vehicle_cc" class="form-control"
+						required="required">
 
-					<?php endwhile ?>
+						<option value="">~~SELECT~~</option>
 
-				</select>			
+						<?php $q = get($dbc, "cc WHERE cc_sts = '1'");
 
-			</div><!-- form group -->
+						while ($r = mysqli_fetch_assoc($q)): ?>
 
-			<div class="form-group">
+							<option value="<?= $r['cc_name'] ?>"><?= $r['cc_name'] ?></option>
 
-				<label for="">Fuel</label>
+						<?php endwhile ?>
 
-				<!-- <input list="vehicle_fuel1" name="vehicle_fuel" id="vehicle_fuel" class="form-control" required="required"> -->
+					</select>
 
-				<select  list="vehicle_fuel1" name="vehicle_fuel" id="vehicle_fuel" class="form-control" required="required">
+				</div><!-- form group -->
 
-					<option value="">~~SELECT~~</option>
+				<div class="form-group">
 
-					<?php  $q = get($dbc,"fuel WHERE fuel_sts = '1'");
+					<label for="">Fuel</label>
 
-					while($r = mysqli_fetch_assoc($q)): ?>
+					<!-- <input list="vehicle_fuel1" name="vehicle_fuel" id="vehicle_fuel" class="form-control" required="required"> -->
 
-						<option <?=@(strtolower($r['fuel_name'])==strtolower($stock['vehicle_fuel']))?"selected":""?> value="<?=$r['fuel_name']?>"><?=$r['fuel_name']?></option>
+					<select list="vehicle_fuel1" name="vehicle_fuel" id="vehicle_fuel" class="form-control"
+						required="required">
 
-					<?php endwhile ?>
+						<option value="">~~SELECT~~</option>
 
-				</select>			
+						<?php $q = get($dbc, "fuel WHERE fuel_sts = '1'");
 
-			</div><!-- form group -->
+						while ($r = mysqli_fetch_assoc($q)): ?>
 
-			<div class="form-group">
+							<option <?= @(strtolower($r['fuel_name']) == strtolower($stock['vehicle_fuel'])) ? "selected" : "" ?>
+								value="<?= $r['fuel_name'] ?>"><?= $r['fuel_name'] ?></option>
 
-				<label for="">Exterior Grade</label>
+						<?php endwhile ?>
 
-				<!-- <input list="vehicle_exterior1" autocomplete="off" name="vehicle_exterior" id="vehicle_exterior" class="form-control"> -->
+					</select>
 
-				<select list="vehicle_exterior1" autocomplete="off" name="vehicle_exterior" id="vehicle_exterior" class="form-control" >
+				</div><!-- form group -->
 
-					<option value="">~~SELECT~~</option>
+				<div class="form-group">
 
-					<?php $q = get($dbc,"exterior_grade WHERE exterior_grade_sts = '1'");
+					<label for="">Exterior Grade</label>
 
-							while($r = mysqli_fetch_assoc($q)): ?>
+					<!-- <input list="vehicle_exterior1" autocomplete="off" name="vehicle_exterior" id="vehicle_exterior" class="form-control"> -->
 
-						<option  <?=@(ucwords($r['exterior_grade_name'])==ucwords($stock['vehicle_exterior']))?"selected":""?> class="text-capitalize" value="<?=ucwords($r['exterior_grade_name'])?>"><?=ucwords($r['exterior_grade_name'])?></option>
+					<select list="vehicle_exterior1" autocomplete="off" name="vehicle_exterior" id="vehicle_exterior"
+						class="form-control">
 
-					<?php endwhile ?>
+						<option value="">~~SELECT~~</option>
 
-				</select>			
+						<?php $q = get($dbc, "exterior_grade WHERE exterior_grade_sts = '1'");
 
-			</div><!-- form group -->
+						while ($r = mysqli_fetch_assoc($q)): ?>
 
-			<div class="form-group">
+							<option
+								<?= @(ucwords($r['exterior_grade_name']) == ucwords($stock['vehicle_exterior'])) ? "selected" : "" ?>
+								class="text-capitalize" value="<?= ucwords($r['exterior_grade_name']) ?>">
+								<?= ucwords($r['exterior_grade_name']) ?></option>
 
-				<label for="">Doors</label>
+						<?php endwhile ?>
 
-				<!-- <input list="vehicle_door1" name="vehicle_door" id="vehicle_door" required="required" class="form-control"> -->
+					</select>
 
-				<select list="vehicle_door1" name="vehicle_door" id="vehicle_door" required="required" class="form-control">
+				</div><!-- form group -->
 
-					<option value="">~~SELECT~~</option>
+				<div class="form-group">
 
-					<?php $q = get($dbc,"doors WHERE doors_sts = '1'");
+					<label for="">Doors</label>
 
-							while($r = mysqli_fetch_assoc($q)): ?>
+					<!-- <input list="vehicle_door1" name="vehicle_door" id="vehicle_door" required="required" class="form-control"> -->
 
-						<option value="<?=$r['doors_name']?>"><?=$r['doors_name']?></option>
+					<select list="vehicle_door1" name="vehicle_door" id="vehicle_door" required="required"
+						class="form-control">
 
-					<?php endwhile ?>
+						<option value="">~~SELECT~~</option>
 
-				</select>			
+						<?php $q = get($dbc, "doors WHERE doors_sts = '1'");
 
-			</div><!-- form group -->
+						while ($r = mysqli_fetch_assoc($q)): ?>
 
-		<div class="form-group">
+							<option value="<?= $r['doors_name'] ?>"><?= $r['doors_name'] ?></option>
 
-				<label for="">Color Code</label>
+						<?php endwhile ?>
 
-				<!-- <input list="vehicle_color1" name="vehicle_color" id="vehicle_color" class="form-control"> -->
+					</select>
 
-				<input list="vehicle_color_code_name" name="vehicle_color"  id="vehicle_color" class="form-control">
+				</div><!-- form group -->
 
-					
+				<div class="form-group">
+
+					<label for="">Color Code</label>
+
+					<!-- <input list="vehicle_color1" name="vehicle_color" id="vehicle_color" class="form-control"> -->
+
+					<input list="vehicle_color_code_name" name="vehicle_color" id="vehicle_color" class="form-control">
+
+
 
 					<datalist id="vehicle_color_code_name">
 
 					</datalist>
 
-				</select>			
+					</select>
 
-			</div><!-- form group -->
+				</div><!-- form group -->
 
-			<div class="form-group">
+				<div class="form-group">
 
-				<label for="">Width(cm)</label>			
+					<label for="">Width(cm)</label>
 
-				<input type="text" name="vehicle_width" id="vehicle_width" required="required" class="form-control form-control-sm forM3">
+					<input type="text" name="vehicle_width" id="vehicle_width" required="required"
+						class="form-control form-control-sm forM3">
 
-			</div><!-- form group -->
+				</div><!-- form group -->
 
-			<div class="form-group">
+				<div class="form-group">
 
-				<label for="">Loading Capacity (kg)</label>			
+					<label for="">Loading Capacity (kg)</label>
 
-				<input type="number" name="vehicle_loading_capacity" id="vehicle_loading_capacity"  class="form-control form-control-sm">
+					<input type="number" name="vehicle_loading_capacity" id="vehicle_loading_capacity"
+						class="form-control form-control-sm">
 
-			</div><!-- form group -->
+				</div><!-- form group -->
 
-			<div class="form-group">
+				<div class="form-group">
 
-				<label for="">KM.</label>			
+					<label for="">KM.</label>
 
-				<input type="number" name="vehicle_km" id="vehicle_km" required="required" class="form-control form-control-sm">
+					<input type="number" name="vehicle_km" id="vehicle_km" required="required"
+						class="form-control form-control-sm">
 
-			</div><!-- form group -->
+				</div><!-- form group -->
 
-		</div><!-- col -->
+			</div><!-- col -->
 
-		<div class="col-sm-4">
+			<div class="col-sm-4">
 
-			<div class="form-group">
+				<div class="form-group">
 
-				<label for="">Brand</label>			
+					<label for="">Brand</label>
 
-				<select tabindex="3" name="vehicle_brand" onchange="loadChassis(this.value)" id="vehicle_brand" class="form-control fuckJS vehicle_brand" required="required">
+					<select tabindex="3" name="vehicle_brand" onchange="loadChassis(this.value)" id="vehicle_brand"
+						class="form-control fuckJS vehicle_brand" required="required">
 
-					<!-- <option class="fuckJS" value="">~~SELECT~~</option>
+						<!-- <option class="fuckJS" value="">~~SELECT~~</option>
 
 					<option value="">~~SELECT~~</option>
 
-					<?php $q = get($dbc,"brands WHERE brand_status = '1'");
+					<?php $q = get($dbc, "brands WHERE brand_status = '1'");
 
-					while($r = mysqli_fetch_assoc($q)): ?>
+					while ($r = mysqli_fetch_assoc($q)): ?>
 
-						<option value="<?=$r['brand_id']?>"><?=$r['brand_name']?></option>
+						<option value="<?= $r['brand_id'] ?>"><?= $r['brand_name'] ?></option>
 
 							<?php endwhile ?> -->
 
-				</select>
+					</select>
 
-			</div><!-- form group -->
+				</div><!-- form group -->
 
-			<div class="form-group">
+				<div class="form-group">
 
-<label>Registration Month</label>		
+					<label>Registration Month</label>
 
-					<select name="vehicle_reg_month" onchange="validatemonth()" id="vehicle_reg_month" class="form-control" required="required" >
+					<select name="vehicle_reg_month" onchange="validatemonth()" id="vehicle_reg_month"
+						class="form-control" required="required">
 
-							<option data-id="0" value="">~~SELECT~~</option>
+						<option data-id="0" value="">~~SELECT~~</option>
 
-							<option data-id="1" value="jan">Jan</option>
+						<option data-id="1" value="jan">Jan</option>
 
-							<option data-id="2" value="feb">Feb</option>
+						<option data-id="2" value="feb">Feb</option>
 
-							<option data-id="3" value="march">March</option>
+						<option data-id="3" value="march">March</option>
 
-							<option data-id="4" value="april">April</option>
+						<option data-id="4" value="april">April</option>
 
-							<option data-id="5" value="may">May</option>
+						<option data-id="5" value="may">May</option>
 
-							<option data-id="6" value="june">June</option>
+						<option data-id="6" value="june">June</option>
 
-							<option data-id="7" value="july">July</option>
+						<option data-id="7" value="july">July</option>
 
-							<option data-id="8" value="august">August</option>
+						<option data-id="8" value="august">August</option>
 
-							<option data-id="9" value="september">September</option>
+						<option data-id="9" value="september">September</option>
 
-							<option data-id="10" value="october">October</option>
+						<option data-id="10" value="october">October</option>
 
-							<option data-id="11" value="november">November</option>
+						<option data-id="11" value="november">November</option>
 
-							<option data-id="12" value="december">December</option>
+						<option data-id="12" value="december">December</option>
 
 					</select>
 
-			</div><!-- form group -->
+				</div><!-- form group -->
 
-			<div class="form-group">
+				<div class="form-group">
 
-				<label for="">Drive</label>
+					<label for="">Drive</label>
 
-				<!-- <input list="vehicle_drive1" name="vehicle_drive" id="vehicle_drive" class="form-control" required="required"> -->
+					<!-- <input list="vehicle_drive1" name="vehicle_drive" id="vehicle_drive" class="form-control" required="required"> -->
 
-				<select list="vehicle_drive1" name="vehicle_drive" id="vehicle_drive" class="form-control" required="required">
-
-					<option value="">~~SELECT~~</option>
-
-					<?php $q = get($dbc,"drive WHERE drive_sts = '1'");
-
-							while($r = mysqli_fetch_assoc($q)): ?>
-
-						<option <?=@(strtolower($r['drive_name'])==strtolower($stock['vehicle_drive']))?"selected":""?> value="<?=$r['drive_name']?>"><?=$r['drive_name']?></option>
-
-					<?php endwhile ?>
-
-				</select>			
-
-			</div><!-- form group -->
-
-			<div class="form-group">
-
-				<label for="">Engine Type</label>			
-
-				<input type="text" name="vehicle_engine_type" id="vehicle_engine_type" class="form-control form-control-sm text-capitalize">
-
-			</div><!-- form group -->
-
-			<div class="form-group">
-
-				<label for="">Package</label>
-
-				<input list="vehicle_package1" value="<?=@$stock['vehicle_package']?>" name="vehicle_package" id="vehicle_package" class="form-control" autocomplete="off">
-
-
-
-				<datalist id="vehicle_package1" >
-
-					<option value="">~~SELECT~~</option>
-
-						<?php //$q = get($dbc,"package WHERE pack_sts = '1'");
-
-						$q = mysqli_query($dbc,"SELECT DISTINCT(pack_name) FROM package WHERE pack_sts = '1' ");
-
-						while($r = mysqli_fetch_assoc($q)): ?>
-
-							<option value="<?=$r['pack_name']?>"><?=$r['pack_name']?></option>
-
-						<?php endwhile ?>
-
-				</datalist>			
-
-			</div><!-- form group -->
-
-			<div class="form-group">
-
-				<label for="">Auction Grade</label>
-
-				<!-- <input list="vehicle_grade1" autocomplete="off" name="vehicle_grade" id="vehicle_grade" class="form-control"> -->
-
-				<select  name="vehicle_grade" id="vehicle_grade" class="form-control">
-
-					<option value="">~~SELECT~~</option>
-
-					<?php $q = get($dbc,"auction_grade WHERE auction_grade_sts = '1'");
-
-							while($r = mysqli_fetch_assoc($q)): ?>
-
-						<option <?=@(ucwords($r['auction_grade_name'])==ucwords($stock['vehicle_grade']))?"selected":""?> value="<?=strtoupper($r['auction_grade_name'])?>"><?=ucwords($r['auction_grade_name'])?></option>
-
-					<?php endwhile ?>
-
-				</select>			
-
-			</div><!-- form group -->
-
-			<div class="form-group">
-
-				<label for="">Steering </label>
-
-				<!-- <input list="vehicle_option1" name="vehicle_option" id="vehicle_option" class="form-control" required="required"> -->
-
-				<select  name="vehicle_option" id="vehicle_option" class="form-control" >
-
-					<option value="">~~SELECT~~</option>
-
-					<?php $q = get($dbc,"options WHERE option_sts = '1'");
-
-							while($r = mysqli_fetch_assoc($q)): ?>
-
-						<option <?=(strtoupper(@$stock['vehicle_option'])==strtoupper($r['option_name']))?"selected":""?> value="<?=strtoupper($r['option_name'])?>"><?=$r['option_name']?></option>
-
-					<?php endwhile ?>
-
-				</select>			
-
-			</div><!-- form group -->
-
-			<div class="form-group">
-
-				<label for="">Interior Color</label>			
-
-				<input type="text" name="vehicle_interior_color" id="vehicle_interior_color" class="form-control form-control-sm">
-
-			</div><!-- form group -->
-
-			<div class="form-group">
-
-				<label for="">Height(cm)</label>			
-
-				<input type="text" name="vehicle_height" required="required" id="vehicle_height" class="form-control form-control-sm forM3">
-
-			</div><!-- form group -->
-
-			
-
-			<div class="form-group">
-
-				<label for="">Total Weight (kg)</label>			
-
-				<input type="number" name="vehicle_weight" id="vehicle_weight" required="required" class="form-control form-control-sm">
-
-			</div><!-- form group -->
-
-			<div class="form-group">
-
-				<label for="">KM 2.</label>			
-
-	 			<input type="text" name="vehicle_km2" id="vehicle_km2" class="form-control form-control-sm">
-
-			</div><!-- form group -->
-
-		</div><!-- col -->
-
-	</div><!-- mian -->
-
-	<div class="row">
-
-		<div class="col-sm-4">
-
-			<label for="">Vehicle Type</label>			
-
-			<select name="vehicle_type" id="vehicle_type" class="form-control">
+					<select list="vehicle_drive1" name="vehicle_drive" id="vehicle_drive" class="form-control"
+						required="required">
 
 						<option value="">~~SELECT~~</option>
 
-				<?php $q = get($dbc,"body_type WHERE body_type_sts = '1'");
+						<?php $q = get($dbc, "drive WHERE drive_sts = '1'");
 
-							while($r = mysqli_fetch_assoc($q)): ?>
+						while ($r = mysqli_fetch_assoc($q)): ?>
 
-						<option value="<?=$r['body_type_id']?>"><?=$r['body_type_name']?></option>
+							<option <?= @(strtolower($r['drive_name']) == strtolower($stock['vehicle_drive'])) ? "selected" : "" ?>
+								value="<?= $r['drive_name'] ?>"><?= $r['drive_name'] ?></option>
+
+						<?php endwhile ?>
+
+					</select>
+
+				</div><!-- form group -->
+
+				<div class="form-group">
+
+					<label for="">Engine Type</label>
+
+					<input type="text" name="vehicle_engine_type" id="vehicle_engine_type"
+						class="form-control form-control-sm text-capitalize">
+
+				</div><!-- form group -->
+
+				<div class="form-group">
+
+					<label for="">Package</label>
+
+					<input list="vehicle_package1" value="<?= @$stock['vehicle_package'] ?>" name="vehicle_package"
+						id="vehicle_package" class="form-control" autocomplete="off">
+
+
+
+					<datalist id="vehicle_package1">
+
+						<option value="">~~SELECT~~</option>
+
+						<?php //$q = get($dbc,"package WHERE pack_sts = '1'");
+						
+						$q = mysqli_query($dbc, "SELECT DISTINCT(pack_name) FROM package WHERE pack_sts = '1' ");
+
+						while ($r = mysqli_fetch_assoc($q)): ?>
+
+							<option value="<?= $r['pack_name'] ?>"><?= $r['pack_name'] ?></option>
+
+						<?php endwhile ?>
+
+					</datalist>
+
+				</div><!-- form group -->
+
+				<div class="form-group">
+
+					<label for="">Auction Grade</label>
+
+					<!-- <input list="vehicle_grade1" autocomplete="off" name="vehicle_grade" id="vehicle_grade" class="form-control"> -->
+
+					<select name="vehicle_grade" id="vehicle_grade" class="form-control">
+
+						<option value="">~~SELECT~~</option>
+
+						<?php $q = get($dbc, "auction_grade WHERE auction_grade_sts = '1'");
+
+						while ($r = mysqli_fetch_assoc($q)): ?>
+
+							<option
+								<?= @(ucwords($r['auction_grade_name']) == ucwords($stock['vehicle_grade'])) ? "selected" : "" ?>
+								value="<?= strtoupper($r['auction_grade_name']) ?>"><?= ucwords($r['auction_grade_name']) ?>
+							</option>
+
+						<?php endwhile ?>
+
+					</select>
+
+				</div><!-- form group -->
+
+				<div class="form-group">
+
+					<label for="">Steering </label>
+
+					<!-- <input list="vehicle_option1" name="vehicle_option" id="vehicle_option" class="form-control" required="required"> -->
+
+					<select name="vehicle_option" id="vehicle_option" class="form-control">
+
+						<option value="">~~SELECT~~</option>
+
+						<?php $q = get($dbc, "options WHERE option_sts = '1'");
+
+						while ($r = mysqli_fetch_assoc($q)): ?>
+
+							<option
+								<?= (strtoupper(@$stock['vehicle_option']) == strtoupper($r['option_name'])) ? "selected" : "" ?>
+								value="<?= strtoupper($r['option_name']) ?>"><?= $r['option_name'] ?></option>
+
+						<?php endwhile ?>
+
+					</select>
+
+				</div><!-- form group -->
+
+				<div class="form-group">
+
+					<label for="">Interior Color</label>
+
+					<input type="text" name="vehicle_interior_color" id="vehicle_interior_color"
+						class="form-control form-control-sm">
+
+				</div><!-- form group -->
+
+				<div class="form-group">
+
+					<label for="">Height(cm)</label>
+
+					<input type="text" name="vehicle_height" required="required" id="vehicle_height"
+						class="form-control form-control-sm forM3">
+
+				</div><!-- form group -->
+
+
+
+				<div class="form-group">
+
+					<label for="">Total Weight (kg)</label>
+
+					<input type="number" name="vehicle_weight" id="vehicle_weight" required="required"
+						class="form-control form-control-sm">
+
+				</div><!-- form group -->
+
+				<div class="form-group">
+
+					<label for="">KM 2.</label>
+
+					<input type="text" name="vehicle_km2" id="vehicle_km2" class="form-control form-control-sm">
+
+				</div><!-- form group -->
+
+			</div><!-- col -->
+
+		</div><!-- mian -->
+
+		<div class="row">
+
+			<div class="col-sm-3">
+
+				<label for="">Vehicle Type</label>
+
+				<select name="vehicle_type" id="vehicle_type" class="form-control">
+
+					<option value="">~~SELECT~~</option>
+
+					<?php $q = get($dbc, "body_type WHERE body_type_sts = '1'");
+
+					while ($r = mysqli_fetch_assoc($q)): ?>
+
+						<option value="<?= $r['body_type_id'] ?>"><?= $r['body_type_name'] ?></option>
 
 					<?php endwhile ?>
 
-			</select>
+				</select>
 
-		</div>
+			</div>
 
-		<!-- <div class="col-sm-3">
+			<div class="col-sm-3">
 
 			<label for="">Country</label>			
 
@@ -768,241 +814,246 @@
 
 						<option value="">~~SELECT~~</option>
 
-				<?php $q = get($dbc,"countries ORDER BY country_name ASC");
+				<?php $q = get($dbc, "countries ORDER BY country_name ASC");
 
-							while($r = mysqli_fetch_assoc($q)): ?>
+				while ($r = mysqli_fetch_assoc($q)): ?>
 
-						<option value="<?=$r['country_id']?>"><?=$r['country_name']?></option>
+						<option value="<?= $r['country_id'] ?>"><?= $r['country_name'] ?></option>
 
 					<?php endwhile ?>
 
 			</select>
 
-		</div> -->
-
-		<div class="col-sm-4">
-
-			<div class="form-group">
-
-				<label for="">Video URL</label>			
-
-				<input type="text" name="vehicle_url" id="vehicle_url" class="form-control form-control-sm">
-
-			</div><!-- form group -->
-
 		</div>
 
-		<div class="col-sm-4">
+			<div class="col-sm-3">
 
-			<div class="form-group">
+				<div class="form-group">
 
-				<label for="">Sale Rate</label>			
+					<label for="">Video URL</label>
 
-				<input type="text" name="vehicle_est_price" id="vehicle_est_price" required="required" class="form-control form-control-sm">
+					<input type="text" name="vehicle_url" id="vehicle_url" class="form-control form-control-sm">
 
-			</div><!-- form group -->
-
-		</div>
-
-	</div><!-- row -->
-
-	<div class="row">
-
-		<div class="col-sm-4">
-
-			<div class="form-group">
-
-				<label for="vehicle_mode">Vehicle Mode</label>
-
-				<select name="vehicle_mode" id="vehicle_mode" class="form-control">
-
-					<option value=""></option>
-
-					<option value="premium">Premium</option>
-					<option value="Brand New">Brand New</option>
-					<option value="Used">Used</option>
-					<option value="Discounted">Discounted</option>
-					<option value="On Ship">On Ship </option>
-					<option value="On Yard">On Yard</option>
-					<option value=" Local Transit">In Local Transit</option>
-					<option value="Discount">Discount</option>
-					<option value="Reserved">Reserved</option>
-					<option value="Clearance">Clearance</option>
-
-				</select>
+				</div><!-- form group -->
 
 			</div>
 
-			<div class="form-group">
+			<div class="col-sm-3">
 
-				<label for="vehicle_discount">Discount %</label>
+				<div class="form-group">
 
-				<input type="number" name="vehicle_discount" value="<?=@$stock['vehicle_discount']?>" id="vehicle_discount" class="form-control form-control-sm">
+					<label for="">Sale Rate</label>
+
+					<input type="text" name="vehicle_est_price" id="vehicle_est_price" required="required"
+						class="form-control form-control-sm">
+
+				</div><!-- form group -->
 
 			</div>
 
-		</div>
+		</div><!-- row -->
 
-		<div class="col-sm-4">
+		<div class="row">
 
-			<label for="vehicle_note">Narration / Note / Hint</label>
+			<div class="col-sm-4">
 
-			<textarea name="vehicle_note" placeholder="Note / HINT / Narration" id="vehicle_note" class="form-control" rows="5"></textarea>
+				<div class="form-group">
 
-		</div><!-- col -->
+					<label for="vehicle_mode">Vehicle Mode</label>
 
-		<div class="col-sm-4">
+					<select name="vehicle_mode" id="vehicle_mode" class="form-control">
 
-			<label for="vehicle_note_comp">Note (For Company Use only)</label>
+						<option value=""></option>
 
-			<textarea name="vehicle_note_comp" placeholder="Note" id="vehicle_note_comp" class="form-control" rows="5"></textarea>
+						<option value="premium">Premium</option>
+						<option value="Brand New">Brand New</option>
+						<option value="Used">Used</option>
+						<option value="Discounted">Discounted</option>
+						<option value="On Ship">On Ship </option>
+						<option value="On Yard">On Yard</option>
+						<option value=" Local Transit">In Local Transit</option>
+						<option value="Discount">Discount</option>
+						<option value="Reserved">Reserved</option>
+						<option value="Clearance">Clearance</option>
 
-		</div><!-- col -->
+					</select>
 
-	</div><!-- row -->
+				</div>
 
-	<div class="row">
+				<div class="form-group">
 
-		<div class="col-sm-3">
+					<label for="vehicle_discount">Discount %</label>
 
-			<label for="">Auction House</label>			
-			<input type="text" name="vehicle_auctionhouse" id="vehicle_auctionhouse" class="form-control ">
-			
+					<input type="number" name="vehicle_discount" value="<?= @$stock['vehicle_discount'] ?>"
+						id="vehicle_discount" class="form-control form-control-sm">
 
-		</div>
+				</div>
 
-		<div class="col-sm-3">
+			</div>
 
-			<div class="form-group">
+			<div class="col-sm-4">
 
-				<label for="">Buying Date</label>			
+				<label for="vehicle_note">Narration / Note / Hint</label>
 
-				<input type="date" name="buying_date" id="buying_date" class="form-control ">
+				<textarea name="vehicle_note" placeholder="Note / HINT / Narration" id="vehicle_note"
+					class="form-control" rows="5"></textarea>
 
-			</div><!-- form group -->
+			</div><!-- col -->
 
-		</div>
+			<div class="col-sm-4">
 
-		<div class="col-sm-3">
+				<label for="vehicle_note_comp">Note (For Company Use only)</label>
 
-			<div class="form-group">
+				<textarea name="vehicle_note_comp" placeholder="Note" id="vehicle_note_comp" class="form-control"
+					rows="5"></textarea>
 
-				<label for="">Buying Price</label>			
+			</div><!-- col -->
 
-				<input type="text" name="buying_price" id="buying_price"  class="form-control ">
+		</div><!-- row -->
 
-			</div><!-- form group -->
+		<div class="row">
 
-		</div>
-		<div class="col-sm-3">
+			<div class="col-sm-3">
 
-			<div class="form-group">
+				<label for="">Auction House</label>
+				<input type="text" name="vehicle_auctionhouse" id="vehicle_auctionhouse" class="form-control ">
 
-				<label for="">Lot Number</label>			
 
-				<input type="text" name="lot_number" id="lot_number"  class="form-control ">
+			</div>
 
-			</div><!-- form group -->
+			<div class="col-sm-3">
 
-		</div>
+				<div class="form-group">
 
-	</div><!-- row -->
+					<label for="">Buying Date</label>
 
-		<?php		if(!empty($id)){
+					<input type="date" name="buying_date" id="buying_date" class="form-control ">
+
+				</div><!-- form group -->
+
+			</div>
+
+			<div class="col-sm-3">
+
+				<div class="form-group">
+
+					<label for="">Buying Price</label>
+
+					<input type="text" name="buying_price" id="buying_price" class="form-control ">
+
+				</div><!-- form group -->
+
+			</div>
+			<div class="col-sm-3">
+
+				<div class="form-group">
+
+					<label for="">Lot Number</label>
+
+					<input type="text" name="lot_number" id="lot_number" class="form-control ">
+
+				</div><!-- form group -->
+
+			</div>
+
+		</div><!-- row -->
+
+		<?php if (!empty($id)) {
 
 			?>
 
-	
 
-<?php }
 
-?>
+		<?php }
 
-	<br> 
-<?php if (!isset($_REQUEST['vehicle_id']) AND @$userPrivileges['nav_add']==1 || $fetchedUserRole=="admin"): ?>
-	<button type="submit" class="btn btn-primary float-left" id="saveData1">Submit</button>
-<?php endif ?>
-<?php if (isset($_REQUEST['vehicle_id']) AND @$userPrivileges['nav_edit']==1 || $fetchedUserRole=="admin"): ?>
-	<button type="submit" class="btn btn-warning float-left" id="saveData1">Save and Next</button>
-<?php endif ?>
+		?>
 
-<!-- 	<button type="button" class="btn btn-info float-right <?=$act?>" data-toggle="modal" data-target="#modal-default">Payment Info</button> -->
+		<br>
+		<?php if (!isset($_REQUEST['vehicle_id']) AND @$userPrivileges['nav_add'] == 1 || $fetchedUserRole == "admin"): ?>
+			<button type="submit" class="btn btn-primary float-left" id="saveData1">Submit</button>
+		<?php endif ?>
+		<?php if (isset($_REQUEST['vehicle_id']) AND @$userPrivileges['nav_edit'] == 1 || $fetchedUserRole == "admin"): ?>
+			<button type="submit" class="btn btn-warning float-left" id="saveData1">Save and Next</button>
+		<?php endif ?>
 
-	  <div class="modal fade" id="modal-default">
+		<!-- 	<button type="button" class="btn btn-info float-right <?= $act ?>" data-toggle="modal" data-target="#modal-default">Payment Info</button> -->
 
-        <div class="modal-dialog">
+		<div class="modal fade" id="modal-default">
 
-          <div class="modal-content">
+			<div class="modal-dialog">
 
-            <div class="modal-header">
+				<div class="modal-content">
 
-              <h4 class="modal-title">Payment Info</h4>
+					<div class="modal-header">
 
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<h4 class="modal-title">Payment Info</h4>
 
-                <span aria-hidden="true">&times;</span>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 
-              </button>
+							<span aria-hidden="true">&times;</span>
 
-            </div>
+						</button>
 
-            <div class="modal-body">
+					</div>
 
-              <table class="table table-inverse">
+					<div class="modal-body">
 
-              	
+						<table class="table table-inverse">
 
-              	<thead>
 
-        			<tr>
 
-        				<th>Invoice Id</th>
+							<thead>
 
-        				<th>Customer Name</th>
+								<tr>
 
-        				<th>Sold Amount</th>
+									<th>Invoice Id</th>
 
-        				<th>Received Amount</th>
+									<th>Customer Name</th>
 
-        			</tr>
+									<th>Sold Amount</th>
 
-              	
+									<th>Received Amount</th>
 
-              	</thead>
+								</tr>
 
-             <tbody>
 
-              </tbody>
 
-              <tfoot>
+							</thead>
 
-              	<tr>
+							<tbody>
 
-             		
+							</tbody>
 
-             	</tr>
+							<tfoot>
 
-              </tfoot>
+								<tr>
 
-              </table>
 
-            </div>
 
-            <div class="modal-footer justify-content-between">
+								</tr>
 
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>            </div>
+							</tfoot>
 
-          </div>
+						</table>
 
-          <!-- /.modal-content -->
+					</div>
 
-        </div>
+					<div class="modal-footer justify-content-between">
 
-        <!-- /.modal-dialog -->
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					</div>
 
-      </div>
+				</div>
 
-      <!-- /.modal -->
+				<!-- /.modal-content -->
+
+			</div>
+
+			<!-- /.modal-dialog -->
+
+		</div>
+
+		<!-- /.modal -->
 
 
 
@@ -1012,101 +1063,104 @@
 
 
 
-	<div class="feature_form">
+<div class="feature_form">
 
-		<form action="php_action/custom_action.php" method="POST" role="formData15">
+	<form action="php_action/custom_action.php" method="POST" role="formData15">
 
-		<input type="text" value="<?=@$id?>" class="vehicle_idMain d-none" name="vehicle_id">	
+		<input type="text" value="<?= @$id ?>" class="vehicle_idMain d-none" name="vehicle_id">
 
-			<div class="row">
+		<div class="row">
 
-				<?php 
+			<?php
 
-				$q1 = get($dbc,"vehicle_feature WHERE vehicle_feature_sts = 1 GROUP BY vehicle_feature_category ASC");
+			$q1 = get($dbc, "vehicle_feature WHERE vehicle_feature_sts = 1 GROUP BY vehicle_feature_category ASC");
 
-				foreach ($q1 as $index => $value):?>
+			foreach ($q1 as $index => $value): ?>
 
-				<div class="col-sm-2">	
+				<div class="col-sm-2">
 
 					<div class="form-group">
 
-						<strong><?=ucwords($value['vehicle_feature_category'])?></strong><br>
+						<strong><?= ucwords($value['vehicle_feature_category']) ?></strong><br>
 
-						<?php 
+						<?php
 
 						$x = 0;
 
 						@$vehicle_id = $_GET['vehicle_id'];
 
-						$q = get($dbc,"vehicle_feature WHERE vehicle_feature_sts = '1' AND vehicle_feature_category = '".$value['vehicle_feature_category']."'");
+						$q = get($dbc, "vehicle_feature WHERE vehicle_feature_sts = '1' AND vehicle_feature_category = '" . $value['vehicle_feature_category'] . "'");
 
-						while ($r = mysqli_fetch_assoc($q)):?>
+						while ($r = mysqli_fetch_assoc($q)): ?>
 
-							<label class="text-capitalize" for="_<?=$x.$index?>"><?=$r['vehicle_feature_name']?></label>
+							<label class="text-capitalize" for="_<?= $x . $index ?>"><?= $r['vehicle_feature_name'] ?></label>
 
-							<input class="float-right" id="_<?=$x.$index?>" type="checkbox" name="vehicle_feature_list[]" <?php getChecked($dbc, $vehicle_id, $r['vehicle_feature_name']);?> value="<?=$r['vehicle_feature_name']?>"><br>
+							<input class="float-right" id="_<?= $x . $index ?>" type="checkbox" name="vehicle_feature_list[]" <?php getChecked($dbc, $vehicle_id, $r['vehicle_feature_name']); ?>
+								value="<?= $r['vehicle_feature_name'] ?>"><br>
 
-						<?php 
+							<?php
 
 							$x++;
 
-							endwhile
+						endwhile
 
 						?>
 
-					</div>	
+					</div>
 
 				</div>
 
-				<?php 
+			<?php
 
-					endforeach;
+			endforeach;
 
-					function getChecked($dbc, $vehicle_id, $newValue){
+			function getChecked($dbc, $vehicle_id, $newValue)
+			{
 
-						if ($vehicle_id != "") {
+				if ($vehicle_id != "") {
 
-							$q2 = mysqli_query($dbc,"SELECT vehicle_feature_list FROM vehicle_info WHERE vehicle_id = '$vehicle_id'");
+					$q2 = mysqli_query($dbc, "SELECT vehicle_feature_list FROM vehicle_info WHERE vehicle_id = '$vehicle_id'");
 
-							$r2 = mysqli_fetch_assoc($q2);
+					$r2 = mysqli_fetch_assoc($q2);
 
-							if (!empty($r2['vehicle_feature_list'])) {
+					if (!empty($r2['vehicle_feature_list'])) {
 
-								# code...
+						# code...
+			
 
-							
 
-							$new_array = json_decode($r2['vehicle_feature_list']);
+						$new_array = json_decode($r2['vehicle_feature_list']);
 
-							foreach ($new_array as $index => &$value) {
+						foreach ($new_array as $index => &$value) {
 
-								if ($newValue == $value) {
+							if ($newValue == $value) {
 
-									echo "checked";
+								echo "checked";
 
-									return false;
+								return false;
 
-								}else{
+							} else {
 
-									echo "";
-
-								}
+								echo "";
 
 							}
 
-						}}
+						}
 
 					}
+				}
 
-				?>
+			}
 
-			</div>
+			?>
 
-			<button type="submit" class="btn btn-primary" id="featureBtn">Save</button>
+		</div>
 
-		</form>
+		<button type="submit" class="btn btn-primary" id="featureBtn">Save</button>
 
-	</div>
+	</form>
+
+</div>
 
 
 
@@ -1139,59 +1193,54 @@
 
 
 <script type="text/javascript">
-	function validateyears(){
+	function validateyears() {
 		var from_year = $("#vehicle_manu_year").val();
 		var to_year = $("#vehicle_reg_year").val();
 		var from_month = $("#vehicle_manu_month :selected").data('id');
 		var to_month = $("#vehicle_reg_month :selected").data('id');
 		var result = 0;
-	
-	if (from_year > to_year) {
-			  //$("#vehicle_reg_month").foucs();
-			   sweeetalertbtn("Warning","Registration Year should NOT be lower than manufacturing Year",'warning');
-		 $('#vehicle_reg_year').prop('selectedIndex',0);
-		 	 $('#vehicle_reg_month').prop('selectedIndex',0);
+
+		if (from_year > to_year) {
+			//$("#vehicle_reg_month").foucs();
+			sweeetalertbtn("Warning", "Registration Year should NOT be lower than manufacturing Year", 'warning');
+			$('#vehicle_reg_year').prop('selectedIndex', 0);
+			$('#vehicle_reg_month').prop('selectedIndex', 0);
 
 			// $('.vehicle_reg_month').removeAttr('selected').find('option:first').attr('selected', 'selected');
-			
-		 }
-		
 
-		
+		}
+
+
+
 	}
-	function validatemonth(){
+	function validatemonth() {
 		var from_year = $("#vehicle_manu_year").val();
 		var to_year = $("#vehicle_reg_year").val();
 		var from_month = $("#vehicle_manu_month :selected").data('id');
 		var to_month = $("#vehicle_reg_month :selected").data('id');
 		var result = 0;
-	if (from_month!=0 ) {
-		
-		if( from_year==to_year){
-			if (from_month > to_month) {
-			
-			 
-              sweeetalertbtn("Warning","Registration Month should NOT be lower than manufacturing Month ",'warning');
-			 
-		 $('#vehicle_reg_month').prop('selectedIndex',0);
-			// $('.vehicle_reg_month').removeAttr('selected').find('option:first').attr('selected', 'selected');
-			
+		if (from_month != 0) {
+
+			if (from_year == to_year) {
+				if (from_month > to_month) {
+
+
+					sweeetalertbtn("Warning", "Registration Month should NOT be lower than manufacturing Month ", 'warning');
+
+					$('#vehicle_reg_month').prop('selectedIndex', 0);
+					// $('.vehicle_reg_month').removeAttr('selected').find('option:first').attr('selected', 'selected');
+
+				}
+			}
+		} else if (from_year == '') {
+
+			sweeetalertbtn("Error", "Select Manufacturing Year ", 'error');
+			$('#vehicle_manu_month').prop('selectedIndex', 0);
+
+
 		}
-		}
-	}else if (from_year=='') {
-		
-		  sweeetalertbtn("Error","Select Manufacturing Year ",'error');
-		 $('#vehicle_manu_month').prop('selectedIndex',0);
-		
-			
+
+
 	}
 
-		
-	}
-	
 </script>
-
-
-
-
-

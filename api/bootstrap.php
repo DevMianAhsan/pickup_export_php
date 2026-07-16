@@ -17,12 +17,46 @@ if ($origin !== '' && in_array($origin, $allowedOrigins, true)) {
     header('Vary: Origin');
 }
 
-header('Access-Control-Allow-Methods: GET, OPTIONS');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization, X-API-Key');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
     exit;
+}
+
+/**
+ * Sanitize and escape a scalar value for use in a MySQL query.
+ */
+function escapeField($dbc, $value): string
+{
+    return mysqli_real_escape_string($dbc, trim((string) $value));
+}
+
+/**
+ * Insert an associative array into the given table.
+ * Values are escaped but NOT lowercased (unlike the legacy insert_data helper).
+ *
+ * @param mysqli $dbc
+ * @param string $table
+ * @param array  $data  column => value pairs
+ * @return bool
+ */
+function apiInsert($dbc, string $table, array $data): bool
+{
+    $columns = [];
+    $values  = [];
+    foreach ($data as $col => $val) {
+        $columns[] = '`' . mysqli_real_escape_string($dbc, $col) . '`';
+        $values[]  = "'" . mysqli_real_escape_string($dbc, (string) $val) . "'";
+    }
+    $sql = sprintf(
+        'INSERT INTO `%s` (%s) VALUES (%s)',
+        mysqli_real_escape_string($dbc, $table),
+        implode(', ', $columns),
+        implode(', ', $values)
+    );
+    return (bool) mysqli_query($dbc, $sql);
 }
 
 require_once __DIR__ . '/../admin/php_action/db_connect.php';

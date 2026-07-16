@@ -3686,6 +3686,136 @@ if (isset($_POST['consignee_name_sep'])) {
 
 
 
+	//machine_type
+	if (isset($_POST['machine_type_name'])) {
+
+
+
+		if ($_POST['machine_type_id'] == "") {
+
+
+
+			if (upload_pic($_FILES['machine_type_img'], "../img/vehicles_images/")) {
+
+
+
+				$data = [
+
+
+
+					'machine_type_name' => $_POST['machine_type_name'],
+
+
+
+					'machine_type_sts' => $_POST['machine_type_sts'],
+
+
+
+					'machine_type_img' => $_SESSION['pic_name'],
+
+
+
+				];
+
+
+
+				if (insert_data($dbc, "machine_type", $data)) {
+
+
+
+					echo $msg = "machine Type Added Successfully";
+
+
+
+					exit();
+
+
+
+				}else{
+
+
+
+					echo $msg = mysqli_error($dbc);
+
+
+
+					exit();
+
+
+
+				}
+
+
+
+			}
+
+
+
+		}else{
+
+
+
+			if (upload_pic($_FILES['machine_type_img'], "../img/vehicles_images/")) {
+
+
+
+				$data = [
+
+
+
+					'machine_type_name' => $_POST['machine_type_name'],
+
+
+
+					'machine_type_img' => $_SESSION['pic_name'],
+
+
+
+					'machine_type_sts' => $_POST['machine_type_sts'],
+
+
+
+				];
+
+
+
+				if (update_data($dbc, "machine_type", $data, "machine_type_id", $_POST['machine_type_id'])) {
+
+
+
+					echo $msg = "machine Type Data Updated Successfully";
+
+
+
+					exit();
+
+
+
+				}else{
+
+
+
+					echo $msg = mysqli_error($dbc);
+
+
+
+					exit();
+
+
+
+				}
+
+
+
+			}
+
+
+
+		}
+
+
+
+	}
 
 
 
@@ -19650,6 +19780,21 @@ if (isset($_POST['new_currency_name'])) {
 		echo json_encode($response);
 	}
 
+
+	// Handle deletion from links (machine_type)
+if (isset($_GET['delete_machine_type'])) {
+	$del_id = $_GET['delete_machine_type'];
+	if (!empty($del_id) && is_numeric($del_id)) {
+		$fetch = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT machine_type_img FROM machine_type WHERE machine_type_id = '$del_id'"));
+		if ($fetch && !empty($fetch['machine_type_img'])) {
+			$imgPath = realpath(__DIR__ . '/../img/vehicles_images/' . $fetch['machine_type_img']);
+			if ($imgPath && file_exists($imgPath)) @unlink($imgPath);
+		}
+		mysqli_query($dbc, "DELETE FROM machine_type WHERE machine_type_id = '$del_id'");
+	}
+	header('Location: ../machine_type.php');
+	exit();
+}
 	
  ?>
 

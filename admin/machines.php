@@ -93,9 +93,23 @@ if (isset($_GET['machine_id'])) {
       
     </div>
     <div class="col-sm-2">
+
+
         <label for="">Machine Type</label>     
 
-        <input type="text" name="machine_type" id="machine_type" class="form-control form-control-sm machine_type" value="<?=@$PartDe['machine_type']?>">
+        <select tabindex="2" name="machine_type" id="machine_type" class="form-control abcCustomNew vehicle_machine" required="required">
+
+          <option value="">~~SELECT~~</option>
+
+          <?php $q = get($dbc,"machine_type WHERE machine_type_sts = '1' ORDER BY machine_type_name ASC");
+
+          while($r = mysqli_fetch_assoc($q)): ?>
+
+            <option <?=@($PartDe['machine_type']==$r['machine_type_id'])?"selected":""?> value="<?=$r['machine_type_id']?>"><?=strtoupper($r['machine_type_name'])?></option>
+
+              <?php endwhile ?>
+
+        </select>
     </div>
     <div class="col-sm-2">
 
@@ -243,15 +257,30 @@ if (isset($_GET['machine_id'])) {
 
 
   <div class="row">
-    <div class="col-sm-4">
+    	<div class="col-sm-3">
+    <label for="">Country</label>           
+    <select name="machine_country_id" id="machine_country_id" class="form-control" required>
+        <option value="">~~SELECT~~</option>
+        <?php 
+        $q = get($dbc, "countries ORDER BY country_name ASC");
+        while ($r = mysqli_fetch_assoc($q)): 
+            $selected = (isset($PartDe['country_id']) && $PartDe['country_id'] == $r['country_id']) ? 'selected' : '';
+        ?>
+            <option value="<?= $r['country_id'] ?>" <?= $selected ?>>
+                <?= $r['country_name'] ?>
+            </option>
+        <?php endwhile ?>
+    </select>
+</div>
+    <div class="col-sm-3">
         <label for="">Drive </label>
         <input  value="<?=@$PartDe['machine_drive']?>" name="machine_drive" id="machine_drive" class="form-control" autocomplete="off" required >
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-3">
         <label for="">Transmission</label>
        <input  value="<?=@$PartDe['machine_transmission']?>" name="machine_transmission" id="machine_transmission" class="form-control" autocomplete="off" required >
     </div>
-     <div class="col-sm-4">
+     <div class="col-sm-3">
         <label for="">Condition</label>
        <input  value="<?=@$PartDe['machine_condition']?>" name="machine_condition" id="machine_condition" class="form-control" autocomplete="off" required >
     </div>

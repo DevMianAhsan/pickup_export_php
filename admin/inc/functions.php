@@ -520,66 +520,72 @@ $pic = uniqid(rand()).'.'.$type;
 
 $_SESSION['pic_name'] = $pic;
 
-$url = $url.$pic;
+// original url may be a relative directory; append filename for reference
+$url = $url . $pic;
+
+// Determine absolute destination directory for safe move
+$destDir = rtrim($url, '/\\');
+if (strpos($destDir, '.') !== false && substr($destDir, -1) !== '/') {
+  $destDir = dirname($destDir);
+}
+
+$absDir = false;
+if (strpos($destDir, '../') === 0 || strpos($destDir, './') === 0) {
+  $absDir = realpath(__DIR__ . '/' . $destDir);
+} elseif (strpos($destDir, '/') === 0) {
+  $absDir = rtrim($_SERVER['DOCUMENT_ROOT'], '/\\') . $destDir;
+} else {
+  $absDir = realpath($destDir);
+  if (!$absDir) $absDir = realpath(__DIR__ . '/../' . $destDir);
+}
+
+if (!$absDir) {
+  // attempt to create dir relative to this file
+  $tryPath = __DIR__ . '/' . $destDir;
+  if (!is_dir($tryPath)) {
+    @mkdir($tryPath, 0755, true);
+  }
+  $absDir = realpath($tryPath);
+}
+
+if (!$absDir) {
+  $sts = "info";
+  $msg = "Upload directory not found: " . $url;
+  return false;
+}
+
+if (!is_dir($absDir)) {
+  @mkdir($absDir, 0755, true);
+}
+
+$target = rtrim($absDir, '/\\') . DIRECTORY_SEPARATOR . $pic;
 
 if (!$temp_name) {
-
-# code...
-
-$sts="info";
-
-$msg= "Please Choose a File Before Clicking";
-
-}elseif($size>500000){
-
-$sts="info";
-
-$msg= "Not Allowed more than 5 MB file size";
-
-unlink($temp_name);
-
-// exit();
-
+  $sts = "info";
+  $msg = "Please Choose a File Before Clicking";
+} elseif ($size > 500000) {
+  $sts = "info";
+  $msg = "Not Allowed more than 5 MB file size";
+  unlink($temp_name);
+  // exit();
+} elseif (!preg_match("/\.(gif|jpg|png|jpeg)$/i", $file_name)) {
+  $sts = "info";
+  $msg = "Only .jpg , .png and .gif file types are allowed";
+  unlink($temp_name);
+  // exit();
+} elseif ($errors == 1) {
+  $sts = "info";
+  $msg = "Error while uploading....";
+  unlink($temp_name);
+  // exit();
 }
 
-elseif(!preg_match("/\.(gif|jpg|png|jpeg)$/i", $file_name)){
-
-$sts="info";
-
-$msg= "Only .jpg , .png and .gif file types are allowed";
-
-unlink($temp_name);
-
-// exit();
-
-}elseif($errors==1){
-
-$sts="info";
-
-$msg= "Error while uploading....";
-
-unlink($temp_name);
-
-// exit();
-
-}
-
-if(move_uploaded_file($temp_name, $url)){
-
-return true;
-
-}
-
-else{
-
-$sts="info";
-
-$msg= "Not Uploaded...";
-
-@unlink($temp_name);
-
-//exit();
-
+if (move_uploaded_file($temp_name, $target)) {
+  return true;
+} else {
+  $sts = "info";
+  $msg = "Not Uploaded...";
+  @unlink($temp_name);
 }
 
 } ?>
@@ -620,56 +626,66 @@ $pic = uniqid(rand()).'.'.$type;
 
 $_SESSION['pic_name'] = $pic;
 
-$url = $url.$pic;
+$url = $url . $pic;
+
+// Determine absolute destination directory
+$destDir = rtrim($url, '/\\');
+if (strpos($destDir, '.') !== false && substr($destDir, -1) !== '/') {
+  $destDir = dirname($destDir);
+}
+
+$absDir = false;
+if (strpos($destDir, '../') === 0 || strpos($destDir, './') === 0) {
+  $absDir = realpath(__DIR__ . '/' . $destDir);
+} elseif (strpos($destDir, '/') === 0) {
+  $absDir = rtrim($_SERVER['DOCUMENT_ROOT'], '/\\') . $destDir;
+} else {
+  $absDir = realpath($destDir);
+  if (!$absDir) $absDir = realpath(__DIR__ . '/../' . $destDir);
+}
+
+if (!$absDir) {
+  $tryPath = __DIR__ . '/' . $destDir;
+  if (!is_dir($tryPath)) {
+    @mkdir($tryPath, 0755, true);
+  }
+  $absDir = realpath($tryPath);
+}
+
+if (!$absDir) {
+  $sts = "info";
+  $msg[] = "Upload directory not found: " . $url;
+  return false;
+}
+
+if (!is_dir($absDir)) {
+  @mkdir($absDir, 0755, true);
+}
+
+$target = rtrim($absDir, '/\\') . DIRECTORY_SEPARATOR . $pic;
 
 if (!$temp_name) {
-
-# code...
-
-$sts="info";
-
-$msg[]= "Please Choose a File Before Clicking";
-
-}elseif($size>1000000){
-
-$sts="info";
-
-$msg[]= "Not Allowed more than 10 MB file size";
-
-unlink($temp_name);
-
-// exit();
-
+  $sts = "info";
+  $msg[] = "Please Choose a File Before Clicking";
+} elseif ($size > 1000000) {
+  $sts = "info";
+  $msg[] = "Not Allowed more than 10 MB file size";
+  unlink($temp_name);
+  // exit();
+} elseif ($errors == 1) {
+  $sts = "info";
+  $msg[] = "Error while uploading....";
+  unlink($temp_name);
+  // exit();
 }
 
-elseif($errors==1){
-
-$sts="info";
-
-$msg[]= "Error while uploading....";
-
-unlink($temp_name);
-
-// exit();
-
-}
-
-if(move_uploaded_file($temp_name, $url)){
-
-return true;
-
-}
-
-else{
-
-$sts="info";
-
-$msg[]= "Not Uploaded...";
-
-@unlink($temp_name);
-
-exit();
-
+if (move_uploaded_file($temp_name, $target)) {
+  return true;
+} else {
+  $sts = "info";
+  $msg[] = "Not Uploaded...";
+  @unlink($temp_name);
+  exit();
 }
 
  /* $txt="";
