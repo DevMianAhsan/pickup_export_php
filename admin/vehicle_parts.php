@@ -94,7 +94,7 @@ if (isset($_GET['part_id'])) {
     <div class="col-sm-2">
         <label for="">Chassis No.</label>     
 
-        <input type="text" name="part_chassis_no" id="part_chassis_no" class="form-control form-control-sm part_chassis_no" value="<?=@$PartDe['part_chassis_no']?>">
+        <input type="text" name="part_chassis_no" id="part_chassis_no" class="form-control  part_chassis_no" value="<?=@$PartDe['part_chassis_no']?>">
     </div>
     <div class="col-sm-2">
 
@@ -121,7 +121,7 @@ if (isset($_GET['part_id'])) {
 <div class="row">
   <div class="col-sm-2">
         <label for="">Part No.</label>     
-        <input type="text" value="<?=@$PartDe['part_no']?>" name="part_no" id="part_no" class="form-control form-control-sm part_no">
+        <input type="text" value="<?=@$PartDe['part_no']?>" name="part_no" id="part_no" class="form-control  part_no">
   </div>
   <div class="col-sm-3">
         <label for="">Color</label>

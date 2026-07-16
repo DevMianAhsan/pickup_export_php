@@ -70,6 +70,18 @@
             border-color: #ff1a1a !important;
             box-shadow: 0 0 0 0.2rem rgba(255, 26, 26, 0.25) !important;
         }
+        
+        /* Make Select2 match standard input height */
+        .select2-container .select2-selection--single {
+            height: 35px !important; /* Matches standard admin panel input height */
+            min-height: 35px !important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 33px !important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 33px !important;
+        }
          .btn-admin2{
                 color: white; 
                 background-color: black; 

@@ -137,7 +137,7 @@ if (isset($_GET['machine_id'])) {
 <div class="row">
   <div class="col-sm-2">
         <label for="">Part No.</label>     
-        <input type="text" value="<?=@$PartDe['part_no']?>" name="part_no" id="part_no" class="form-control form-control-sm part_no">
+        <input type="text" value="<?=@$PartDe['part_no']?>" name="part_no" id="part_no" class="form-control  part_no">
   </div>
   <div class="col-sm-3">
         <label for="">Color</label>
