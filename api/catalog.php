@@ -733,95 +733,179 @@ if ($resource === 'vehicle' || $resource === 'single_vehicle' || $resource === '
 
     $escape = fn($v) => mysqli_real_escape_string($dbc, trim((string) $v));
 
-    $vehicle = null;
+    $item = null;
+    $itemType = null;
+
+    $stock = null;
+    if (!empty($params['stock_id'])) {
+        $stock = $params['stock_id'];
+    } elseif (!empty($params['vehicle_stock'])) {
+        $stock = $params['vehicle_stock'];
+    } elseif (!empty($params['stockid'])) {
+        $stock = $params['stockid'];
+    }
+
     if (!empty($params['id'])) {
         $vid = (int) $params['id'];
         $q = "SELECT vi.*, m.maker_name, b.brand_name, bt.body_type_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id WHERE vi.vehicle_id = $vid LIMIT 1";
         $res = mysqli_query($dbc, $q);
-        if ($res)
-            $vehicle = mysqli_fetch_assoc($res);
-    } elseif (!empty($params['stock_id']) || !empty($params['vehicle_stock'])) {
-        $stock = $escape($params['stock_id'] ?? $params['vehicle_stock']);
-        $q = "SELECT vi.*, m.maker_name, b.brand_name, bt.body_type_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id WHERE vi.vehicle_stock_id = '$stock' LIMIT 1";
-        $res = mysqli_query($dbc, $q);
-        if ($res)
-            $vehicle = mysqli_fetch_assoc($res);
+        if ($res && mysqli_num_rows($res) > 0) {
+            $item = mysqli_fetch_assoc($res);
+            $itemType = 'vehicle';
+        } else {
+            $q = "SELECT m.*, maker.maker_name, b.brand_name, mt.machine_type_name FROM machines m LEFT JOIN maker maker ON m.machine_maker = maker.maker_id LEFT JOIN brands b ON m.machine_brand = b.brand_id LEFT JOIN machine_type mt ON m.machine_type = mt.machine_type_id WHERE m.machine_id = $vid LIMIT 1";
+            $res = mysqli_query($dbc, $q);
+            if ($res && mysqli_num_rows($res) > 0) {
+                $item = mysqli_fetch_assoc($res);
+                $itemType = 'machine';
+            }
+        }
     }
 
-    if (!$vehicle) {
+    if ($item === null && $stock !== null) {
+        $stock = $escape($stock);
+        $q = "SELECT vi.*, m.maker_name, b.brand_name, bt.body_type_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id WHERE vi.vehicle_stock_id = '$stock' LIMIT 1";
+        $res = mysqli_query($dbc, $q);
+        if ($res && mysqli_num_rows($res) > 0) {
+            $item = mysqli_fetch_assoc($res);
+            $itemType = 'vehicle';
+        } else {
+            $q = "SELECT m.*, maker.maker_name, b.brand_name, mt.machine_type_name FROM machines m LEFT JOIN maker maker ON m.machine_maker = maker.maker_id LEFT JOIN brands b ON m.machine_brand = b.brand_id LEFT JOIN machine_type mt ON m.machine_type = mt.machine_type_id WHERE m.machine_stock_id = '$stock' LIMIT 1";
+            $res = mysqli_query($dbc, $q);
+            if ($res && mysqli_num_rows($res) > 0) {
+                $item = mysqli_fetch_assoc($res);
+                $itemType = 'machine';
+            }
+        }
+    }
+
+    if (!$item) {
         respondJson(404, [
             'status' => 'error',
-            'message' => 'Vehicle not found.'
+            'message' => 'Item not found.'
         ]);
     }
 
-    $vehicleId = (int) $vehicle['vehicle_id'];
-
-    // images
     $images = [];
-    $imgQ = mysqli_query($dbc, "SELECT vehicle_image_name FROM vehicle_images WHERE vehicle_id = $vehicleId ORDER BY vehicle_image_featured DESC, order_no ASC");
+    if ($itemType === 'machine') {
+        $itemId = (int) $item['machine_id'];
+        $imgQ = mysqli_query($dbc, "SELECT vehicle_image_name FROM vehicle_images WHERE vehicle_id = $itemId AND images_type = 'machine' ORDER BY vehicle_image_featured DESC, order_no ASC");
+    } else {
+        $itemId = (int) $item['vehicle_id'];
+        $imgQ = mysqli_query($dbc, "SELECT vehicle_image_name FROM vehicle_images WHERE vehicle_id = $itemId ORDER BY vehicle_image_featured DESC, order_no ASC");
+    }
     while ($ir = mysqli_fetch_assoc($imgQ)) {
         $images[] = normalizeImageUrl($ir['vehicle_image_name']);
     }
 
-    // build vehicle details
-    $featureList = [];
-    if (!empty($vehicle['vehicle_feature_list'])) {
-        $decoded = json_decode($vehicle['vehicle_feature_list'], true);
-        if (is_array($decoded))
-            $featureList = $decoded;
+    if ($itemType === 'machine') {
+        $itemData = [
+            'id' => (int) $item['machine_id'],
+            'type' => 'machine',
+            'stock_id' => $item['machine_stock_id'] ?? null,
+            'maker_id' => isset($item['machine_maker']) ? (int) $item['machine_maker'] : null,
+            'maker_name' => $item['maker_name'] ?? null,
+            'brand_id' => isset($item['machine_brand']) ? (int) $item['machine_brand'] : null,
+            'brand_name' => $item['brand_name'] ?? null,
+            'type_name' => $item['machine_type_name'] ?? null,
+            'chassis_no' => $item['machine_serial_no'] ?? null,
+            'engine_no' => null,
+            'year' => $item['machine_manu_year'] ?? null,
+            'registration_year' => $item['machine_year'] ?? null,
+            'mileage' => $item['machine_hours'] ?? null,
+            'cc' => null,
+            'fuel' => $item['machine_fuel'] ?? null,
+            'transmission' => $item['machine_transmission'] ?? null,
+            'color' => $item['machine_color'] ?? null,
+            'seats' => null,
+            'doors' => null,
+            'option' => $item['machine_steering'] ?? null,
+            'driven' => $item['machine_drive'] ?? null,
+            'steering' => $item['machine_steering'] ?? null,
+            'vehicle_mode' => $item['machine_condition'] ?? null,
+            'price' => isset($item['machine_fob_price']) ? (float) $item['machine_fob_price'] : null,
+            'discount' => null,
+            'vehicle_feature_list' => null,
+            'images' => $images,
+            'featured_image' => $images[0] ?? null,
+            'status' => $item['machine_sale_stts'] ?? null,
+            'country_id' => isset($item['country_id']) ? (int) $item['country_id'] : null,
+        ];
+    } else {
+        $featureList = [];
+        if (!empty($item['vehicle_feature_list'])) {
+            $decoded = json_decode($item['vehicle_feature_list'], true);
+            if (is_array($decoded)) {
+                $featureList = $decoded;
+            }
+        }
+        $itemData = [
+            'id' => (int) $item['vehicle_id'],
+            'type' => 'vehicle',
+            'stock_id' => $item['vehicle_stock_id'] ?? null,
+            'maker_id' => isset($item['vehicle_maker']) ? (int) $item['vehicle_maker'] : null,
+            'maker_name' => $item['maker_name'] ?? null,
+            'brand_id' => isset($item['vehicle_brand']) ? (int) $item['vehicle_brand'] : null,
+            'brand_name' => $item['brand_name'] ?? null,
+            'type_name' => $item['body_type_name'] ?? null,
+            'chassis_no' => $item['vehicle_chassis_no'] ?? null,
+            'engine_no' => $item['vehicle_engine_no'] ?? null,
+            'year' => $item['vehicle_manu_year'] ?? null,
+            'registration_year' => $item['vehicle_reg_year'] ?? null,
+            'mileage' => $item['vehicle_km'] ?? null,
+            'cc' => $item['vehicle_cc'] ?? $item['vehicle_engine_type'] ?? null,
+            'fuel' => $item['vehicle_fuel'] ?? null,
+            'transmission' => $item['vehicle_transmission'] ?? null,
+            'color' => $item['vehicle_color_name'] ?: $item['vehicle_color'] ?? null,
+            'seats' => $item['vehicle_seat'] ?? null,
+            'doors' => $item['vehicle_doors'] ?? null,
+            'option' => $item['vehicle_option'] ?? $item['machine_steering'] ?? null,
+            'driven' => $item['vehicle_drive'] ?? null,
+            'steering' => $item['vehicle_option'] ?? $item['machine_steering'] ?? null,
+            'vehicle_mode' => $item['vehicle_mode'] ?? null,
+            'price' => isset($item['vehicle_est_price']) ? (float) $item['vehicle_est_price'] : null,
+            'discount' => isset($item['vehicle_discount']) ? (float) $item['vehicle_discount'] : null,
+            'vehicle_feature_list' => $featureList,
+            'images' => $images,
+            'featured_image' => $images[0] ?? null,
+            'status' => $item['vehicle_status'] ?? null,
+            'country_id' => isset($item['country_id']) ? (int) $item['country_id'] : null,
+        ];
     }
 
-    $vehicleData = [
-        'id' => $vehicleId,
-        'stock_id' => $vehicle['vehicle_stock_id'] ?? null,
-        'maker_name' => $vehicle['maker_name'] ?? null,
-        'brand_name' => $vehicle['brand_name'] ?? null,
-        'type_name' => $vehicle['body_type_name'] ?? null,
-        'chassis_no' => $vehicle['vehicle_chassis_no'] ?? null,
-        'engine_no' => $vehicle['vehicle_engine_no'] ?? null,
-        'year' => $vehicle['vehicle_manu_year'] ?? null,
-        'registration_year' => $vehicle['vehicle_reg_year'] ?? null,
-        'mileage' => $vehicle['vehicle_km'] ?? null,
-        'cc' => $vehicle['vehicle_cc'] ?? $vehicle['vehicle_engine_type'] ?? null,
-        'fuel' => $vehicle['vehicle_fuel'] ?? null,
-        'transmission' => $vehicle['vehicle_transmission'] ?? null,
-        'color' => $vehicle['vehicle_color_name'] ?: $vehicle['vehicle_color'] ?? null,
-        'seats' => $vehicle['vehicle_seat'] ?? null,
-        'doors' => $vehicle['vehicle_doors'] ?? null,
-        'option' => $vehicle['vehicle_option'] ?? $vehicle['machine_steering'] ?? null,
-        'driven' => $vehicle['vehicle_drive'] ?? null,
-        'steering' => $vehicle['vehicle_option'] ?? $vehicle['machine_steering'] ?? null,
-        'vehicle_mode' => $vehicle['vehicle_mode'] ?? null,
-        'price' => isset($vehicle['vehicle_est_price']) ? (float) $vehicle['vehicle_est_price'] : null,
-        'discount' => isset($vehicle['vehicle_discount']) ? (float) $vehicle['vehicle_discount'] : null,
-        'vehicle_feature_list' => $featureList,
-        'images' => $images,
-        'featured_image' => $images[0] ?? null,
-        'status' => $vehicle['vehicle_status'] ?? null,
-    ];
-
-    // similar vehicles: by same maker or same brand, exclude current
     $similar = [];
-    $maker_id = isset($vehicleData['maker_id']) ? (int) $vehicleData['maker_id'] : 0;
-    $brand_id = isset($vehicleData['brand_id']) ? (int) $vehicleData['brand_id'] : 0;
+    $maker_id = isset($itemData['maker_id']) ? (int) $itemData['maker_id'] : 0;
+    $brand_id = isset($itemData['brand_id']) ? (int) $itemData['brand_id'] : 0;
     $whereSim = [];
-    if ($maker_id > 0)
-        $whereSim[] = "vi.vehicle_maker = $maker_id";
-    if ($brand_id > 0)
-        $whereSim[] = "vi.vehicle_brand = $brand_id";
-    if (!empty($whereSim)) {
+    if ($maker_id > 0) {
+        if ($itemType === 'machine') {
+            $whereSim[] = "m.machine_maker = $maker_id";
+        } else {
+            $whereSim[] = "vi.vehicle_maker = $maker_id";
+        }
+    }
+    if ($brand_id > 0) {
+        if ($itemType === 'machine') {
+            $whereSim[] = "m.machine_brand = $brand_id";
+        } else {
+            $whereSim[] = "vi.vehicle_brand = $brand_id";
+        }
+    }
+
+    if (!empty($whereSim) && $itemType === 'vehicle') {
         $whereClause = implode(' OR ', $whereSim);
-        $simQ = mysqli_query($dbc, "SELECT vi.*, m.maker_name, b.brand_name, bt.body_type_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id WHERE ( $whereClause ) AND vi.vehicle_id != $vehicleId AND vi.vehicle_status != 'sold' ORDER BY vi.vehicle_id DESC LIMIT 6");
+        $simQ = mysqli_query($dbc, "SELECT vi.*, m.maker_name, b.brand_name, bt.body_type_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id WHERE ($whereClause) AND vi.vehicle_id != " . (int) $itemData['id'] . " AND vi.vehicle_status != 'sold' ORDER BY vi.vehicle_id DESC LIMIT 6");
         if ($simQ) {
             while ($row = mysqli_fetch_assoc($simQ)) {
                 $vid2 = (int) $row['vehicle_id'];
                 $img = null;
                 $imgR = mysqli_query($dbc, "SELECT vehicle_image_name FROM vehicle_images WHERE vehicle_id = $vid2 ORDER BY vehicle_image_featured DESC, order_no ASC LIMIT 1");
-                if ($imgR && ($ir = mysqli_fetch_assoc($imgR)))
+                if ($imgR && ($ir = mysqli_fetch_assoc($imgR))) {
                     $img = normalizeImageUrl($ir['vehicle_image_name']);
+                }
                 $similar[] = [
                     'id' => $vid2,
+                    'type' => 'vehicle',
                     'stock_id' => $row['vehicle_stock_id'] ?? null,
                     'maker_name' => $row['maker_name'] ?? null,
                     'brand_name' => $row['brand_name'] ?? null,
@@ -835,31 +919,25 @@ if ($resource === 'vehicle' || $resource === 'single_vehicle' || $resource === '
         }
     }
 
-    // fallback: fill with latest vehicles if similar less than 6
-    if (count($similar) < 6) {
-        $excludeIds = array_map('intval', array_column($similar, 'id'));
-        $excludeIds[] = $vehicleId;
-        $excludeClause = '';
-        if (!empty($excludeIds))
-            $excludeClause = ' AND vi.vehicle_id NOT IN (' . implode(',', $excludeIds) . ')';
-        $need = 6 - count($similar);
-        $fillQ = mysqli_query($dbc, "SELECT vi.*, m.maker_name, b.brand_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id WHERE vi.vehicle_status != 'sold' $excludeClause ORDER BY vi.vehicle_id DESC LIMIT $need");
-        if ($fillQ) {
-            while ($row = mysqli_fetch_assoc($fillQ)) {
-                $vid2 = (int) $row['vehicle_id'];
+    if (!empty($whereSim) && $itemType === 'machine') {
+        $whereClause = implode(' OR ', $whereSim);
+        $simQ = mysqli_query($dbc, "SELECT m.machine_id, m.machine_stock_id, m.machine_fob_price, m.machine_year, m.machine_manu_year, m.machine_steering, maker.maker_name, b.brand_name FROM machines m LEFT JOIN maker maker ON m.machine_maker = maker.maker_id LEFT JOIN brands b ON m.machine_brand = b.brand_id WHERE ($whereClause) AND m.machine_id != " . (int) $itemData['id'] . " AND m.machine_sts = 1 AND (m.machine_sale_stts IS NULL OR m.machine_sale_stts != 'sold') ORDER BY m.machine_id DESC LIMIT 6");
+        if ($simQ) {
+            while ($row = mysqli_fetch_assoc($simQ)) {
+                $vid2 = (int) $row['machine_id'];
                 $img = null;
-                $imgR = mysqli_query($dbc, "SELECT vehicle_image_name FROM vehicle_images WHERE vehicle_id = $vid2 ORDER BY vehicle_image_featured DESC, order_no ASC LIMIT 1");
-                if ($imgR && ($ir = mysqli_fetch_assoc($imgR)))
+                $imgR = mysqli_query($dbc, "SELECT vehicle_image_name FROM vehicle_images WHERE vehicle_id = $vid2 AND images_type = 'machine' ORDER BY vehicle_image_featured DESC, order_no ASC LIMIT 1");
+                if ($imgR && ($ir = mysqli_fetch_assoc($imgR))) {
                     $img = normalizeImageUrl($ir['vehicle_image_name']);
+                }
                 $similar[] = [
                     'id' => $vid2,
-                    'stock_id' => $row['vehicle_stock_id'] ?? null,
+                    'type' => 'machine',
+                    'stock_id' => $row['machine_stock_id'] ?? null,
                     'maker_name' => $row['maker_name'] ?? null,
                     'brand_name' => $row['brand_name'] ?? null,
-                    'year' => $row['vehicle_manu_year'] ?? null,
-                    'price' => isset($row['vehicle_est_price']) ? (float) $row['vehicle_est_price'] : null,
-                    'discount' => isset($row['vehicle_discount']) ? (float) $row['vehicle_discount'] : null,
-                    'vehicle_mode' => $row['vehicle_mode'] ?? null,
+                    'year' => $row['machine_manu_year'] ?? null,
+                    'price' => isset($row['machine_fob_price']) ? (float) $row['machine_fob_price'] : null,
                     'featured_image' => $img,
                 ];
             }
@@ -868,7 +946,7 @@ if ($resource === 'vehicle' || $resource === 'single_vehicle' || $resource === '
 
     respondJson(200, [
         'status' => 'success',
-        'vehicle' => $vehicleData,
+        'item' => $itemData,
         'similar' => $similar,
     ]);
 
@@ -1279,6 +1357,344 @@ if ($resource === 'search') {
         'vehicles' => $vehicles,
     ]);
 }
+
+
+if ($resource === 'search-parts') {
+    requireApiToken();
+
+    $qs = $_SERVER['QUERY_STRING'] ?? '';
+    $qs = ltrim($qs, '?');
+    parse_str($qs, $params);
+
+    $makerId = null;
+    if (!empty($params['maker']) && $params['maker'] !== 'null' && $params['maker'] !== '0') {
+        $makerId = (int) $params['maker'];
+    } elseif (!empty($params['make']) && $params['make'] !== 'null' && $params['make'] !== '0') {
+        $makerId = (int) $params['make'];
+    } elseif (!empty($params['maker_id']) && $params['maker_id'] !== 'null' && $params['maker_id'] !== '0') {
+        $makerId = (int) $params['maker_id'];
+    }
+
+    $brandId = null;
+    if (!empty($params['brands']) && $params['brands'] !== 'null' && $params['brands'] !== '0') {
+        $brandId = (int) $params['brands'];
+    } elseif (!empty($params['brand']) && $params['brand'] !== 'null' && $params['brand'] !== '0') {
+        $brandId = (int) $params['brand'];
+    } elseif (!empty($params['brand_id']) && $params['brand_id'] !== 'null' && $params['brand_id'] !== '0') {
+        $brandId = (int) $params['brand_id'];
+    }
+
+    $conditions = ['vp.part_sts = 1'];
+    if ($makerId !== null) {
+        $conditions[] = 'vp.part_maker = ' . $makerId;
+    }
+    if ($brandId !== null) {
+        $conditions[] = 'vp.part_brand = ' . $brandId;
+    }
+    $whereClause = implode(' AND ', $conditions);
+
+    $SERVER_PAGE_SIZE = 10;
+    $limit = $SERVER_PAGE_SIZE;
+    $page = isset($params['page']) ? max(1, (int) $params['page']) : 1;
+    $offset = ($page - 1) * $limit;
+
+    $countSql = "SELECT COUNT(*) AS total FROM vehicle_parts vp WHERE $whereClause";
+    $sql = "SELECT vp.*, m.maker_name, b.brand_name FROM vehicle_parts vp " .
+        "LEFT JOIN maker m ON vp.part_maker = m.maker_id " .
+        "LEFT JOIN brands b ON vp.part_brand = b.brand_id " .
+        "WHERE $whereClause " .
+        "ORDER BY vp.part_id DESC LIMIT $limit OFFSET $offset";
+
+    $countResult = mysqli_query($dbc, $countSql);
+    if (!$countResult) {
+        respondJson(500, [
+            'status' => 'error',
+            'message' => 'Failed to count parts.',
+            'details' => mysqli_error($dbc)
+        ]);
+    }
+
+    $countRow = mysqli_fetch_assoc($countResult);
+    $total = (int) $countRow['total'];
+    $total_pages = $limit > 0 ? (int) ceil($total / $limit) : 0;
+    $current_page = $page;
+    $has_next = ($offset + $limit) < $total;
+    $has_prev = $page > 1;
+    $next_page = $has_next ? $current_page + 1 : null;
+    $prev_page = $has_prev ? $current_page - 1 : null;
+
+    $result = mysqli_query($dbc, $sql);
+    if (!$result) {
+        respondJson(500, [
+            'status' => 'error',
+            'message' => 'Failed to fetch parts.',
+            'details' => mysqli_error($dbc)
+        ]);
+    }
+
+    $parts = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $partId = (int) $row['part_id'];
+        $image = null;
+        $imgQuery = "SELECT vehicle_image_name FROM vehicle_images WHERE vehicle_id = $partId AND images_type = 'part' ORDER BY vehicle_image_featured DESC, order_no ASC LIMIT 1";
+        $imgResult = mysqli_query($dbc, $imgQuery);
+        if ($imgResult && ($imgRow = mysqli_fetch_assoc($imgResult))) {
+            $image = normalizeImageUrl($imgRow['vehicle_image_name']);
+        }
+
+        $parts[] = [
+            'id' => $partId,
+            'stock_id' => $row['part_stock_id'] ?? null,
+            'maker_name' => $row['maker_name'] ?? null,
+            'brand_name' => $row['brand_name'] ?? null,
+
+            'part_color' => $row['part_color'] ?? null,
+            'part_year' => $row['part_year'] ?? null,
+            'part_manu_year' => $row['part_manu_year'] ?? null,
+            'part_package' => $row['part_package'] ?? null,
+            'part_fob_price' => isset($row['part_fob_price']) ? (float) $row['part_fob_price'] : null,
+            'part_note' => $row['part_note'] ?? null,
+            'part_condition_remarks' => $row['part_condition_remarks'] ?? null,
+            'featured_image' => $image,
+        ];
+    }
+
+    respondJson(200, [
+        'status' => 'success',
+        'total' => $total,
+        'page' => $current_page,
+        'total_pages' => $total_pages,
+        'has_next' => $has_next,
+        'has_prev' => $has_prev,
+        'next_page' => $next_page,
+        'prev_page' => $prev_page,
+        'count' => count($parts),
+        'parts' => $parts,
+    ]);
+}
+
+if ($resource === 'part' || $resource === 'single_part' || $resource === 'single-part') {
+    requireApiToken();
+
+    // Normalize query string to be tolerant of malformed requests
+    $qs = $_SERVER['QUERY_STRING'] ?? '';
+    $qs = ltrim($qs, '?');
+    parse_str($qs, $params);
+
+    $escape = fn($v) => mysqli_real_escape_string($dbc, trim((string) $v));
+
+    $part = null;
+    if (!empty($params['part_id'])) {
+        $partId = (int) $params['part_id'];
+        $q = "SELECT vp.*, m.maker_name, b.brand_name FROM vehicle_parts vp LEFT JOIN maker m ON vp.part_maker = m.maker_id LEFT JOIN brands b ON vp.part_brand = b.brand_id WHERE vp.part_id = $partId LIMIT 1";
+        $res = mysqli_query($dbc, $q);
+        if ($res) {
+            $part = mysqli_fetch_assoc($res);
+        }
+    } elseif (!empty($params['id'])) {
+        $partId = (int) $params['id'];
+        $q = "SELECT vp.*, m.maker_name, b.brand_name FROM vehicle_parts vp LEFT JOIN maker m ON vp.part_maker = m.maker_id LEFT JOIN brands b ON vp.part_brand = b.brand_id WHERE vp.part_id = $partId LIMIT 1";
+        $res = mysqli_query($dbc, $q);
+        if ($res) {
+            $part = mysqli_fetch_assoc($res);
+        }
+    } elseif (!empty($params['part_stock_id']) || !empty($params['stock_id'])) {
+        $stock = $escape($params['part_stock_id'] ?? $params['stock_id']);
+        $q = "SELECT vp.*, m.maker_name, b.brand_name FROM vehicle_parts vp LEFT JOIN maker m ON vp.part_maker = m.maker_id LEFT JOIN brands b ON vp.part_brand = b.brand_id WHERE vp.part_stock_id = '$stock' LIMIT 1";
+        $res = mysqli_query($dbc, $q);
+        if ($res) {
+            $part = mysqli_fetch_assoc($res);
+        }
+    }
+
+    if (!$part) {
+        respondJson(404, [
+            'status' => 'error',
+            'message' => 'Part not found.'
+        ]);
+    }
+
+    $partId = (int) $part['part_id'];
+
+    $images = [];
+    $imgQ = mysqli_query($dbc, "SELECT vehicle_image_name FROM vehicle_images WHERE vehicle_id = $partId AND images_type = 'part' ORDER BY vehicle_image_featured DESC, order_no ASC");
+    while ($ir = mysqli_fetch_assoc($imgQ)) {
+        $images[] = normalizeImageUrl($ir['vehicle_image_name']);
+    }
+
+    $partData = [
+        'id' => $partId,
+        'stock_id' => $part['part_stock_id'] ?? null,
+        'type' => 'part',
+        'maker_name' => $part['maker_name'] ?? null,
+        'brand_name' => $part['brand_name'] ?? null,
+        'chassis_no' => $part['part_chassis_no'] ?? null,
+        'part_no' => $part['part_no'] ?? null,
+        'part_cc' => $part['part_cc'] ?? null,
+        'part_color' => $part['part_color'] ?? null,
+        'part_year' => $part['part_year'] ?? null,
+        'part_manu_year' => $part['part_manu_year'] ?? null,
+        'part_package' => $part['part_package'] ?? null,
+        'part_fob_price' => isset($part['part_fob_price']) ? (float) $part['part_fob_price'] : null,
+        'part_transmission' => $part['part_transmission'] ?? null,
+        'part_steering' => $part['part_steering'] ?? null,
+        'part_fuel' => $part['part_fuel'] ?? null,
+        'part_km' => $part['part_km'] ?? null,
+        'part_weight' => $part['part_weight'] ?? null,
+        'part_note' => $part['part_note'] ?? null,
+        'part_condition_remarks' => $part['part_condition_remarks'] ?? null,
+        'status' => $part['part_sts'] ?? null,
+        'created_at' => $part['part_timestamp'] ?? null,
+        'images' => $images,
+        'featured_image' => $images[0] ?? null,
+    ];
+
+    $similar = [];
+    $similarConditions = [];
+    if (!empty($part['part_maker'])) {
+        $similarConditions[] = 'vp.part_maker = ' . (int) $part['part_maker'];
+    }
+    if (!empty($part['part_brand'])) {
+        $similarConditions[] = 'vp.part_brand = ' . (int) $part['part_brand'];
+    }
+
+    if (!empty($similarConditions)) {
+        $similarWhere = implode(' OR ', $similarConditions);
+        $simQ = mysqli_query($dbc, "SELECT vp.part_id, vp.part_stock_id, vp.part_no, vp.part_fob_price, vp.part_year, vp.part_transmission, vp.part_steering, m.maker_name, b.brand_name FROM vehicle_parts vp LEFT JOIN maker m ON vp.part_maker = m.maker_id LEFT JOIN brands b ON vp.part_brand = b.brand_id WHERE ($similarWhere) AND vp.part_id != $partId AND vp.part_sts = 1 ORDER BY vp.part_id DESC LIMIT 6");
+        if ($simQ) {
+            while ($row = mysqli_fetch_assoc($simQ)) {
+                $simImage = null;
+                $imgR = mysqli_query($dbc, "SELECT vehicle_image_name FROM vehicle_images WHERE vehicle_id = " . (int) $row['part_id'] . " AND images_type = 'part' ORDER BY vehicle_image_featured DESC, order_no ASC LIMIT 1");
+                if ($imgR && ($ir = mysqli_fetch_assoc($imgR))) {
+                    $simImage = normalizeImageUrl($ir['vehicle_image_name']);
+                }
+                $similar[] = [
+                    'id' => (int) $row['part_id'],
+                    'stock_id' => $row['part_stock_id'] ?? null,
+                    'maker_name' => $row['maker_name'] ?? null,
+                    'brand_name' => $row['brand_name'] ?? null,
+                    'part_no' => $row['part_no'] ?? null,
+                    'part_fob_price' => isset($row['part_fob_price']) ? (float) $row['part_fob_price'] : null,
+                    'part_year' => $row['part_year'] ?? null,
+                    'part_transmission' => $row['part_transmission'] ?? null,
+                    'part_steering' => $row['part_steering'] ?? null,
+                    'featured_image' => $simImage,
+                ];
+            }
+        }
+    }
+
+    respondJson(200, [
+        'status' => 'success',
+        'part' => $partData,
+        'similar' => $similar,
+    ]);
+}
+
+
+// POST /api/catalog/inquiry  — submit a vehicle inquiry
+if ($resource === 'inquiry') {
+    requireApiToken();
+
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        respondJson(405, [
+            'status' => 'error',
+            'message' => 'Method Not Allowed. Use POST.',
+        ]);
+    }
+
+    // Parse body: supports application/json and application/x-www-form-urlencoded / multipart
+    $body = [];
+    $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+    if (stripos($contentType, 'application/json') !== false) {
+        $raw = file_get_contents('php://input');
+        $decoded = json_decode($raw, true);
+        if (is_array($decoded)) {
+            $body = $decoded;
+        }
+    } else {
+        $body = $_POST;
+    }
+
+    // Required field validation
+    $required = [
+        'inquiry_fullName' => 'Full Name',
+        'vehicle_id' => 'Vehicle ID',
+        'inquiry_email' => 'Email',
+        'inquiry_phoneNumber' => 'Phone Number',
+        'inquiry_country' => 'Country',
+        'inquiry_of' => 'Inquiry Of',
+    ];
+
+    $missing = [];
+    foreach ($required as $field => $label) {
+        if (empty($body[$field])) {
+            $missing[] = $label;
+        }
+    }
+    if (!empty($missing)) {
+        respondJson(422, [
+            'status' => 'error',
+            'message' => 'Missing required fields: ' . implode(', ', $missing),
+            'fields' => $missing,
+        ]);
+    }
+
+    // Validate email
+    if (!filter_var(trim($body['inquiry_email']), FILTER_VALIDATE_EMAIL)) {
+        respondJson(422, [
+            'status' => 'error',
+            'message' => 'Invalid email address.',
+        ]);
+    }
+
+    // Decode vehicle_id (base64-encoded on the frontend, same as legacy code)
+    $rawVehicleId = $body['vehicle_id'];
+    $vehicleId = base64_decode($rawVehicleId, true);
+    if ($vehicleId === false) {
+        // Fallback: treat as plain value if base64 decode fails
+        $vehicleId = $rawVehicleId;
+    }
+
+    // Handle inquiry_services (may be array or JSON string)
+    $inquiryServices = '';
+    if (!empty($body['inquiry_services'])) {
+        $svc = $body['inquiry_services'];
+        if (is_array($svc)) {
+            $inquiryServices = json_encode($svc);
+        } elseif (is_string($svc)) {
+            // Validate it is valid JSON before storing
+            $decoded = json_decode($svc, true);
+            $inquiryServices = ($decoded !== null) ? $svc : json_encode([$svc]);
+        }
+    }
+
+    $data = [
+        'inquiry_name' => trim($body['inquiry_fullName']),
+        'vehicle_id' => trim((string) $vehicleId),
+        'inquiry_email' => trim($body['inquiry_email']),
+        'inquiry_phone' => trim($body['inquiry_phoneNumber']),
+        'inquiry_msg' => trim($body['inquiry_msg'] ?? ''),
+        'inquiry_country' => trim($body['inquiry_country']),
+        'inquiry_of' => trim($body['inquiry_of']),
+        'inquiry_sts' => 1,
+        'inquiry_services' => $inquiryServices,
+    ];
+
+    if (apiInsert($dbc, 'pending_inquiry', $data)) {
+        respondJson(200, [
+            'status' => 'success',
+            'message' => 'Inquiry has been submitted successfully.',
+        ]);
+    } else {
+        respondJson(500, [
+            'status' => 'error',
+            'message' => 'Failed to submit inquiry.',
+            'details' => mysqli_error($dbc),
+        ]);
+    }
+}
+
 
 respondJson(404, [
     'status' => 'error',

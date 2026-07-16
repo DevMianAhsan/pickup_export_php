@@ -105,7 +105,7 @@ include_once "inc/code.php";
 							$vehicle=fetchRecord($dbc,"machines","machine_id",$r['vehicle_id']);
 
 							$brand=fetchRecord($dbc,"brands","brand_id",$vehicle['machine_brand']);
-							$maker=fetchRecord($dbc,"maker","maker_id",$vehicle['machine_maker']);
+							@$maker=fetchRecord($dbc,"maker","maker_id",@$vehicle['machine_maker']);
 
 						}elseif($_GET['inquiry_of'] == 'part'){
 							$vehicle=fetchRecord($dbc,"vehicle_parts","part_id",$r['vehicle_id']);
@@ -113,8 +113,8 @@ include_once "inc/code.php";
 							$maker=fetchRecord($dbc,"maker","maker_id",$vehicle['part_maker']);
 						}else{
 							$vehicle=fetchRecord($dbc,"vehicle_info","vehicle_id",$r['vehicle_id']);
-							$brand=fetchRecord($dbc,"brands","brand_id",$vehicle['vehicle_brand']);
-							$maker=fetchRecord($dbc,"maker","maker_id",$vehicle['vehicle_maker']);
+							$brand=fetchRecord($dbc,"brands","brand_id",@$vehicle['vehicle_brand']);
+							@$maker=fetchRecord($dbc,"maker","maker_id",@$vehicle['vehicle_maker']);
 						}
 				
 				
@@ -123,7 +123,7 @@ include_once "inc/code.php";
 			?>
 					<tr>	
 					<td><?=$r['p_inquiry_id']?></td>
-					<td><?=$maker['maker_name']?> <?=$brand['brand_name']?><br/>
+					<td><?=@$maker['maker_name']?> <?=@$brand['brand_name']?><br/>
 					<?php if($_GET['inquiry_of'] == 'vehicle'){
 						?>
 						<button onclick="loadData('vehicle_info', <?=$vehicle['vehicle_id']?>)" class="dropdown-item text-success view">Vehicle Info</button>
