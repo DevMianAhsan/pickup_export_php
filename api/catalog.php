@@ -1,25 +1,45 @@
 <?php
 require_once __DIR__ . '/bootstrap.php';
 
-$path = '/';
-if (!empty($_SERVER['PATH_INFO'])) {
-    $path = $_SERVER['PATH_INFO'];
-} elseif (!empty($_SERVER['REQUEST_URI'])) {
-    $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-    $projectBase = '/Pickup_Export_old';
-    if (strpos($requestUri, $projectBase) === 0) {
-        $requestUri = substr($requestUri, strlen($projectBase));
+function resolveCatalogPath(): string
+{
+    if (!empty($_SERVER['PATH_INFO'])) {
+        return (string) $_SERVER['PATH_INFO'];
     }
 
-    $basePath = '/api/catalog';
-    if (strpos($requestUri, $basePath) === 0) {
-        $path = substr($requestUri, strlen($basePath));
-    } elseif (strpos($requestUri, '/api/catalog.php') === 0) {
-        $path = substr($requestUri, strlen('/api/catalog.php'));
-    } else {
-        $path = $requestUri;
+    if (empty($_SERVER['REQUEST_URI'])) {
+        return '/';
     }
+
+    $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    if ($requestUri === null || $requestUri === '') {
+        return '/';
+    }
+
+    $baseCandidates = [
+        '/api/catalog',
+        '/api/catalog.php',
+        '/Pickup_Export_old/api/catalog',
+        '/Pickup_Export_old/api/catalog.php',
+        '/Pickup_Export_php/api/catalog',
+        '/Pickup_Export_php/api/catalog.php',
+    ];
+
+    foreach ($baseCandidates as $basePath) {
+        if (strpos($requestUri, $basePath) === 0) {
+            $suffix = substr($requestUri, strlen($basePath));
+            return $suffix === '' ? '/' : $suffix;
+        }
+    }
+
+    if (preg_match('#/api(?:/catalog)?(?:\.php)?/?(.*)$#', $requestUri, $matches)) {
+        return '/' . ltrim($matches[1], '/');
+    }
+
+    return $requestUri;
 }
+
+$path = resolveCatalogPath();
 $segments = array_values(array_filter(explode('/', trim($path, '/'))));
 
 if ($segments === []) {
@@ -647,6 +667,7 @@ if ($resource === 'latest_discounted' || $resource === 'latest-discounted') {
             'title' => $row['maker_name'] . " " . $row['brand_name'] ?? null,
             'year' => $row['year'] ?? null,
             'fuel' => $row['fuel'] ?? null,
+            'price' => $row['price'] ?? null,
             'transmission' => $row['transmission'] ?? null,
             'driven' => $row['driven'] ?? null,
             'steering' => $row['steering'] ?? null,
@@ -1594,7 +1615,7 @@ if ($resource === 'part' || $resource === 'single_part' || $resource === 'single
 
 // POST /api/catalog/inquiry  — submit a vehicle inquiry
 if ($resource === 'inquiry') {
-    requireApiToken();
+    requireApiToken(true);
 
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         respondJson(405, [
@@ -1695,7 +1716,85 @@ if ($resource === 'inquiry') {
     }
 }
 
+// POST /api/catalog/contact  — submit a contact form inquiry
+if ($resource === 'contact') {
+    requireApiToken(true);
 
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+        respondJson(405, [
+            'status' => 'error',
+            'message' => 'Method Not Allowed. Use POST.',
+        ]);
+    }
+
+    // Parse body: supports application/json and application/x-www-form-urlencoded / multipart
+    $body = [];
+    $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
+    if (stripos($contentType, 'application/json') !== false) {
+        $raw = file_get_contents('php://input');
+        $decoded = json_decode($raw, true);
+        if (is_array($decoded)) {
+            $body = $decoded;
+        }
+    } else {
+        $body = $_POST;
+    }
+
+    // Required field validation
+    $required = [
+        'fullName' => 'Full Name',
+        'email' => 'Email',
+        'phoneNumber' => 'Phone Number',
+        'subject' => 'Subject',
+    ];
+
+    $missing = [];
+    foreach ($required as $field => $label) {
+        if (empty($body[$field])) {
+            $missing[] = $label;
+        }
+    }
+    if (!empty($missing)) {
+        respondJson(422, [
+            'status' => 'error',
+            'message' => 'Missing required fields: ' . implode(', ', $missing),
+            'fields' => $missing,
+        ]);
+    }
+
+    // Validate email
+    if (!filter_var(trim($body['email']), FILTER_VALIDATE_EMAIL)) {
+        respondJson(422, [
+            'status' => 'error',
+            'message' => 'Invalid email address.',
+        ]);
+    }
+
+
+    $data = [
+        'inquiry_name' => trim($body['fullName']),
+        'vehicle_id' => 0,
+        'inquiry_email' => trim($body['email']),
+        'inquiry_phone' => trim($body['phoneNumber']),
+        'inquiry_msg' => trim($body['message'] ?? ''),
+        'inquiry_services' => trim($body['subject']),
+        'inquiry_of' => 'contact',
+        'inquiry_sts' => 1,
+    ];
+
+    if (apiInsert($dbc, 'pending_inquiry', $data)) {
+        respondJson(200, [
+            'status' => 'success',
+            'message' => 'Inquiry has been submitted successfully.',
+        ]);
+    } else {
+        respondJson(500, [
+            'status' => 'error',
+            'message' => 'Failed to submit inquiry.',
+            'details' => mysqli_error($dbc),
+        ]);
+    }
+}
 respondJson(404, [
     'status' => 'error',
     'message' => 'Endpoint not found.'

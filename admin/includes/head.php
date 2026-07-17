@@ -223,7 +223,72 @@
             background: rgba(0,0,0,.45);
           }
         }
-      </style>
-      </style>
+        }
+
+          /* === DataTables Pagination — Red Theme === */
+
+          /* Default state for ALL pagination buttons (numbers + prev/next) */
+          .dataTables_wrapper .dataTables_paginate .paginate_button,
+          .paging_simple_numbers .page-item .page-link,
+          .paging_simple_numbers .page-item a,
+          .page-item .page-link {
+            background: transparent !important;
+            background-image: none !important;
+            border: 1px solid transparent !important;
+            box-shadow: none !important;
+            color: #6c757d !important;
+            outline: none !important;
+          }
+
+          /* Active page number — red background, white text */
+          .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+          .dataTables_wrapper .dataTables_paginate .paginate_button.current a,
+          .dataTables_wrapper .dataTables_paginate .paginate_button.current span,
+          .paging_simple_numbers .page-item.active .page-link,
+          .paging_simple_numbers .page-item.active a,
+          .page-item.active .page-link {
+            background: #E44F56 !important;
+            border: 1px solid #E44F56 !important;
+            color: #ffffff !important;
+            box-shadow: none !important;
+          }
+
+          /* Hover for page NUMBER buttons only — red background, white text */
+          .paging_simple_numbers .page-item:not(.previous):not(.next) .page-link:hover,
+          .paging_simple_numbers .page-item:not(.previous):not(.next) a:hover,
+          .dataTables_wrapper .dataTables_paginate .paginate_button:not(.previous):not(.next):hover {
+            background: #E44F56 !important;
+            border: 1px solid #E44F56 !important;
+            color: #ffffff !important;
+            box-shadow: none !important;
+            outline: none !important;
+          }
+
+          /* Hover for Previous/Next buttons — red background, white text (hidden bg until hover) */
+          .paging_simple_numbers .page-item.previous .page-link:hover,
+          .paging_simple_numbers .page-item.next .page-link:hover,
+          .paging_simple_numbers .page-item.previous a:hover,
+          .paging_simple_numbers .page-item.next a:hover {
+            background: #E44F56 !important;
+            border: 1px solid #E44F56 !important;
+            color: #ffffff !important;
+            box-shadow: none !important;
+            outline: none !important;
+          }
+
+          /* Remove focus ring from all pagination buttons */
+          .paging_simple_numbers .page-item .page-link:focus,
+          .paging_simple_numbers .page-item .page-link:active,
+          .paging_simple_numbers .page-item a:focus,
+          .paging_simple_numbers .page-item a:active,
+          .dataTables_wrapper .dataTables_paginate .paginate_button:focus,
+          .dataTables_wrapper .dataTables_paginate .paginate_button:active,
+          .page-link:focus,
+          .page-link:active {
+            box-shadow: none !important;
+            outline: none !important;
+          }
+
+        </style>
   </head>
   

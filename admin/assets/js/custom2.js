@@ -13,9 +13,9 @@
 
 
   //Save Data into Database
-$('#formDatafinal2').submit(function(){
+$('#formDatafinal2').off('submit').on('submit', function(e){
     
-    event.preventDefault();
+    e.preventDefault();
      var form = $('#formDatafinal');
         alert("anc");
         
@@ -42,7 +42,7 @@ $('#formDatafinal2').submit(function(){
         });//ajax call
    });
 
-$("#formDataIQ").on('submit',function(e) {
+$("#formDataIQ").off('submit').on('submit',function(e) {
         e.preventDefault();
         e.stopPropagation(); // only neccessary if something above is listening to the (default-)event too
         var form = $('#formDataIQ');

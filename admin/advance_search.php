@@ -10,7 +10,7 @@ include_once "inc/code.php";
 ?>
 <style>
   .page-item.active .page-link {
-    background-color: #55317E !important;
+    background-color: red !important;
     border-color: #55317E !important;
   }
 </style>
@@ -119,7 +119,7 @@ include_once "inc/code.php";
               <div class="col-md-4 col-lg-2 col-sm">
                 <input type="hidden" name="advance" value="gs">
                 <label class="" for="validationDefault01">Maker</label>
-                <select class="form-control select2-show-search border-bottom-0 w-100 br-3" data-placeholder="Select"
+                <select class="form-control select2 border-bottom-0 w-100 br-3" data-placeholder="Select"
                   name="maker" id="makers" required>
                   <optgroup label="Makers">
                     <option value="null">Choose Maker</option>
@@ -139,7 +139,7 @@ include_once "inc/code.php";
                   </optgroup>
                 </select> -->
                 <label class="" for="validationDefault02">Brand</label>
-                <select class="form-control select2-show-search border-bottom-0 w-100 br-3"
+                <select class="form-control select2 border-bottom-0 w-100 br-3"
                   onchange="loadChassis(this.value)" data-placeholder="Select" name="brands" id="model">
                   <optgroup label="Brands">
                     <option value="null">Select Brand</option>
@@ -210,7 +210,7 @@ include_once "inc/code.php";
               <div class="col-md-4 col-lg-2 col-sm" style="">
                 <label for="validationDefault02">Color: </label>
                 <div class="form-group">
-                  <select class="form-control select2-show-search border-bottom-0 border-left-0 "
+                  <select class="form-control select2 border-bottom-0 border-left-0 "
                     data-placeholder="Select" name="color">
                     <option value="null">Select Color</option>
                     <option value="Beige">Beige</option>
@@ -271,7 +271,7 @@ include_once "inc/code.php";
                 <label for="validationDefault02">Price Range</label>
                 <div class="row">
                   <div class="col-md-6">
-                    <select class="form-control select2-show-search border-bottom-0 border-left-0 w-100"
+                    <select class="form-control select2 border-bottom-0 border-left-0 w-100"
                       data-placeholder="Select" name="min_price">
                       <optgroup label="MIN">
 
@@ -289,7 +289,7 @@ include_once "inc/code.php";
                     </select>
                   </div>
                   <div class="col-md-6">
-                    <select class="form-control select2-show-search border-bottom-0 border-left-0 w-100"
+                    <select class="form-control select2 border-bottom-0 border-left-0 w-100"
                       data-placeholder="Select" name="max_price">
                       <optgroup label="MAX">
 
@@ -314,7 +314,7 @@ include_once "inc/code.php";
 
                   <label for="validationDefault04" class="text-center">Body Type</label><br />
 
-                  <select class="form-control select2-show-search" name="body_type">
+                  <select class="form-control select2" name="body_type">
                     <option value="null">Select Body Type</option>
                     <?php
                     $type = mysqli_query($dbc, "SELECT * FROM body_type ORDER BY body_type_name ASC");
@@ -329,7 +329,7 @@ include_once "inc/code.php";
                 <div class="col-md-6">
 
                   <label for="validationDefault04" class="text-center">Fuel Type</label><br />
-                  <select class="form-control select2-show-search" name="fuel_type">
+                  <select class="form-control select2" name="fuel_type">
                     <option value="null">~Select~</option>
                     <?php
                     $fuel_type = mysqli_query($dbc, "SELECT * FROM fuel ORDER BY fuel_name ASC");
@@ -353,7 +353,7 @@ include_once "inc/code.php";
                 <label for="validationDefault02">Engine Size</label>
                 <div class="row">
                   <div class="col-md-6">
-                    <select class="form-control select2-show-search border-bottom-0 border-left-0 w-100"
+                    <select class="form-control select2 border-bottom-0 border-left-0 w-100"
                       data-placeholder="Select" name="from_engine">
                       <optgroup label="Type">
                         <option value="null">From</option>
@@ -371,7 +371,7 @@ include_once "inc/code.php";
                     </select>
                   </div>
                   <div class="col-md-6">
-                    <select class="form-control select2-show-search border-bottom-0 border-left-0 w-100"
+                    <select class="form-control select2 border-bottom-0 border-left-0 w-100"
                       data-placeholder="Select" name="to_engine">
                       <optgroup label="Type">
                         <option value="null">To</option>
@@ -394,7 +394,7 @@ include_once "inc/code.php";
                 <label for="validationDefault02">Mileage </label>
                 <div class="row">
                   <div class="col-md-6">
-                    <select class="form-control select2-show-search border-bottom-0 border-left-0 w-100"
+                    <select class="form-control select2 border-bottom-0 border-left-0 w-100"
                       data-placeholder="Select" name="select2-show-search">
                       <optgroup label="Type">
                         <option value="null">From</option>
@@ -417,7 +417,7 @@ include_once "inc/code.php";
                     </select>
                   </div>
                   <div class="col-md-6">
-                    <select class="form-control select2-show-search border-bottom-0 border-left-0 "
+                    <select class="form-control select2 border-bottom-0 border-left-0 "
                       data-placeholder="Select" name="to_km">
                       <optgroup label="Type">
                         <option value="null">To</option>
@@ -445,7 +445,7 @@ include_once "inc/code.php";
                 <div class="form-group">
                   <div class="row">
                     <div class="col-md-6">
-                      <select class="form-control select2-show-search border-bottom-0 border-left-0 w-100"
+                      <select class="form-control select2 border-bottom-0 border-left-0 w-100"
                         data-placeholder="Select" name="min_body_len">
                         <optgroup label="MIN">
 
@@ -463,7 +463,7 @@ include_once "inc/code.php";
                       </select>
                     </div>
                     <div class="col-md-6">
-                      <select class="form-control select2-show-search border-bottom-0 border-left-0 w-100"
+                      <select class="form-control select2 border-bottom-0 border-left-0 w-100"
                         data-placeholder="Select" name="max_body_len">
                         <optgroup label="MAX">
 
@@ -490,7 +490,7 @@ include_once "inc/code.php";
                 <div class="form-group">
                   <div class="row">
                     <div class="col-md-6">
-                      <select class="form-control select2-show-search border-bottom-0 border-left-0 w-100"
+                      <select class="form-control select2 border-bottom-0 border-left-0 w-100"
                         data-placeholder="Select" name="min_load_capacity">
                         <optgroup label="MIN">
 
@@ -508,7 +508,7 @@ include_once "inc/code.php";
                       </select>
                     </div>
                     <div class="col-md-6">
-                      <select class="form-control select2-show-search border-bottom-0 border-left-0 w-100"
+                      <select class="form-control select2 border-bottom-0 border-left-0 w-100"
                         data-placeholder="Select" name="max_load_capacity">
                         <optgroup label="MAX">
 
@@ -533,7 +533,7 @@ include_once "inc/code.php";
               <div class="col-md-2" style="">
                 <label for="validationDefault02">Engine Type: </label>
                 <div class="form-group">
-                  <select class="form-control select2-show-search border-bottom-0 border-left-0 "
+                  <select class="form-control select2 border-bottom-0 border-left-0 "
                     data-placeholder="Select" name="engine_type">
                     <option value="null">Select Type</option>
                     <?php
@@ -551,7 +551,7 @@ include_once "inc/code.php";
                 <label for="validationDefault02">Discount%</label>
                 <div class="row">
                   <div class="col-md-6">
-                    <select class="form-control select2-show-search border-bottom-0 border-left-0 w-100"
+                    <select class="form-control select2 border-bottom-0 border-left-0 w-100"
                       data-placeholder="Select" name="min_disc">
                       <optgroup label="MIN">
 
@@ -569,7 +569,7 @@ include_once "inc/code.php";
                     </select>
                   </div>
                   <div class="col-md-6">
-                    <select class="form-control select2-show-search border-bottom-0 border-left-0 w-100"
+                    <select class="form-control select2 border-bottom-0 border-left-0 w-100"
                       data-placeholder="Select" name="max_disc">
                       <optgroup label="MAX">
 
@@ -609,7 +609,7 @@ include_once "inc/code.php";
               <div class="col-md-2 d-flex align-items-center" style="text-align: left">
                 <div class="form-group ">
                   <div class="form-check">
-                    <button style="background-color: #55317E !important; color: #fff;margin-top: 30px !important;"
+                    <button style="background-color: red !important; color: #fff;margin-top: 30px !important;"
                       class="btn  btns mt-1" type="submit">
                       <span class="glyphicon glyphicon-search "></span>
                       Search
@@ -765,11 +765,11 @@ include_once "inc/code.php";
                             <a style="color: black;" href="trade.php?vehicle_id=<?= $r['vehicle_id'] ?>">
                             <?php endif ?>
                             <br>
-                            Brand Name : <?= fetchRecord($dbc, "brands", "brand_id", $r['vehicle_brand'])['brand_name'] ?>
+                            Brand Name : <?= @fetchRecord($dbc, "brands", "brand_id", @$r['vehicle_brand'])['brand_name'] ?>
                             <br>
-                            Stock ID : <?= $r['vehicle_stock_id'] ?> <br>
-                            Chassis No : <?= $r['vehicle_chassis_no'] ?> <br>
-                            Engine No : <?= $r['vehicle_engine_no'] ?><br>
+                            Stock ID : <?= @$r['vehicle_stock_id'] ?> <br>
+                            Chassis No : <?= @$r['vehicle_chassis_no'] ?> <br>
+                            Engine No : <?= @$r['vehicle_engine_no'] ?><br>
                             <?php if (@$userPrivileges['nav_edit'] == 1 || $fetchedUserRole == "admin"): ?>
                             </a>
                           <?php endif ?>
@@ -780,8 +780,8 @@ include_once "inc/code.php";
                         </td>
                         <td>
                           <?php
-                          $in = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT * FROM invoice WHERE invoice_quotation != 'quotation' AND invoice_vehicle = '$r[vehicle_id]'"));
-                          $get_trans = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT SUM(credit-debit) as nowbalance,SUM(credit) as paidamount  ,invoice_id,customer_id,vehicle_id  FROM transactions WHERE vehicle_id = '$r[vehicle_id]'  GROUP BY vehicle_id"));
+                          $in = @mysqli_fetch_assoc(mysqli_query($dbc, "SELECT * FROM invoice WHERE invoice_quotation != 'quotation' AND invoice_vehicle = '$r[vehicle_id]'"));
+                          $get_trans = @mysqli_fetch_assoc(mysqli_query($dbc, "SELECT SUM(credit-debit) as nowbalance,SUM(credit) as paidamount  ,invoice_id,customer_id,vehicle_id  FROM transactions WHERE vehicle_id = '$r[vehicle_id]'  GROUP BY vehicle_id"));
                           //echo "SELECT * FROM invoice WHERE invoice_quotation != 'quotation' AND invoice_vehicle = '$r[vehicle_id]'";
                           if (@$r['vehicle_sale_stts']) {
                             ?>

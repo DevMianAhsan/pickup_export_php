@@ -185,4 +185,3 @@ include_once "inc/code.php";
 include_once "includes/footer.php";
 
 ?>
-<script type="text/javascript" src="assets/js/custom2.js"></script>

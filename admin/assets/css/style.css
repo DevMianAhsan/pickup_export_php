@@ -10178,17 +10178,18 @@ tr.group:hover {
 
 }
 
-.paging_simple_numbers .page-item.active a{
+.paging_simple_numbers .page-item.active a,
+.paging_simple_numbers .page-item.active .page-link {
 
-    background-color: #9c27b0;
+    background-color: #E44F56;
 
-     border-radius: 50%;
+    border-radius: 50%;
 
-    border-color: #9c27b0;
+    border-color: #E44F56;
 
     margin: 5px;
 
-    box-shadow: 0 4px 5px 0 rgba(156, 39, 176, 0.14), 0 1px 10px 0 rgba(156, 39, 176, 0.12), 0 2px 4px -1px rgba(156, 39, 176, 0.2);
+    box-shadow: 0 4px 5px 0 rgba(228, 79, 86, 0.14), 0 1px 10px 0 rgba(228, 79, 86, 0.12), 0 2px 4px -1px rgba(228, 79, 86, 0.2);
 
     padding: 0px 12px;
 
@@ -10202,17 +10203,14 @@ tr.group:hover {
 
 }
 
-.paging_simple_numbers .page-item a{
+.paging_simple_numbers .page-item a,
+.paging_simple_numbers .page-item .page-link {
 
-	color: gray;
+	color: #6c757d;
 
     margin: 5px;
 
     border-radius: 50%;
-
-    color: gray;
-
-    margin: 5px;
 
     padding: 0px 12px;
 
@@ -10222,13 +10220,29 @@ tr.group:hover {
 
     text-transform: uppercase;
 
+    border: 1px solid #E44F56;
+
+}
+
+.paging_simple_numbers .page-item a:hover,
+.paging_simple_numbers .page-item .page-link:hover,
+.paging_simple_numbers .page-item.active a:hover,
+.paging_simple_numbers .page-item.active .page-link:hover {
+
+	color: #ffffff;
+
+    background-color: #E44F56;
+
+    border-color: #E44F56;
+
 }
 
 .paging_simple_numbers .page-item.next a,
+.paging_simple_numbers .page-item.previous a,
+.paging_simple_numbers .page-item.next .page-link,
+.paging_simple_numbers .page-item.previous .page-link {
 
-.paging_simple_numbers .page-item.previous a{
-
-	color: #928a8a;
+	color: #E44F56;
 
     background-color: #fff;
 
@@ -10236,7 +10250,20 @@ tr.group:hover {
 
     text-transform: uppercase;
 
-    border: 0;
+    border: 1px solid #E44F56;
+
+}
+
+.paging_simple_numbers .page-item.next a:hover,
+.paging_simple_numbers .page-item.previous a:hover,
+.paging_simple_numbers .page-item.next .page-link:hover,
+.paging_simple_numbers .page-item.previous .page-link:hover {
+
+	color: #ffffff;
+
+    background-color: #E44F56;
+
+    border-color: #E44F56;
 
 }
 

@@ -841,7 +841,7 @@ require_once("custom/vendor/autoload.php");
 
 				<div class="form-group">
 
-					<label for="">Sale Rate</label>
+					<label for="">FOB Price</label>
 
 					<input type="text" name="vehicle_est_price" id="vehicle_est_price" required="required"
 						class="form-control form-control-sm">
