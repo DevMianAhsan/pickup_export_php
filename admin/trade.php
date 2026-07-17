@@ -527,7 +527,7 @@ span.step {
 
             <div class="col-sm-4">
 
-                  <label for="">Sale Price</label>
+                  <label for="">FOB Price</label>
 
                   <input type="text" class="form-control" id="vehicle_estimated_price" readonly="readonly" value="<?=@$stock['vehicle_est_price']?>">
 

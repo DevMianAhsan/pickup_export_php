@@ -4089,8 +4089,8 @@ if (get($dbc,"color_code  WHERE color_name ='".$_POST['vehicle_color_name']."'  
 
 
 
-			'vehicle_mode' => $_POST['vehicle_mode'],
-			
+			'vehicle_mode' => @$_POST['vehicle_mode'],
+		
 			'vehicle_note_comp' => $_POST['vehicle_note_comp'],
 			
 
@@ -6808,7 +6808,7 @@ if (mysqli_num_rows($q)>0) {
 
 
 
-		 	echo "Record Deleted Successfully From $table Table";	
+		 	echo "Record Deactivated Successfully From $table Table";	
 
 
 

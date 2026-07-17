@@ -789,7 +789,7 @@ require_once("custom/vendor/autoload.php");
 
 				<label for="">Vehicle Type</label>
 
-				<select name="vehicle_type" id="vehicle_type" class="form-control select2">
+				<select name="vehicle_type" id="vehicle_type" class="form-control select2" required>
 
 					<option value="">~~SELECT~~</option>
 
@@ -809,7 +809,7 @@ require_once("custom/vendor/autoload.php");
 
 			<label for="">Country</label>			
 
-			<select name="country_id" id="country_id" class="form-control select2">
+			<select name="country_id" id="country_id" class="form-control select2" required>
 
 						<option value="">~~SELECT~~</option>
 
@@ -862,18 +862,18 @@ require_once("custom/vendor/autoload.php");
 
 					<select name="vehicle_mode" id="vehicle_mode" class="form-control select2">
 
-						<option value=""></option>
+						<option value="">~~ SELECT ~~</option>
 
 						<option value="premium">Premium</option>
-						<option value="Brand New">Brand New</option>
-						<option value="Used">Used</option>
-						<option value="Discounted">Discounted</option>
-						<option value="On Ship">On Ship </option>
-						<option value="On Yard">On Yard</option>
-						<option value=" Local Transit">In Local Transit</option>
-						<option value="Discount">Discount</option>
-						<option value="Reserved">Reserved</option>
-						<option value="Clearance">Clearance</option>
+						<option value="brand new">Brand New</option>
+						<option value="used">Used</option>
+						<option value="discounted">Discounted</option>
+						<option value="on ship">On Ship </option>
+						<option value="on yard">On Yard</option>
+						<option value=" local transit">In Local Transit</option>
+						<option value="discount">Discount</option>
+						<option value="reserved">Reserved</option>
+						<option value="clearance">Clearance</option>
 
 					</select>
 
@@ -1199,14 +1199,10 @@ require_once("custom/vendor/autoload.php");
 		var to_month = $("#vehicle_reg_month :selected").data('id');
 		var result = 0;
 
-		if (from_year > to_year) {
-			//$("#vehicle_reg_month").foucs();
+		if (from_year && to_year && from_year > to_year) {
 			sweeetalertbtn("Warning", "Registration Year should NOT be lower than manufacturing Year", 'warning');
 			$('#vehicle_reg_year').prop('selectedIndex', 0);
 			$('#vehicle_reg_month').prop('selectedIndex', 0);
-
-			// $('.vehicle_reg_month').removeAttr('selected').find('option:first').attr('selected', 'selected');
-
 		}
 
 
@@ -1219,24 +1215,13 @@ require_once("custom/vendor/autoload.php");
 		var to_month = $("#vehicle_reg_month :selected").data('id');
 		var result = 0;
 		if (from_month != 0) {
-
-			if (from_year == to_year) {
-				if (from_month > to_month) {
-
-
-					sweeetalertbtn("Warning", "Registration Month should NOT be lower than manufacturing Month ", 'warning');
-
-					$('#vehicle_reg_month').prop('selectedIndex', 0);
-					// $('.vehicle_reg_month').removeAttr('selected').find('option:first').attr('selected', 'selected');
-
-				}
+			if (from_year && to_year && from_year == to_year && from_month > to_month) {
+				sweeetalertbtn("Warning", "Registration Month should NOT be lower than manufacturing Month ", 'warning');
+				$('#vehicle_reg_month').prop('selectedIndex', 0);
 			}
-		} else if (from_year == '') {
-
+		} else if (!from_year) {
 			sweeetalertbtn("Error", "Select Manufacturing Year ", 'error');
 			$('#vehicle_manu_month').prop('selectedIndex', 0);
-
-
 		}
 
 

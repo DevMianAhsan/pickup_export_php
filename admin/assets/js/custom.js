@@ -1176,6 +1176,11 @@ $("#save_vehicle_docs").on('click',function() {
             },
             success:function (msg) {
                 var responeID = msg.trim();
+                if (!/^\d+$/.test(responeID)) {
+                    sweeetalert("Error", responeID, 'error', 3000);
+                    $('#saveData1').removeAttr("disabled");
+                    return;
+                }
                 $(".vehicle_idMain").val(responeID);
                 $(".stockMain").val(responeID);
                 loadVehicle(responeID,'load');
@@ -1191,6 +1196,10 @@ $("#save_vehicle_docs").on('click',function() {
                 $(".vehicel_main_form").hide();
                 $(".feature_form").show();
             
+            },
+            error: function(xhr, status, error) {
+                sweeetalert("Error", "AJAX request failed: " + error, 'error', 3000);
+                $('#saveData1').removeAttr("disabled");
             }
         });//ajax call
     });//main
