@@ -563,21 +563,22 @@ $target = rtrim($absDir, '/\\') . DIRECTORY_SEPARATOR . $pic;
 if (!$temp_name) {
   $sts = "info";
   $msg = "Please Choose a File Before Clicking";
+  return false;
 } elseif ($size > 500000) {
   $sts = "info";
   $msg = "Not Allowed more than 5 MB file size";
-  unlink($temp_name);
-  // exit();
+  @unlink($temp_name);
+  return false;
 } elseif (!preg_match("/\.(gif|jpg|png|jpeg)$/i", $file_name)) {
   $sts = "info";
   $msg = "Only .jpg , .png and .gif file types are allowed";
-  unlink($temp_name);
-  // exit();
+  @unlink($temp_name);
+  return false;
 } elseif ($errors == 1) {
   $sts = "info";
   $msg = "Error while uploading....";
-  unlink($temp_name);
-  // exit();
+  @unlink($temp_name);
+  return false;
 }
 
 if (move_uploaded_file($temp_name, $target)) {

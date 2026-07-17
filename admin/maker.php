@@ -21,7 +21,8 @@ include_once "inc/code.php";
 								</div>
 								<div class="form-group">
 									<label for="">Maker Image</label>
-									<input type="file" class="form-control" id="maker_img" name="maker_img"> 
+									<input type="file" class="form-control" id="maker_img" name="maker_img">
+									<img id="maker_img_preview" src="" style="max-width:150px;margin-top:8px;display:none;">
 								</div>
 								<div class="form-group">
 									<label for="">Maker Status</label>

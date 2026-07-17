@@ -121,11 +121,11 @@ $("#add_nav_menus_fm").on('submit',function(e) {
                     this.reset();
                 });    
                 if (responeID.sts=="success") {
-                sweeetalert("Menu has been Added",'success',2000);
+                sweeetalert("Menu has been Added", "", 'success', 2000);
                 $("#add_nav_table").load(location.href + " #add_nav_table");
                 }
                 if (responeID.sts=="info") {
-                sweeetalert("Menu has been Updated",'info',2000);
+                sweeetalert("Menu has been Updated", "", 'info', 2000);
                 $("#add_nav_table").load(location.href + " #add_nav_table");
                 }
                 if (nav_page=="#") {
@@ -137,11 +137,12 @@ $("#add_nav_menus_fm").on('submit',function(e) {
         });//ajax call
     });//main    
 
-function sweeetalert(text,status,time) {
+function sweeetalert(title, text, status, time) {
   Swal.fire({
     position: 'center',
     icon: status,
-    title:text,
+    title: title,
+    text: text || '',
     showConfirmButton: false,
     timer: time
   });

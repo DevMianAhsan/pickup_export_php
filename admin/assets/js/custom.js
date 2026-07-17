@@ -1025,6 +1025,20 @@ var custom_mchi_id = url.searchParams.get("machine_id");
         'order': []     
     });
 
+    managemachine_type = $('#machine_type').DataTable({
+        stateSave: true,
+        'autoWidth'   : true,
+        "responsive": true,
+        "ajax": {
+            url: "php_action/custom_action.php",
+            data: {
+                action: 'machine_type',
+            },
+            type: 'post',
+        },
+        'order': []     
+    });
+
     //nexco_offices
     nexco_offices = $('#nexco_offices').DataTable({
         stateSave: true,
@@ -1096,10 +1110,12 @@ $("#save_vehicle_docs").on('click',function() {
                 $('#saveData').text("Save");
                 $('#formData').each(function(){
                     this.reset();
-                });    
+                });
+                $('#formData .select2').trigger('change');
+                $('#formData img[id$="_preview"]').hide();
                 $('#saveData').removeAttr("disabled");
                 $('#formData').css("opacity","");   
-                $('.msg').text(msg).addClass("alert alert-success").fadeIn(6000).fadeOut(4000);
+                sweeetalert('Success', msg, 'success', 2000);
                 manageAuctiongGrade.ajax.reload(null, false);
                 managemakers.ajax.reload(null, false);
                 manageCC.ajax.reload(null, false);
@@ -1129,12 +1145,13 @@ $("#save_vehicle_docs").on('click',function() {
                 riksu_transportation1.ajax.reload(null, false);
                 managevehicle_services.ajax.reload(null, false);
                 managebody_type.ajax.reload(null, false);
+                managemachine_type.ajax.reload(null, false);
                 nexco_offices.ajax.reload(null, false);
                 manageshipper.ajax.reload(null, false);
                 manageshipment_company.ajax.reload(null, false);
                 manageairmail_transportation.ajax.reload(null, false);
                 manageinspection_transportation.ajax.reload(null, false);
-           
+            
             }
         });//ajax call
     });//main
@@ -1897,13 +1914,18 @@ $("#save_vehicle_docs").on('click',function() {
                 }else if (tbl == 'maker') {
                     $("#maker_id").val(data.maker_id);
                     $("#maker_name").val(data.maker_name);
-                    $("#maker_img").val(data.maker_img);
-                    $('#maker_sts option[value="'+data.maker_sts+'"]').prop("selected", true).trigger('change'); 
+                    $('#maker_sts option[value="'+data.maker_sts+'"]').prop("selected", true).trigger('change');
+                    if (data.maker_img) {
+                        $('#maker_img_preview').attr('src', 'img/vehicles_images/' + data.maker_img).show();
+                    } else {
+                        $('#maker_img_preview').hide();
+                    }
                 }else if (tbl == 'color_code') {
                     $("#color_code_id").val(data.color_code_id);
                     $("#color_code_name").val(data.color_code_name);
-                    $("#color_name").val(data.color_name);
-                    $('#color_code_sts option[value="'+data.color_code_sts+'"]').prop("selected", true).trigger('change'); 
+                    $('#color_maker').val(data.color_maker).trigger('change');
+                    $('#color_name').val(data.color_name).trigger('change');
+                    $('#color_code_sts').val(data.color_code_sts).trigger('change'); 
                 }else if (tbl == 'cc') {
                     $("#cc_id").val(data.cc_id);
                     $("#cc_name").val(data.cc_name);
@@ -2168,8 +2190,10 @@ $("#save_vehicle_docs").on('click',function() {
                 }else if (tbl == 'brands') {
                     $("#brand_name").val(data.brand_name);
                     $("#brand_id").val(data.brand_id);
+                    $("#brand_m3").val(data.brand_m3);
                     $('#maker_id option[value="'+data.maker_id+'"]').prop("selected", true).trigger('change');
                     $('#brand_status option[value="'+data.brand_status+'"]').prop("selected", true).trigger('change');
+                    $('html, body').animate({ scrollTop: $('#formData').offset().top - 100 }, 500);
                 }else if (tbl == 'models') {
                     $("#model_id").val(data.model_id);
                     $("#model_name").val(data.model_name);
@@ -2253,8 +2277,22 @@ $("#save_vehicle_docs").on('click',function() {
                      $("#body_type_name").focus();
                     $("#body_type_id").val(data.body_type_id);
                     $("#body_type_name").val(data.body_type_name);
-                    $("#body_type_img").val(data.body_type_img);
-                    $('#body_type_sts option[value="'+data.body_type_sts+'"]').prop("selected", true).trigger('change'); 
+                    $('#body_type_sts option[value="'+data.body_type_sts+'"]').prop("selected", true).trigger('change');
+                    if (data.body_type_img) {
+                        $('#body_type_img_preview').attr('src', 'img/vehicles_images/' + data.body_type_img).show();
+                    } else {
+                        $('#body_type_img_preview').hide();
+                    }
+                }else if (tbl == 'machine_type') {
+                     $("#machine_type_name").focus();
+                    $("#machine_type_id").val(data.machine_type_id);
+                    $("#machine_type_name").val(data.machine_type_name);
+                    $('#machine_type_sts option[value="'+data.machine_type_sts+'"]').prop("selected", true).trigger('change');
+                    if (data.machine_type_img) {
+                        $('#machine_type_img_preview').attr('src', 'img/vehicles_images/' + data.machine_type_img).show();
+                    } else {
+                        $('#machine_type_img_preview').hide();
+                    }
                 }else if (tbl == 'nexco_offices') {
                     
                     $("#office_id").val(data.office_id);
@@ -2269,9 +2307,21 @@ $("#save_vehicle_docs").on('click',function() {
                     $("#office_lat").val(data.office_lat);
                     $("#office_lng").val(data.office_lng);
                 }
+                $('html, body').animate({ scrollTop: $('#formData').offset().top - 100 }, 500);
             }
         });
     });//main 
+
+    // Image preview on file select
+    $(document).on('change', 'input[type="file"]', function () {
+        var previewId = $(this).attr('id') + '_preview';
+        var preview = $('#' + previewId);
+        if (this.files && this.files[0] && preview.length) {
+            var reader = new FileReader();
+            reader.onload = function (e) { preview.attr('src', e.target.result).show(); };
+            reader.readAsDataURL(this.files[0]);
+        }
+    });
 
        $(document).on('click','#customer_identity',function () {
          $("#customer_identity_action").val("add");
@@ -2282,18 +2332,28 @@ $("#save_vehicle_docs").on('click',function() {
         var tbl3 = $("#table_name").val();
         var sts_col = $("#sts_col").val();
         var col_name = $("#col_name").val();
-        $.ajax({
-            url:'php_action/custom_action.php',
-            type:"POST",
-            data:{delete_user_id:delete_user_id, tbl3:tbl3, col_name:col_name, sts_col:sts_col},
-            dataType:"text",
-            beforeSend:function() {
-                $(".loaderAjax").show(); 
-            },
-            success:function(data) {       
-                $(".loaderAjax").hide(); 
-                $('.msg').text(data).addClass("alert alert-success").fadeIn(6000).fadeOut(4000);
-                manageAuctiongGrade.ajax.reload(null, false);
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'This record will be deactivated!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#E44F56',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, delete!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url:'php_action/custom_action.php',
+                    type:"POST",
+                    data:{delete_user_id:delete_user_id, tbl3:tbl3, col_name:col_name, sts_col:sts_col},
+                    dataType:"text",
+                    beforeSend:function() {
+                        $(".loaderAjax").show(); 
+                    },
+                    success:function(data) {       
+                        $(".loaderAjax").hide(); 
+                        Swal.fire({ title: 'Deleted!', text: data, icon: 'success', timer: 2000, showConfirmButton: false });
+                        manageAuctiongGrade.ajax.reload(null, false);
                 managemakers.ajax.reload(null, false);
                 manageCC.ajax.reload(null, false);
                 managecolor_code.ajax.reload(null, false);
@@ -2325,14 +2385,16 @@ $("#save_vehicle_docs").on('click',function() {
                 riksu_transportation1.ajax.reload(null, false);
                 managevehicle_services.ajax.reload(null, false);
                 managebody_type.ajax.reload(null, false);
+                managemachine_type.ajax.reload(null, false);
                 nexco_offices.ajax.reload(null, false);
                 manageshipper.ajax.reload(null, false);
                 manageshipment_company.ajax.reload(null, false);
                 manageairmail_transportation.ajax.reload(null, false);
-               
             }
         });
-    });//main
+    }
+    });
+});//main
 
     $(".loaderAjax").hide(); 
 
@@ -5678,11 +5740,10 @@ if (shipment_eta<shipment_etd) {
 
 });
 
-function sweeetalert(text,status,time) {
+function sweeetalert(title, text, status, time) {
          Swal.fire({
                           title: title,
                           text: text,
-                          type : status,
                           icon: status,
                           timer: time,
                           buttons: false,
@@ -5690,11 +5751,10 @@ function sweeetalert(text,status,time) {
                           showConfirmButton: false
                         }); 
 }
-function Sendalert(text,status,time) {
+function Sendalert(title, text, status, time) {
          Swal.fire({
                           title: title,
                           text: text,
-                          type : status,
                           icon: status,
                           timer: time,
                           buttons: false,

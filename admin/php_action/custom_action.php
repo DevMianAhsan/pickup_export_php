@@ -155,7 +155,7 @@
 
 
 
-			if (upload_pic($_FILES['maker_img'], "../img/vehicles_images/")) {
+			if ($_FILES['maker_img']['tmp_name'] && upload_pic($_FILES['maker_img'], "../img/vehicles_images/")) {
 
 
 
@@ -176,7 +176,7 @@
 
 
 				];
- 
+
 
 
 				if (insert_data($dbc, "maker", $data)) {
@@ -215,59 +215,59 @@
 
 
 
-			if (upload_pic($_FILES['maker_img'], "../img/vehicles_images/")) {
+			$data = [
 
 
 
-				$data = [
+				'maker_id' => $_POST['maker_id'],
 
 
 
-					'maker_id' => $_POST['maker_id'],
+				'maker_name' => $_POST['maker_name'],
 
 
 
-					'maker_name' => $_POST['maker_name'],
+				'maker_sts' => $_POST['maker_sts'],
 
 
 
-					'maker_sts' => $_POST['maker_sts'],
+			];
 
 
 
-					'maker_img' => $_SESSION['pic_name'],
+			if ($_FILES['maker_img']['tmp_name'] && upload_pic($_FILES['maker_img'], "../img/vehicles_images/")) {
 
 
 
-				];
+				$data['maker_img'] = $_SESSION['pic_name'];
 
 
 
-				if (update_data($dbc, "maker", $data, "maker_id", $_POST['maker_id'])) {
+			}
 
 
 
-					echo $msg = "Maker Data Updated Successfully";
+			if (update_data($dbc, "maker", $data, "maker_id", $_POST['maker_id'])) {
 
 
 
-					exit();
+				echo $msg = "Maker Data Updated Successfully";
 
 
 
-				}else{
+				exit();
 
 
 
-					echo $msg = mysqli_error($dbc);
+			}else{
 
 
 
-					exit();
+				echo $msg = mysqli_error($dbc);
 
 
 
-				}
+				exit();
 
 
 
@@ -3561,7 +3561,7 @@ if (isset($_POST['consignee_name_sep'])) {
 
 
 
-			if (upload_pic($_FILES['body_type_img'], "../img/vehicles_images/")) {
+			if (isset($_FILES['body_type_img']) && $_FILES['body_type_img']['error'] == UPLOAD_ERR_OK && upload_pic($_FILES['body_type_img'], "../img/vehicles_images/")) {
 
 
 
@@ -3617,51 +3617,59 @@ if (isset($_POST['consignee_name_sep'])) {
 
 
 
+			global $msg;
+
+
+
+			echo $msg ?: "Body Type Add Failed";
+
+
+
+			exit();
+
+
+
 		}else{
 
 
 
-			if (upload_pic($_FILES['body_type_img'], "../img/vehicles_images/")) {
+			$data = [
 
 
 
-				$data = [
+				'body_type_name' => $_POST['body_type_name'],
 
 
 
-					'body_type_name' => $_POST['body_type_name'],
+				'body_type_sts' => $_POST['body_type_sts'],
 
 
 
-					'body_type_img' => $_SESSION['pic_name'],
+			];
 
 
 
-					'body_type_sts' => $_POST['body_type_sts'],
+			if (isset($_FILES['body_type_img']) && $_FILES['body_type_img']['error'] == UPLOAD_ERR_OK) {
 
 
 
-				];
+				if (upload_pic($_FILES['body_type_img'], "../img/vehicles_images/")) {
 
 
 
-				if (update_data($dbc, "body_type", $data, "body_type_id", $_POST['body_type_id'])) {
+					$data['body_type_img'] = $_SESSION['pic_name'];
 
 
 
-					echo $msg = "Body Type Data Updated Successfully";
+				} else {
 
 
 
-					exit();
+					global $msg;
 
 
 
-				}else{
-
-
-
-					echo $msg = mysqli_error($dbc);
+					echo $msg;
 
 
 
@@ -3670,6 +3678,34 @@ if (isset($_POST['consignee_name_sep'])) {
 
 
 				}
+
+
+
+			}
+
+
+
+			if (update_data($dbc, "body_type", $data, "body_type_id", $_POST['body_type_id'])) {
+
+
+
+				echo $msg = "Body Type Data Updated Successfully";
+
+
+
+				exit();
+
+
+
+			}else{
+
+
+
+				echo $msg = mysqli_error($dbc);
+
+
+
+				exit();
 
 
 
@@ -3695,7 +3731,7 @@ if (isset($_POST['consignee_name_sep'])) {
 
 
 
-			if (upload_pic($_FILES['machine_type_img'], "../img/vehicles_images/")) {
+			if (isset($_FILES['machine_type_img']) && $_FILES['machine_type_img']['error'] == UPLOAD_ERR_OK && upload_pic($_FILES['machine_type_img'], "../img/vehicles_images/")) {
 
 
 
@@ -3751,51 +3787,59 @@ if (isset($_POST['consignee_name_sep'])) {
 
 
 
+			global $msg;
+
+
+
+			echo $msg ?: "machine Type Add Failed";
+
+
+
+			exit();
+
+
+
 		}else{
 
 
 
-			if (upload_pic($_FILES['machine_type_img'], "../img/vehicles_images/")) {
+			$data = [
 
 
 
-				$data = [
+				'machine_type_name' => $_POST['machine_type_name'],
 
 
 
-					'machine_type_name' => $_POST['machine_type_name'],
+				'machine_type_sts' => $_POST['machine_type_sts'],
 
 
 
-					'machine_type_img' => $_SESSION['pic_name'],
+			];
 
 
 
-					'machine_type_sts' => $_POST['machine_type_sts'],
+			if (isset($_FILES['machine_type_img']) && $_FILES['machine_type_img']['error'] == UPLOAD_ERR_OK) {
 
 
 
-				];
+				if (upload_pic($_FILES['machine_type_img'], "../img/vehicles_images/")) {
 
 
 
-				if (update_data($dbc, "machine_type", $data, "machine_type_id", $_POST['machine_type_id'])) {
+					$data['machine_type_img'] = $_SESSION['pic_name'];
 
 
 
-					echo $msg = "machine Type Data Updated Successfully";
+				} else {
 
 
 
-					exit();
+					global $msg;
 
 
 
-				}else{
-
-
-
-					echo $msg = mysqli_error($dbc);
+					echo $msg;
 
 
 
@@ -3804,6 +3848,34 @@ if (isset($_POST['consignee_name_sep'])) {
 
 
 				}
+
+
+
+			}
+
+
+
+			if (update_data($dbc, "machine_type", $data, "machine_type_id", $_POST['machine_type_id'])) {
+
+
+
+				echo $msg = "machine Type Data Updated Successfully";
+
+
+
+				exit();
+
+
+
+			}else{
+
+
+
+				echo $msg = mysqli_error($dbc);
+
+
+
+				exit();
 
 
 
@@ -7355,6 +7427,18 @@ if (mysqli_num_rows($q)>0) {
 
 
 
+	        case 'machine_type' :
+
+
+
+	            machine_type($dbc);
+
+
+
+	            break;
+
+
+
 	        case 'nexco_offices' :
 
 
@@ -7820,9 +7904,106 @@ $button = '<!-- Single button -->
 
 	}
 
+	function machine_type($dbc){
 
 
 
+	    $result = mysqli_query($dbc,"SELECT * FROM machine_type");
+
+
+
+	    $output = array('data' => array());
+
+
+
+	    if($result->num_rows > 0) { 
+
+
+
+	     $machine_type_sts = ""; 
+
+
+
+	        while($row = $result->fetch_array()) {
+
+
+
+	        $machine_type_id = $row[0];
+
+
+
+	            if($row[3] == 1) {
+
+
+
+	                $machine_type_sts = "<label class='label label-success'>Active</label>";
+
+
+
+	            } else {
+
+
+
+	                $machine_type_sts = "<label class='label label-danger'>Inactive</label>";
+
+
+
+	            }
+
+
+
+	$btn_edit=$btn_del='';
+		            $userPrivileges=getUserPri($dbc,'machine_type.php');
+					$fetchedUserRole=getUserRole($dbc);
+					if (@$userPrivileges['nav_edit']==1 || $fetchedUserRole=="admin"): 
+						$btn_edit='<i id="'.$machine_type_id.'" class="fa fa-edit text-danger update" style="cursor: pointer;"></i> ';
+					endif;
+					if (@$userPrivileges['nav_delete']==1 || $fetchedUserRole=="admin"): 
+						$btn_del='| <i id="'.$machine_type_id.'" class="fe fe-trash-2 delete" style="cursor: pointer;"></i>';
+					endif;
+
+
+
+	        $button = '<!-- Single button -->
+
+	            <form>'.$btn_edit.$btn_del.'
+<input type="hidden" id="table_name" value="machine_type"><input type="hidden" id="col_name" value="machine_type_id"><input type="hidden" id="sts_col" value="machine_type_sts"></form>';
+
+
+
+	            $img = '<img style="width:100px" src="img/vehicles_images/'.$row[2].'" alt="No Image">';
+
+
+
+	            $output['data'][] = array(      
+
+	                $row[0],           
+
+	                $img,           
+
+	                $row[1],           
+
+	                $machine_type_sts,
+
+	                $button         
+
+	            );  
+
+	        } // /while 
+
+	    }// if num_rows
+
+
+
+	    $dbc->close();
+
+
+
+	    echo json_encode($output);
+
+
+
+	}
 
 
 
@@ -11359,7 +11540,7 @@ $button = '<!-- Single button -->
 
 
 
-	            <form>'.$btn_edit.$btn_del.'<input type="hidden" id="table_name" value="brands"><input type="hidden" id="col_name" value="brand_id"><input type="hidden" id="sts_col" value="brand_sts"> | 
+	            <form>'.$btn_edit.$btn_del.'<input type="hidden" id="table_name" value="brands"><input type="hidden" id="col_name" value="brand_id"><input type="hidden" id="sts_col" value="brand_status"> | 
 
 
 

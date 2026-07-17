@@ -1,30 +1,17 @@
-  <?php 
+<?php 
 include_once "includes/header.php";
 include_once "inc/code.php";
 
 ?>
 <!-- start page content -->
-            <div class="page-content-wrapper">
-                <div class="page-content">
-                    <div class="page-bar">
-                        <div class="page-title-breadcrumb">
-                            <div class=" pull-left">
-                                <div class="page-title">Body Type</div>
-                            </div>
-                            <ol class="breadcrumb page-breadcrumb pull-right">
-                                <li><i class="fa fa-home"></i>&nbsp;<a class="parent-item" href="dashboard.php">Home</a>&nbsp;<i class="fa fa-angle-right"></i>
-                                </li>
-                                <li class="active">Body Type</li>
-                            </ol>
-                        </div>
-                    </div>
 
 			<div class="col-sm-12">
-				<div class="panel">
-					<div class="panel-heading panel-heading-red" align="center"><h4>Create Body Type</h4></div>
-						<div class="panel-body">
-							<form action="php_action/custom_action.php" method="POST" role="form" id="formData">
-								<div class="msg"></div>
+				<div class="card">
+					<div class="card-header card-bg" align="center">
+						    <b class="h4 text-center card-text">Body Type</b>
+					</div>
+						<div class="card-body">
+							<form action="php_action/custom_action.php" method="POST" enctype="multipart/form-data" role="form" id="formData">
 								<div class="form-group">
 									<label for="">Body Type</label>
 									<input type="text" class="form-control" id="body_type_name" name="body_type_name"> 
@@ -32,7 +19,8 @@ include_once "inc/code.php";
 								</div>
 								<div class="form-group">
 									<label for="">Body Type Image</label>
-									<input type="file" class="form-control" id="body_type_img" name="body_type_img"> 
+									<input type="file" class="form-control" id="body_type_img" name="body_type_img">
+									<img id="body_type_img_preview" src="" style="max-width:150px;margin-top:8px;display:none;">
 								</div>
 								<div class="form-group">
 									<label for="">Body Type Status</label>
@@ -42,7 +30,7 @@ include_once "inc/code.php";
 										<option value="0">Inactive</option>
 									</select>
 								</div>
-<?php if (@$userPrivileges['nav_add']==1 || $fetchedUserRole=="admin"): ?>
+									<?php if (@$userPrivileges['nav_add']==1 || $fetchedUserRole=="admin"): ?>
 								<button type="submit" class="btn btn-primary" class="saveData">Save</button>
 								<?php endif ?>
 							</form>
@@ -52,9 +40,9 @@ include_once "inc/code.php";
 
 
 <div class="col-sm-12">
-		<div class="panel">
-	<div class="panel-heading cyan-bgcolor" align="center"><h4>Body Types</h4></div>
-	<div class="panel-body">
+		<div class="card">
+	<div class="card-header card-bg" align="center">    <b class="h4 text-center card-text">Body Types</b></div>
+	<div class="card-body">
 			<table class="table" id="body_type">
 				<thead>
 			<tr>	
@@ -68,13 +56,14 @@ include_once "inc/code.php";
 			<tbody>
 			</tbody>
 			
+			
 			</table>
 		
 	</div>
 </div>
 
 </div>
-	</div></div>
+	
 <?php
 include_once "includes/footer.php";
 ?>

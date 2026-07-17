@@ -68,7 +68,7 @@ $("#formDataIQ").off('submit').on('submit',function(e) {
                 $('#formDataIQ').each(function(){
                     this.reset();
                 });    
-                sweeetalert(response.msg,response.sts,2000);
+                sweeetalert('Success', response.msg, response.sts, 2000);
             }
         });//ajax call
     });//main
