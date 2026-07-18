@@ -1422,6 +1422,281 @@ if ($resource === 'search') {
     ]);
 }
 
+// Free-text keyword search — user types anything (stock ID, keyword, etc.)
+if ($resource === 'search-text' || $resource === 'search-keyword' || $resource === 'search_free' || $resource === 'search_text') {
+    requireApiToken();
+
+    $qs = $_SERVER['QUERY_STRING'] ?? '';
+    $qs = ltrim($qs, '?');
+    parse_str($qs, $params);
+
+    $q = trim((string) ($params['q'] ?? $params['query'] ?? $params['keyword'] ?? ''));
+    if ($q === 'null') {
+        $q = '';
+    }
+
+    $escape = fn($v) => mysqli_real_escape_string($dbc, trim((string) $v));
+    $escapedQ = $escape($q);
+    $likeQ = '%' . $escapedQ . '%';
+
+    $typeParam = strtolower(trim((string) ($params['type'] ?? '')));
+    $searchType = null;
+    if ($typeParam === 'car' || $typeParam === '1') {
+        $searchType = 'car';
+    } elseif ($typeParam === 'machine' || $typeParam === '2') {
+        $searchType = 'machine';
+    }
+    $isCar = $searchType === 'car';
+    $isMachine = $searchType === 'machine';
+    $useBoth = $searchType === null;
+
+    $SERVER_PAGE_SIZE = 10;
+    $limit = $SERVER_PAGE_SIZE;
+    $page = isset($params['page']) ? max(1, (int) $params['page']) : 1;
+    $offset = ($page - 1) * $limit;
+
+    // First, try exact stock ID match (single item)
+    $exactVehicle = null;
+    $exactMachine = null;
+    if ($isCar || $useBoth) {
+        $vq = mysqli_query($dbc, "SELECT vehicle_id AS item_id, 'car' AS item_type, vehicle_stock_id AS stock_id FROM vehicle_info WHERE vehicle_stock_id = '$escapedQ' LIMIT 1");
+        if ($vq) {
+            $exactVehicle = mysqli_fetch_assoc($vq);
+        }
+    }
+    if ($isMachine || $useBoth) {
+        $mq = mysqli_query($dbc, "SELECT machine_id AS item_id, 'machine' AS item_type, machine_stock_id AS stock_id FROM machines WHERE machine_stock_id = '$escapedQ' LIMIT 1");
+        if ($mq) {
+            $exactMachine = mysqli_fetch_assoc($mq);
+        }
+    }
+    $exactMatch = $exactVehicle ?: $exactMachine;
+
+    if ($exactMatch) {
+        $itemId = (int) $exactMatch['item_id'];
+        $itemType = $exactMatch['item_type'];
+
+        $image = null;
+        if ($itemType === 'machine') {
+            $imgResult = mysqli_query($dbc, "SELECT vehicle_image_name FROM vehicle_images WHERE vehicle_id = $itemId AND images_type = 'machine' ORDER BY vehicle_image_featured DESC, order_no ASC LIMIT 1");
+        } else {
+            $imgResult = mysqli_query($dbc, "SELECT vehicle_image_name FROM vehicle_images WHERE vehicle_id = $itemId ORDER BY vehicle_image_featured DESC, order_no ASC LIMIT 1");
+        }
+        if ($imgResult && ($imgRow = mysqli_fetch_assoc($imgResult))) {
+            $image = normalizeImageUrl($imgRow['vehicle_image_name']);
+        }
+
+        if ($itemType === 'machine') {
+            $row = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT mch.machine_id AS item_id, 'machine' AS item_type, mch.machine_stock_id AS stock_id, maker.maker_name, b.brand_name, mt.machine_type_name AS type_name, mch.machine_serial_no AS chassis_no, mch.machine_manu_year AS year, mch.machine_hours AS mileage, NULL AS cc, mch.machine_fuel AS fuel, mch.machine_transmission AS transmission, mch.machine_color AS color, NULL AS seats, NULL AS doors, mch.machine_steering AS steering, mch.machine_drive AS driven, mch.machine_condition AS mode, mch.machine_fob_price AS price, NULL AS discount, mch.machine_sale_stts AS status, mch.country_id AS country_id, c.country_name FROM machines mch LEFT JOIN maker maker ON mch.machine_maker = maker.maker_id LEFT JOIN brands b ON mch.machine_brand = b.brand_id LEFT JOIN machine_type mt ON mch.machine_type = mt.machine_type_id LEFT JOIN countries c ON mch.country_id = c.country_id WHERE mch.machine_id = $itemId LIMIT 1"));
+        } else {
+            $row = mysqli_fetch_assoc(mysqli_query($dbc, "SELECT vi.vehicle_id AS item_id, 'car' AS item_type, vi.vehicle_stock_id AS stock_id, m.maker_name, b.brand_name, bt.body_type_name AS type_name, vi.vehicle_chassis_no AS chassis_no, vi.vehicle_engine_no AS engine_no, vi.vehicle_manu_year AS year, vi.vehicle_km AS mileage, vi.vehicle_cc AS cc, vi.vehicle_fuel AS fuel, vi.vehicle_transmission AS transmission, COALESCE(vi.vehicle_color_name, vi.vehicle_color) AS color, vi.vehicle_seat AS seats, vi.vehicle_door AS doors, vi.vehicle_option AS steering, vi.vehicle_drive AS driven, vi.vehicle_mode AS mode, vi.vehicle_est_price AS price, vi.vehicle_discount AS discount, vi.vehicle_status AS status, vi.country_id AS country_id, c.country_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id LEFT JOIN countries c ON vi.country_id = c.country_id WHERE vi.vehicle_id = $itemId LIMIT 1"));
+        }
+
+        if (!$row) {
+            respondJson(404, ['status' => 'error', 'message' => 'Item not found.']);
+        }
+
+        $vehicles = [
+            [
+                'id' => (int) $row['item_id'],
+                'type' => $row['item_type'],
+                'stock_id' => $row['stock_id'] ?? null,
+                'title' => ($row['maker_name'] ?? '') . ' ' . ($row['brand_name'] ?? ''),
+                'maker_name' => $row['maker_name'] ?? null,
+                'brand_name' => $row['brand_name'] ?? null,
+                'type_name' => $row['type_name'] ?? null,
+                'chassis_no' => $row['chassis_no'] ?? null,
+                'engine_no' => $row['engine_no'] ?? null,
+                'year' => $row['year'] ?? null,
+                'mileage' => $row['mileage'] ?? null,
+                'cc' => $row['cc'] ?? null,
+                'fuel' => $row['fuel'] ?? null,
+                'transmission' => $row['transmission'] ?? null,
+                'color' => $row['color'] ?? null,
+                'seats' => $row['seats'] ?? null,
+                'doors' => $row['doors'] ?? null,
+                'steering' => $row['steering'] ?? null,
+                'driven' => $row['driven'] ?? null,
+                'mode' => $row['mode'] ?? null,
+                'price' => isset($row['price']) ? (float) $row['price'] : null,
+                'discount' => isset($row['discount']) ? (float) $row['discount'] : null,
+                'featured_image' => $image,
+                'status' => $row['status'] ?? null,
+                'country_id' => isset($row['country_id']) ? (int) $row['country_id'] : null,
+                'country_name' => $row['country_name'] ?? null,
+            ]
+        ];
+
+        respondJson(200, [
+            'status' => 'success',
+            'match_type' => 'exact',
+            'query' => $q,
+            'total' => 1,
+            'page' => 1,
+            'total_pages' => 1,
+            'has_next' => false,
+            'has_prev' => false,
+            'next_page' => null,
+            'prev_page' => null,
+            'count' => 1,
+            'vehicles' => $vehicles,
+        ]);
+    }
+
+    // No exact stock match — do keyword search across multiple fields
+    if ($q !== '') {
+        $vehicleKeywordWhere = "(
+            vi.vehicle_stock_id LIKE '$likeQ'
+            OR vi.vehicle_chassis_no LIKE '$likeQ'
+            OR vi.vehicle_engine_no LIKE '$likeQ'
+            OR vi.vehicle_engine_type LIKE '$likeQ'
+            OR vi.vehicle_manu_year LIKE '$likeQ'
+            OR vi.vehicle_reg_year LIKE '$likeQ'
+            OR m.maker_name LIKE '$likeQ'
+            OR b.brand_name LIKE '$likeQ'
+            OR bt.body_type_name LIKE '$likeQ'
+            OR vi.vehicle_fuel LIKE '$likeQ'
+            OR vi.vehicle_transmission LIKE '$likeQ'
+            OR vi.vehicle_drive LIKE '$likeQ'
+            OR vi.vehicle_option LIKE '$likeQ'
+            OR vi.vehicle_color LIKE '$likeQ'
+            OR vi.vehicle_color_name LIKE '$likeQ'
+            OR vi.vehicle_interior_color LIKE '$likeQ'
+            OR vi.vehicle_mode LIKE '$likeQ'
+            OR vi.vehicle_note LIKE '$likeQ'
+            OR vi.vehicle_note_comp LIKE '$likeQ'
+            OR vi.vehicle_cc LIKE '$likeQ'
+            OR vi.vehicle_grade LIKE '$likeQ'
+            OR vi.vehicle_km LIKE '$likeQ'
+            OR vi.vehicle_package LIKE '$likeQ'
+            OR vi.vehicle_chassis_code LIKE '$likeQ'
+            OR vi.vehicle_auctionhouse LIKE '$likeQ'
+            OR vi.auction_sheet LIKE '$likeQ'
+            OR vi.lot_number LIKE '$likeQ'
+            OR c.country_name LIKE '$likeQ'
+        )";
+        $machineKeywordWhere = "(
+            mch.machine_stock_id LIKE '$likeQ'
+            OR mch.machine_serial_no LIKE '$likeQ'
+            OR maker.maker_name LIKE '$likeQ'
+            OR b.brand_name LIKE '$likeQ'
+            OR mt.machine_type_name LIKE '$likeQ'
+            OR mch.machine_fuel LIKE '$likeQ'
+            OR mch.machine_transmission LIKE '$likeQ'
+            OR mch.machine_drive LIKE '$likeQ'
+            OR mch.machine_steering LIKE '$likeQ'
+            OR mch.machine_color LIKE '$likeQ'
+            OR mch.machine_note LIKE '$likeQ'
+            OR mch.machine_condition LIKE '$likeQ'
+            OR mch.machine_manu_year LIKE '$likeQ'
+            OR mch.machine_year LIKE '$likeQ'
+            OR mch.machine_hours LIKE '$likeQ'
+            OR mch.machine_weight LIKE '$likeQ'
+            OR c.country_name LIKE '$likeQ'
+        )";
+    } else {
+        $vehicleKeywordWhere = '1=1';
+        $machineKeywordWhere = '1=1';
+    }
+
+    $vehicleWhere = "(vehicle_status != 'sold') AND $vehicleKeywordWhere";
+    $machineWhere = "(machine_sts = 1 AND (machine_sale_stts IS NULL OR machine_sale_stts != 'sold')) AND $machineKeywordWhere";
+
+    if ($searchType === 'car') {
+        $countSql = "SELECT COUNT(*) AS total FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id LEFT JOIN countries c ON vi.country_id = c.country_id WHERE $vehicleWhere";
+        $sql = "SELECT vi.vehicle_id AS item_id, 'car' AS item_type, vi.vehicle_stock_id AS stock_id, m.maker_name, b.brand_name, bt.body_type_name AS type_name, vi.vehicle_chassis_no AS chassis_no, vi.vehicle_engine_no AS engine_no, vi.vehicle_manu_year AS year, vi.vehicle_km AS mileage, vi.vehicle_cc AS cc, vi.vehicle_fuel AS fuel, vi.vehicle_transmission AS transmission, COALESCE(vi.vehicle_color_name, vi.vehicle_color) AS color, vi.vehicle_seat AS seats, vi.vehicle_door AS doors, vi.vehicle_option AS steering, vi.vehicle_drive AS driven, vi.vehicle_mode AS mode, vi.vehicle_est_price AS price, vi.vehicle_discount AS discount, vi.vehicle_feature_list AS feature_list, vi.vehicle_status AS status, vi.country_id AS country_id, c.country_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id LEFT JOIN countries c ON vi.country_id = c.country_id WHERE $vehicleWhere ORDER BY vi.vehicle_id DESC LIMIT $limit OFFSET $offset";
+    } elseif ($searchType === 'machine') {
+        $countSql = "SELECT COUNT(*) AS total FROM machines mch LEFT JOIN maker maker ON mch.machine_maker = maker.maker_id LEFT JOIN brands b ON mch.machine_brand = b.brand_id LEFT JOIN machine_type mt ON mch.machine_type = mt.machine_type_id LEFT JOIN countries c ON mch.country_id = c.country_id WHERE $machineWhere";
+        $sql = "SELECT mch.machine_id AS item_id, 'machine' AS item_type, mch.machine_stock_id AS stock_id, maker.maker_name, b.brand_name, mt.machine_type_name AS type_name, mch.machine_serial_no AS chassis_no, mch.machine_manu_year AS year, mch.machine_hours AS mileage, NULL AS cc, mch.machine_fuel AS fuel, mch.machine_transmission AS transmission, mch.machine_color AS color, NULL AS seats, NULL AS doors, mch.machine_steering AS steering, mch.machine_drive AS driven, mch.machine_condition AS mode, mch.machine_fob_price AS price, NULL AS discount, NULL AS feature_list, mch.machine_sale_stts AS status, mch.country_id AS country_id, c.country_name FROM machines mch LEFT JOIN maker maker ON mch.machine_maker = maker.maker_id LEFT JOIN brands b ON mch.machine_brand = b.brand_id LEFT JOIN machine_type mt ON mch.machine_type = mt.machine_type_id LEFT JOIN countries c ON mch.country_id = c.country_id WHERE $machineWhere ORDER BY mch.machine_id DESC LIMIT $limit OFFSET $offset";
+    } else {
+        $countSql = "SELECT COUNT(*) AS total FROM (SELECT vi.vehicle_id AS item_id FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id LEFT JOIN countries c ON vi.country_id = c.country_id WHERE $vehicleWhere UNION ALL SELECT mch.machine_id AS item_id FROM machines mch LEFT JOIN maker maker ON mch.machine_maker = maker.maker_id LEFT JOIN brands b ON mch.machine_brand = b.brand_id LEFT JOIN machine_type mt ON mch.machine_type = mt.machine_type_id LEFT JOIN countries c ON mch.country_id = c.country_id WHERE $machineWhere) combined";
+        $sql = "SELECT * FROM (" .
+            "SELECT vi.vehicle_id AS item_id, 'car' AS item_type, vi.vehicle_stock_id AS stock_id, m.maker_name, b.brand_name, bt.body_type_name AS type_name, vi.vehicle_chassis_no AS chassis_no, vi.vehicle_engine_no AS engine_no, vi.vehicle_manu_year AS year, vi.vehicle_km AS mileage, vi.vehicle_cc AS cc, vi.vehicle_fuel AS fuel, vi.vehicle_transmission AS transmission, COALESCE(vi.vehicle_color_name, vi.vehicle_color) AS color, vi.vehicle_seat AS seats, vi.vehicle_door AS doors, vi.vehicle_option AS steering, vi.vehicle_drive AS driven, vi.vehicle_mode AS mode, vi.vehicle_est_price AS price, vi.vehicle_discount AS discount, vi.vehicle_feature_list AS feature_list, vi.vehicle_status AS status, vi.country_id AS country_id, c.country_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id LEFT JOIN countries c ON vi.country_id = c.country_id WHERE $vehicleWhere " .
+            "UNION ALL " .
+            "SELECT mch.machine_id AS item_id, 'machine' AS item_type, mch.machine_stock_id AS stock_id, maker.maker_name, b.brand_name, mt.machine_type_name AS type_name, mch.machine_serial_no AS chassis_no, NULL AS engine_no, mch.machine_manu_year AS year, mch.machine_hours AS mileage, NULL AS cc, mch.machine_fuel AS fuel, mch.machine_transmission AS transmission, mch.machine_color AS color, NULL AS seats, NULL AS doors, mch.machine_steering AS steering, mch.machine_drive AS driven, mch.machine_condition AS mode, mch.machine_fob_price AS price, NULL AS discount, NULL AS feature_list, mch.machine_sale_stts AS status, mch.country_id AS country_id, c.country_name FROM machines mch LEFT JOIN maker maker ON mch.machine_maker = maker.maker_id LEFT JOIN brands b ON mch.machine_brand = b.brand_id LEFT JOIN machine_type mt ON mch.machine_type = mt.machine_type_id LEFT JOIN countries c ON mch.country_id = c.country_id WHERE $machineWhere " .
+            ") AS combined ORDER BY item_id DESC LIMIT $limit OFFSET $offset";
+    }
+
+    $countResult = mysqli_query($dbc, $countSql);
+    $total = 0;
+    if ($countResult) {
+        $countRow = mysqli_fetch_assoc($countResult);
+        $total = (int) $countRow['total'];
+    }
+
+    $total_pages = $limit > 0 ? (int) ceil($total / $limit) : 0;
+    $current_page = $page;
+    $has_next = ($offset + $limit) < $total;
+    $has_prev = $page > 1;
+    $next_page = $has_next ? $current_page + 1 : null;
+    $prev_page = $has_prev ? $current_page - 1 : null;
+
+    $result = mysqli_query($dbc, $sql);
+    if (!$result) {
+        respondJson(500, [
+            'status' => 'error',
+            'message' => 'Failed to execute search.',
+            'details' => mysqli_error($dbc)
+        ]);
+    }
+
+    $vehicles = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $itemId = (int) $row['item_id'];
+        $image = null;
+        if ($row['item_type'] === 'machine') {
+            $imgResult = mysqli_query($dbc, "SELECT vehicle_image_name FROM vehicle_images WHERE vehicle_id = $itemId AND images_type = 'machine' ORDER BY vehicle_image_featured DESC, order_no ASC LIMIT 1");
+        } else {
+            $imgResult = mysqli_query($dbc, "SELECT vehicle_image_name FROM vehicle_images WHERE vehicle_id = $itemId ORDER BY vehicle_image_featured DESC, order_no ASC LIMIT 1");
+        }
+        if ($imgResult && ($imgRow = mysqli_fetch_assoc($imgResult))) {
+            $image = normalizeImageUrl($imgRow['vehicle_image_name']);
+        }
+
+        $vehicles[] = [
+            'id' => $itemId,
+            'type' => $row['item_type'],
+            'stock_id' => $row['stock_id'] ?? null,
+            'title' => ($row['maker_name'] ?? '') . ' ' . ($row['brand_name'] ?? ''),
+            'maker_name' => $row['maker_name'] ?? null,
+            'brand_name' => $row['brand_name'] ?? null,
+            'type_name' => $row['type_name'] ?? null,
+            'chassis_no' => $row['chassis_no'] ?? null,
+            'engine_no' => $row['engine_no'] ?? null,
+            'year' => $row['year'] ?? null,
+            'mileage' => $row['mileage'] ?? null,
+            'cc' => $row['cc'] ?? null,
+            'fuel' => $row['fuel'] ?? null,
+            'transmission' => $row['transmission'] ?? null,
+            'color' => $row['color'] ?? null,
+            'steering' => $row['steering'] ?? null,
+            'driven' => $row['driven'] ?? null,
+            'mode' => $row['mode'] ?? null,
+            'price' => isset($row['price']) ? (float) $row['price'] : null,
+            'discount' => isset($row['discount']) ? (float) $row['discount'] : null,
+            'featured_image' => $image,
+            'status' => $row['status'] ?? null,
+            'country_id' => isset($row['country_id']) ? (int) $row['country_id'] : null,
+            'country_name' => $row['country_name'] ?? null,
+        ];
+    }
+
+    respondJson(200, [
+        'status' => 'success',
+        'match_type' => 'keyword',
+        'query' => $q,
+        'total' => $total,
+        'page' => $current_page,
+        'total_pages' => $total_pages,
+        'has_next' => $has_next,
+        'has_prev' => $has_prev,
+        'next_page' => $next_page,
+        'prev_page' => $prev_page,
+        'count' => count($vehicles),
+        'vehicles' => $vehicles,
+    ]);
+}
+
 if ($resource === 'search-parts') {
     requireApiToken();
 
