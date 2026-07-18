@@ -104,7 +104,7 @@ include_once "inc/code.php";
 									<th>Vehicle Info</th>
 									<th>Customer Info</th>
 									<th>Inquiry Msg</th>
-									<th>Country </th>
+									<th>Country/City </th>
 									<!-- <th>Country/Port </th> -->
 									<!-- <th>Inquiry Service </th> -->
 									<th>Timestamp</th>
@@ -185,7 +185,7 @@ include_once "inc/code.php";
 											<a href="mailto:<?= $r['inquiry_email'] ?>"><?= $r['inquiry_email'] ?></a>
 										</td>
 										<td><?= $r['inquiry_msg'] ?></td>
-										<td><?= $r['inquiry_country'] ?></td>
+                                    <td><?= $r['inquiry_country'] ?><?= !empty($r['inquiry_city']) ? ' / ' . $r['inquiry_city'] : '' ?></td>
 										<!-- <td><?= $r['inquiry_country'] ?>/<?= $r['inquiry_port'] ?></td> -->
 										<!-- <td><?= $r['inquiry_services'] ?></td> -->
 										<td><?= date('D,d-m-Y', strtotime($r['inquiry_timestamp'])) ?></td>

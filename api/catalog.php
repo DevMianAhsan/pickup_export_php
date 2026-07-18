@@ -1681,12 +1681,13 @@ if ($resource === 'inquiry') {
 
     // Required field validation
     $required = [
-        'inquiry_fullName' => 'Full Name',
+        'fullName' => 'Full Name',
         'vehicle_id' => 'Vehicle ID',
-        'inquiry_email' => 'Email',
-        'inquiry_phoneNumber' => 'Phone Number',
-        'inquiry_country' => 'Country',
-        'inquiry_of' => 'Inquiry Of',
+        'email' => 'Email',
+        'phoneNumber' => 'Phone Number',
+        'country' => 'Country',
+        'inquiry_type' => 'Inquiry Type',
+        'city' => 'City'
     ];
 
     $missing = [];
@@ -1704,7 +1705,7 @@ if ($resource === 'inquiry') {
     }
 
     // Validate email
-    if (!filter_var(trim($body['inquiry_email']), FILTER_VALIDATE_EMAIL)) {
+    if (!filter_var(trim($body['email']), FILTER_VALIDATE_EMAIL)) {
         respondJson(422, [
             'status' => 'error',
             'message' => 'Invalid email address.',
@@ -1712,36 +1713,19 @@ if ($resource === 'inquiry') {
     }
 
     // Decode vehicle_id (base64-encoded on the frontend, same as legacy code)
-    $rawVehicleId = $body['vehicle_id'];
-    $vehicleId = base64_decode($rawVehicleId, true);
-    if ($vehicleId === false) {
-        // Fallback: treat as plain value if base64 decode fails
-        $vehicleId = $rawVehicleId;
-    }
-
-    // Handle inquiry_services (may be array or JSON string)
-    $inquiryServices = '';
-    if (!empty($body['inquiry_services'])) {
-        $svc = $body['inquiry_services'];
-        if (is_array($svc)) {
-            $inquiryServices = json_encode($svc);
-        } elseif (is_string($svc)) {
-            // Validate it is valid JSON before storing
-            $decoded = json_decode($svc, true);
-            $inquiryServices = ($decoded !== null) ? $svc : json_encode([$svc]);
-        }
-    }
+    $vehicleId = $body['vehicle_id'];
 
     $data = [
-        'inquiry_name' => trim($body['inquiry_fullName']),
+        'inquiry_name' => trim($body['fullName']),
         'vehicle_id' => trim((string) $vehicleId),
-        'inquiry_email' => trim($body['inquiry_email']),
-        'inquiry_phone' => trim($body['inquiry_phoneNumber']),
-        'inquiry_msg' => trim($body['inquiry_msg'] ?? ''),
-        'inquiry_country' => trim($body['inquiry_country']),
-        'inquiry_of' => trim($body['inquiry_of']),
+        'inquiry_email' => trim($body['email']),
+        'inquiry_phone' => trim($body['phoneNumber']),
+        'inquiry_msg' => trim($body['message'] ?? ''),
+        'inquiry_country' => trim($body['country']),
+        'inquiry_city' => trim($body['city'] ?? ''),
+        'inquiry_of' => trim($body['inquiry_type']),
         'inquiry_sts' => 1,
-        'inquiry_services' => $inquiryServices,
+        'inquiry_services' => '',
     ];
 
     if (apiInsert($dbc, 'pending_inquiry', $data)) {
