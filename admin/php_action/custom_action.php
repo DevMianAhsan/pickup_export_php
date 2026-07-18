@@ -12902,7 +12902,17 @@ $statusMsg = '';
 
                 $watermarkImg = imagecreatefrompng($watermarkImagePath); 
 
-
+                $watermark_orig_w = imagesx($watermarkImg);
+                $watermark_orig_h = imagesy($watermarkImg);
+                $watermark_new_w = 400;
+                $watermark_new_h = 180;
+                $resizedWatermark = imagecreatetruecolor($watermark_new_w, $watermark_new_h);
+                imagealphablending($resizedWatermark, false);
+                imagesavealpha($resizedWatermark, true);
+                $transparent = imagecolorallocatealpha($resizedWatermark, 0, 0, 0, 127);
+                imagefill($resizedWatermark, 0, 0, $transparent);
+                imagecopyresampled($resizedWatermark, $watermarkImg, 0, 0, 0, 0, $watermark_new_w, $watermark_new_h, $watermark_orig_w, $watermark_orig_h);
+                imagealphablending($resizedWatermark, true);
 
                 switch($fileType){ 
 
@@ -13084,11 +13094,11 @@ $statusMsg = '';
 
 
 
-	                $sx = imagesx($watermarkImg);  // 429
+	                $sx = imagesx($resizedWatermark);  // 200
 
 
 
-	                $sy = imagesy($watermarkImg);  // 112
+	                $sy = imagesy($resizedWatermark);  // 50
 
 
 
@@ -13140,7 +13150,7 @@ $statusMsg = '';
 
 
 
-					imagecopy($im2, $watermarkImg, $offsetX, $offsetY, 0, 0, $sx, $sy); 
+					imagecopy($im2, $resizedWatermark, $offsetX, $offsetY, 0, 0, $sx, $sy); 
 
 
 

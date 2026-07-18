@@ -177,3 +177,26 @@ function isActiveOnlyRequested(): bool
 {
     return isset($_GET['active']) && $_GET['active'] === '1';
 }
+
+function cache_remember(string $key, int $ttl, callable $callback): array
+{
+    $cacheDir = __DIR__ . '/cache';
+    if (!is_dir($cacheDir)) {
+        @mkdir($cacheDir, 0755, true);
+    }
+
+    $file = $cacheDir . '/' . md5($key) . '.json';
+
+    if (is_file($file) && (time() - filemtime($file)) < $ttl) {
+        $data = json_decode(file_get_contents($file), true);
+        if (is_array($data)) {
+            return $data;
+        }
+    }
+
+    $data = $callback();
+
+    file_put_contents($file, json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), LOCK_EX);
+
+    return $data;
+}

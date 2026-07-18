@@ -14,3 +14,4 @@
 *.env
 /api/config.php
 /api/videos.php
+/api/cache

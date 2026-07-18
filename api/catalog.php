@@ -70,30 +70,33 @@ $action = $segments[1] ?? '';
 if ($resource === 'makers') {
     requireApiToken();
 
-    $query = "SELECT m.maker_id, m.maker_name, m.maker_img, m.maker_sts, ";
-    $query .= "(SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_maker = m.maker_id AND v.vehicle_status != 'sold') AS vehicle_count ";
-    $query .= "FROM maker m";
-    $query .= " WHERE m.maker_sts = 1";
-    $query .= " ORDER BY m.maker_id ASC";
+    $items = cache_remember('makers', 86400, function () use ($dbc) {
+        $query = "SELECT m.maker_id, m.maker_name, m.maker_img, m.maker_sts, ";
+        $query .= "(SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_maker = m.maker_id AND v.vehicle_status != 'sold') AS vehicle_count ";
+        $query .= "FROM maker m";
+        $query .= " WHERE m.maker_sts = 1";
+        $query .= " ORDER BY m.maker_id ASC";
 
-    $result = mysqli_query($dbc, $query);
-    if (!$result) {
-        respondJson(500, [
-            'status' => 'error',
-            'message' => 'Failed to fetch makers.',
-            'details' => mysqli_error($dbc)
-        ]);
-    }
+        $result = mysqli_query($dbc, $query);
+        if (!$result) {
+            respondJson(500, [
+                'status' => 'error',
+                'message' => 'Failed to fetch makers.',
+                'details' => mysqli_error($dbc)
+            ]);
+        }
 
-    $items = [];
-    while ($row = mysqli_fetch_assoc($result)) {
-        $items[] = [
-            'id' => (int) $row['maker_id'],
-            'name' => $row['maker_name'],
-            'image' => normalizeImageUrl($row['maker_img']),
-            'available_vehicle_count' => (int) $row['vehicle_count'],
-        ];
-    }
+        $items = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $items[] = [
+                'id' => (int) $row['maker_id'],
+                'name' => $row['maker_name'],
+                'image' => normalizeImageUrl($row['maker_img']),
+                'available_vehicle_count' => (int) $row['vehicle_count'],
+            ];
+        }
+        return $items;
+    });
 
     respondJson(200, [
         'status' => 'success',
@@ -116,33 +119,37 @@ if ($resource === 'brands') {
         $makerId = (int) $params['maker_id'];
     }
 
-    $query = "SELECT b.brand_id, b.brand_name, b.brand_status, b.brand_m3, b.maker_id, ";
-    $query .= "(SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_brand = b.brand_id AND v.vehicle_status != 'sold') AS vehicle_count";
-    $query .= " FROM brands b LEFT JOIN maker m ON m.maker_id = b.maker_id";
-    $query .= " WHERE b.brand_status = 1";
-    if ($makerId !== null) {
-        $query .= " AND b.maker_id = " . mysqli_real_escape_string($dbc, (string) $makerId);
-    }
-    $query .= " ORDER BY b.brand_id ASC";
+    $cacheKey = 'brands:' . ($makerId ?? 'all');
+    $items = cache_remember($cacheKey, 86400, function () use ($dbc, $makerId) {
+        $query = "SELECT b.brand_id, b.brand_name, b.brand_status, b.brand_m3, b.maker_id, ";
+        $query .= "(SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_brand = b.brand_id AND v.vehicle_status != 'sold') AS vehicle_count";
+        $query .= " FROM brands b LEFT JOIN maker m ON m.maker_id = b.maker_id";
+        $query .= " WHERE b.brand_status = 1";
+        if ($makerId !== null) {
+            $query .= " AND b.maker_id = " . mysqli_real_escape_string($dbc, (string) $makerId);
+        }
+        $query .= " ORDER BY b.brand_id ASC";
 
-    $result = mysqli_query($dbc, $query);
-    if (!$result) {
-        respondJson(500, [
-            'status' => 'error',
-            'message' => 'Failed to fetch brands.',
-            'details' => mysqli_error($dbc)
-        ]);
-    }
+        $result = mysqli_query($dbc, $query);
+        if (!$result) {
+            respondJson(500, [
+                'status' => 'error',
+                'message' => 'Failed to fetch brands.',
+                'details' => mysqli_error($dbc)
+            ]);
+        }
 
-    $items = [];
-    while ($row = mysqli_fetch_assoc($result)) {
-        $items[] = [
-            'id' => (int) $row['brand_id'],
-            'name' => $row['brand_name'],
-            'maker_id' => (int) $row['maker_id'],
-            'available_vehicle_count' => (int) $row['vehicle_count'],
-        ];
-    }
+        $items = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $items[] = [
+                'id' => (int) $row['brand_id'],
+                'name' => $row['brand_name'],
+                'maker_id' => (int) $row['maker_id'],
+                'available_vehicle_count' => (int) $row['vehicle_count'],
+            ];
+        }
+        return $items;
+    });
 
     respondJson(200, [
         'status' => 'success',
@@ -155,26 +162,29 @@ if ($resource === 'brands') {
 if ($resource === 'fuels' || $resource === 'fuel_types') {
     requireApiToken();
 
-    $query = "SELECT fuel_id, fuel_name, fuel_sts FROM fuel";
-    $query .= " WHERE fuel_sts = 1";
-    $query .= " ORDER BY fuel_name ASC";
+    $items = cache_remember('fuels', 86400, function () use ($dbc) {
+        $query = "SELECT fuel_id, fuel_name, fuel_sts FROM fuel";
+        $query .= " WHERE fuel_sts = 1";
+        $query .= " ORDER BY fuel_name ASC";
 
-    $result = mysqli_query($dbc, $query);
-    if (!$result) {
-        respondJson(500, [
-            'status' => 'error',
-            'message' => 'Failed to fetch fuels.',
-            'details' => mysqli_error($dbc)
-        ]);
-    }
+        $result = mysqli_query($dbc, $query);
+        if (!$result) {
+            respondJson(500, [
+                'status' => 'error',
+                'message' => 'Failed to fetch fuels.',
+                'details' => mysqli_error($dbc)
+            ]);
+        }
 
-    $items = [];
-    while ($row = mysqli_fetch_assoc($result)) {
-        $items[] = [
-            'id' => (int) $row['fuel_id'],
-            'name' => $row['fuel_name'],
-        ];
-    }
+        $items = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $items[] = [
+                'id' => (int) $row['fuel_id'],
+                'name' => $row['fuel_name'],
+            ];
+        }
+        return $items;
+    });
 
     respondJson(200, [
         'status' => 'success',
@@ -186,30 +196,33 @@ if ($resource === 'fuels' || $resource === 'fuel_types') {
 if ($resource === 'machine-types' || $resource === 'machine_types') {
     requireApiToken();
 
-    $query = "SELECT mt.machine_type_id, mt.machine_type_name, mt.machine_type_img, mt.machine_type_sts, ";
-    $query .= "(SELECT COUNT(*) FROM machines m WHERE m.machine_type = mt.machine_type_id AND m.machine_sts = 1 AND (m.machine_sale_stts IS NULL OR m.machine_sale_stts != 'sold')) AS machine_count ";
-    $query .= "FROM machine_type mt";
-    $query .= " WHERE mt.machine_type_sts = 1";
-    $query .= " ORDER BY mt.machine_type_name ASC";
+    $items = cache_remember('machine-types', 86400, function () use ($dbc) {
+        $query = "SELECT mt.machine_type_id, mt.machine_type_name, mt.machine_type_img, mt.machine_type_sts, ";
+        $query .= "(SELECT COUNT(*) FROM machines m WHERE m.machine_type = mt.machine_type_id AND m.machine_sts = 1 AND (m.machine_sale_stts IS NULL OR m.machine_sale_stts != 'sold')) AS machine_count ";
+        $query .= "FROM machine_type mt";
+        $query .= " WHERE mt.machine_type_sts = 1";
+        $query .= " ORDER BY mt.machine_type_name ASC";
 
-    $result = mysqli_query($dbc, $query);
-    if (!$result) {
-        respondJson(500, [
-            'status' => 'error',
-            'message' => 'Failed to fetch machine types.',
-            'details' => mysqli_error($dbc)
-        ]);
-    }
+        $result = mysqli_query($dbc, $query);
+        if (!$result) {
+            respondJson(500, [
+                'status' => 'error',
+                'message' => 'Failed to fetch machine types.',
+                'details' => mysqli_error($dbc)
+            ]);
+        }
 
-    $items = [];
-    while ($row = mysqli_fetch_assoc($result)) {
-        $items[] = [
-            'id' => (int) $row['machine_type_id'],
-            'name' => $row['machine_type_name'],
-            'image' => normalizeImageUrl($row['machine_type_img']),
-            'available_vehicle_count' => (int) $row['machine_count'],
-        ];
-    }
+        $items = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $items[] = [
+                'id' => (int) $row['machine_type_id'],
+                'name' => $row['machine_type_name'],
+                'image' => normalizeImageUrl($row['machine_type_img']),
+                'available_vehicle_count' => (int) $row['machine_count'],
+            ];
+        }
+        return $items;
+    });
 
     respondJson(200, [
         'status' => 'success',
@@ -221,30 +234,33 @@ if ($resource === 'machine-types' || $resource === 'machine_types') {
 if ($resource === 'types' || $resource === 'body-types' || $resource === 'body_types') {
     requireApiToken();
 
-    $query = "SELECT bt.body_type_id, bt.body_type_name, bt.body_type_img, bt.body_type_sts, ";
-    $query .= "(SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_type = bt.body_type_id AND v.vehicle_status != 'sold') AS vehicle_count ";
-    $query .= "FROM body_type bt";
-    $query .= " WHERE bt.body_type_sts = 1";
-    $query .= " ORDER BY bt.body_type_id ASC";
+    $items = cache_remember('body-types', 86400, function () use ($dbc) {
+        $query = "SELECT bt.body_type_id, bt.body_type_name, bt.body_type_img, bt.body_type_sts, ";
+        $query .= "(SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_type = bt.body_type_id AND v.vehicle_status != 'sold') AS vehicle_count ";
+        $query .= "FROM body_type bt";
+        $query .= " WHERE bt.body_type_sts = 1";
+        $query .= " ORDER BY bt.body_type_id ASC";
 
-    $result = mysqli_query($dbc, $query);
-    if (!$result) {
-        respondJson(500, [
-            'status' => 'error',
-            'message' => 'Failed to fetch body types.',
-            'details' => mysqli_error($dbc)
-        ]);
-    }
+        $result = mysqli_query($dbc, $query);
+        if (!$result) {
+            respondJson(500, [
+                'status' => 'error',
+                'message' => 'Failed to fetch body types.',
+                'details' => mysqli_error($dbc)
+            ]);
+        }
 
-    $items = [];
-    while ($row = mysqli_fetch_assoc($result)) {
-        $items[] = [
-            'id' => (int) $row['body_type_id'],
-            'name' => $row['body_type_name'],
-            'image' => normalizeImageUrl($row['body_type_img']),
-            'available_vehicle_count' => (int) $row['vehicle_count'],
-        ];
-    }
+        $items = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $items[] = [
+                'id' => (int) $row['body_type_id'],
+                'name' => $row['body_type_name'],
+                'image' => normalizeImageUrl($row['body_type_img']),
+                'available_vehicle_count' => (int) $row['vehicle_count'],
+            ];
+        }
+        return $items;
+    });
 
     respondJson(200, [
         'status' => 'success',
@@ -256,26 +272,29 @@ if ($resource === 'types' || $resource === 'body-types' || $resource === 'body_t
 if ($resource === 'steering' || $resource === 'steerings' || $resource === 'options') {
     requireApiToken();
 
-    $query = "SELECT option_id, option_name, option_sts FROM options";
-    $query .= " WHERE option_sts = 1";
-    $query .= " ORDER BY option_name ASC";
+    $items = cache_remember('steering', 86400, function () use ($dbc) {
+        $query = "SELECT option_id, option_name, option_sts FROM options";
+        $query .= " WHERE option_sts = 1";
+        $query .= " ORDER BY option_name ASC";
 
-    $result = mysqli_query($dbc, $query);
-    if (!$result) {
-        respondJson(500, [
-            'status' => 'error',
-            'message' => 'Failed to fetch steering options.',
-            'details' => mysqli_error($dbc)
-        ]);
-    }
+        $result = mysqli_query($dbc, $query);
+        if (!$result) {
+            respondJson(500, [
+                'status' => 'error',
+                'message' => 'Failed to fetch steering options.',
+                'details' => mysqli_error($dbc)
+            ]);
+        }
 
-    $items = [];
-    while ($row = mysqli_fetch_assoc($result)) {
-        $items[] = [
-            'id' => (int) $row['option_id'],
-            'name' => $row['option_name'],
-        ];
-    }
+        $items = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $items[] = [
+                'id' => (int) $row['option_id'],
+                'name' => $row['option_name'],
+            ];
+        }
+        return $items;
+    });
 
     respondJson(200, [
         'status' => 'success',
@@ -287,26 +306,29 @@ if ($resource === 'steering' || $resource === 'steerings' || $resource === 'opti
 if ($resource === 'transmissions' || $resource === 'transmission') {
     requireApiToken();
 
-    $query = "SELECT transmission_id, transmission_name, transmission_sts FROM transmission";
-    $query .= " WHERE transmission_sts = 1";
-    $query .= " ORDER BY transmission_name ASC";
+    $items = cache_remember('transmissions', 86400, function () use ($dbc) {
+        $query = "SELECT transmission_id, transmission_name, transmission_sts FROM transmission";
+        $query .= " WHERE transmission_sts = 1";
+        $query .= " ORDER BY transmission_name ASC";
 
-    $result = mysqli_query($dbc, $query);
-    if (!$result) {
-        respondJson(500, [
-            'status' => 'error',
-            'message' => 'Failed to fetch transmissions.',
-            'details' => mysqli_error($dbc)
-        ]);
-    }
+        $result = mysqli_query($dbc, $query);
+        if (!$result) {
+            respondJson(500, [
+                'status' => 'error',
+                'message' => 'Failed to fetch transmissions.',
+                'details' => mysqli_error($dbc)
+            ]);
+        }
 
-    $items = [];
-    while ($row = mysqli_fetch_assoc($result)) {
-        $items[] = [
-            'id' => (int) $row['transmission_id'],
-            'name' => $row['transmission_name'],
-        ];
-    }
+        $items = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $items[] = [
+                'id' => (int) $row['transmission_id'],
+                'name' => $row['transmission_name'],
+            ];
+        }
+        return $items;
+    });
 
     respondJson(200, [
         'status' => 'success',
@@ -318,29 +340,32 @@ if ($resource === 'transmissions' || $resource === 'transmission') {
 if ($resource === 'locations' || $resource === 'location' || $resource === 'countries') {
     requireApiToken();
 
-    $query = "SELECT c.country_id, c.country_name, c.image, ";
-    $query .= "(SELECT COUNT(*) FROM vehicle_info v WHERE v.country_id = c.country_id AND v.vehicle_status != 'sold') AS vehicle_count ";
-    $query .= "FROM countries c";
-    $query .= " ORDER BY c.country_name ASC";
+    $items = cache_remember('locations', 86400, function () use ($dbc) {
+        $query = "SELECT c.country_id, c.country_name, c.image, ";
+        $query .= "(SELECT COUNT(*) FROM vehicle_info v WHERE v.country_id = c.country_id AND v.vehicle_status != 'sold') AS vehicle_count ";
+        $query .= "FROM countries c";
+        $query .= " ORDER BY c.country_name ASC";
 
-    $result = mysqli_query($dbc, $query);
-    if (!$result) {
-        respondJson(500, [
-            'status' => 'error',
-            'message' => 'Failed to fetch locations.',
-            'details' => mysqli_error($dbc)
-        ]);
-    }
+        $result = mysqli_query($dbc, $query);
+        if (!$result) {
+            respondJson(500, [
+                'status' => 'error',
+                'message' => 'Failed to fetch locations.',
+                'details' => mysqli_error($dbc)
+            ]);
+        }
 
-    $items = [];
-    while ($row = mysqli_fetch_assoc($result)) {
-        $items[] = [
-            'id' => (int) $row['country_id'],
-            'name' => $row['country_name'],
-            'image' => $row['image'],
-            'available_vehicle_count' => (int) $row['vehicle_count'],
-        ];
-    }
+        $items = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $items[] = [
+                'id' => (int) $row['country_id'],
+                'name' => $row['country_name'],
+                'image' => $row['image'],
+                'available_vehicle_count' => (int) $row['vehicle_count'],
+            ];
+        }
+        return $items;
+    });
 
     respondJson(200, [
         'status' => 'success',
@@ -352,27 +377,30 @@ if ($resource === 'locations' || $resource === 'location' || $resource === 'coun
 if ($resource === 'colors' || $resource === 'color') {
     requireApiToken();
 
-    $query = "SELECT color_code_id, color_name, color_code_name_code, color_code_sts FROM color_code";
-    $query .= " WHERE color_code_sts = 1";
-    $query .= " ORDER BY color_name ASC";
+    $items = cache_remember('colors', 86400, function () use ($dbc) {
+        $query = "SELECT color_code_id, color_name, color_code_name_code, color_code_sts FROM color_code";
+        $query .= " WHERE color_code_sts = 1";
+        $query .= " ORDER BY color_name ASC";
 
-    $result = mysqli_query($dbc, $query);
-    if (!$result) {
-        respondJson(500, [
-            'status' => 'error',
-            'message' => 'Failed to fetch colors.',
-            'details' => mysqli_error($dbc)
-        ]);
-    }
+        $result = mysqli_query($dbc, $query);
+        if (!$result) {
+            respondJson(500, [
+                'status' => 'error',
+                'message' => 'Failed to fetch colors.',
+                'details' => mysqli_error($dbc)
+            ]);
+        }
 
-    $items = [];
-    while ($row = mysqli_fetch_assoc($result)) {
-        $items[] = [
-            'id' => (int) $row['color_code_id'],
-            'name' => $row['color_name'],
-            'code' => $row['color_code_name_code'],
-        ];
-    }
+        $items = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $items[] = [
+                'id' => (int) $row['color_code_id'],
+                'name' => $row['color_name'],
+                'code' => $row['color_code_name_code'],
+            ];
+        }
+        return $items;
+    });
 
     respondJson(200, [
         'status' => 'success',
@@ -384,26 +412,29 @@ if ($resource === 'colors' || $resource === 'color') {
 if ($resource === 'driven' || $resource === 'drive' || $resource === 'drives') {
     requireApiToken();
 
-    $query = "SELECT drive_id, drive_name, drive_sts FROM drive";
-    $query .= " WHERE drive_sts = 1";
-    $query .= " ORDER BY drive_name ASC";
+    $items = cache_remember('driven', 86400, function () use ($dbc) {
+        $query = "SELECT drive_id, drive_name, drive_sts FROM drive";
+        $query .= " WHERE drive_sts = 1";
+        $query .= " ORDER BY drive_name ASC";
 
-    $result = mysqli_query($dbc, $query);
-    if (!$result) {
-        respondJson(500, [
-            'status' => 'error',
-            'message' => 'Failed to fetch driven options.',
-            'details' => mysqli_error($dbc)
-        ]);
-    }
+        $result = mysqli_query($dbc, $query);
+        if (!$result) {
+            respondJson(500, [
+                'status' => 'error',
+                'message' => 'Failed to fetch driven options.',
+                'details' => mysqli_error($dbc)
+            ]);
+        }
 
-    $items = [];
-    while ($row = mysqli_fetch_assoc($result)) {
-        $items[] = [
-            'id' => (int) $row['drive_id'],
-            'name' => $row['drive_name'],
-        ];
-    }
+        $items = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $items[] = [
+                'id' => (int) $row['drive_id'],
+                'name' => $row['drive_name'],
+            ];
+        }
+        return $items;
+    });
 
     respondJson(200, [
         'status' => 'success',
@@ -415,26 +446,29 @@ if ($resource === 'driven' || $resource === 'drive' || $resource === 'drives') {
 if ($resource === 'cc-range' || $resource === 'cc_range' || $resource === 'ccrange' || $resource === 'cc') {
     requireApiToken();
 
-    $query = "SELECT cc_id, cc_name, cc_sts FROM cc";
-    $query .= " WHERE cc_sts = 1";
-    $query .= " ORDER BY cc_id ASC";
+    $items = cache_remember('cc-range', 86400, function () use ($dbc) {
+        $query = "SELECT cc_id, cc_name, cc_sts FROM cc";
+        $query .= " WHERE cc_sts = 1";
+        $query .= " ORDER BY cc_id ASC";
 
-    $result = mysqli_query($dbc, $query);
-    if (!$result) {
-        respondJson(500, [
-            'status' => 'error',
-            'message' => 'Failed to fetch cc range options.',
-            'details' => mysqli_error($dbc)
-        ]);
-    }
+        $result = mysqli_query($dbc, $query);
+        if (!$result) {
+            respondJson(500, [
+                'status' => 'error',
+                'message' => 'Failed to fetch cc range options.',
+                'details' => mysqli_error($dbc)
+            ]);
+        }
 
-    $items = [];
-    while ($row = mysqli_fetch_assoc($result)) {
-        $items[] = [
-            'id' => (int) $row['cc_id'],
-            'name' => $row['cc_name'],
-        ];
-    }
+        $items = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $items[] = [
+                'id' => (int) $row['cc_id'],
+                'name' => $row['cc_name'],
+            ];
+        }
+        return $items;
+    });
 
     respondJson(200, [
         'status' => 'success',
@@ -446,26 +480,29 @@ if ($resource === 'cc-range' || $resource === 'cc_range' || $resource === 'ccran
 if ($resource === 'features' || $resource === 'feature' || $resource === 'vehicle-features') {
     requireApiToken();
 
-    $query = "SELECT vehicle_feature_id, vehicle_feature_name, vehicle_feature_sts FROM vehicle_feature";
-    $query .= " WHERE vehicle_feature_sts = 1";
-    $query .= " ORDER BY vehicle_feature_name ASC";
+    $items = cache_remember('features', 86400, function () use ($dbc) {
+        $query = "SELECT vehicle_feature_id, vehicle_feature_name, vehicle_feature_sts FROM vehicle_feature";
+        $query .= " WHERE vehicle_feature_sts = 1";
+        $query .= " ORDER BY vehicle_feature_name ASC";
 
-    $result = mysqli_query($dbc, $query);
-    if (!$result) {
-        respondJson(500, [
-            'status' => 'error',
-            'message' => 'Failed to fetch vehicle features.',
-            'details' => mysqli_error($dbc)
-        ]);
-    }
+        $result = mysqli_query($dbc, $query);
+        if (!$result) {
+            respondJson(500, [
+                'status' => 'error',
+                'message' => 'Failed to fetch vehicle features.',
+                'details' => mysqli_error($dbc)
+            ]);
+        }
 
-    $items = [];
-    while ($row = mysqli_fetch_assoc($result)) {
-        $items[] = [
-            'id' => (int) $row['vehicle_feature_id'],
-            'name' => $row['vehicle_feature_name'],
-        ];
-    }
+        $items = [];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $items[] = [
+                'id' => (int) $row['vehicle_feature_id'],
+                'name' => $row['vehicle_feature_name'],
+            ];
+        }
+        return $items;
+    });
 
     respondJson(200, [
         'status' => 'success',
@@ -478,159 +515,145 @@ if ($resource === 'features' || $resource === 'feature' || $resource === 'vehicl
 if ($resource === 'filters') {
     requireApiToken();
 
-    // Type
-    $types = [];
+    $filterData = cache_remember('filters', 86400, function () use ($dbc) {
+        // Type
+        $types = [];
 
-    $query = mysqli_query($dbc, "SELECT (SELECT COUNT(*) FROM vehicle_info WHERE vehicle_status != 'sold' AND vehicle_sts = 1) AS car_count,
-        (SELECT COUNT(*) FROM machines WHERE machine_sts = 1 AND (machine_sale_stts IS NULL OR machine_sale_stts != 'sold')) AS machine_count");
+        $query = mysqli_query($dbc, "SELECT (SELECT COUNT(*) FROM vehicle_info WHERE vehicle_status != 'sold' AND vehicle_sts = 1) AS car_count,
+            (SELECT COUNT(*) FROM machines WHERE machine_sts = 1 AND (machine_sale_stts IS NULL OR machine_sale_stts != 'sold')) AS machine_count");
 
-    if ($row = mysqli_fetch_assoc($query)) {
-        $types = [
-            [
-                'id' => 1,
-                'name' => 'car',
-                'image' => normalizeImageUrl('images/types/car.png'),
-                'available_vehicle_count' => (int) $row['car_count']
-            ],
-            [
-                'id' => 2,
-                'name' => 'machine',
-                'image' => normalizeImageUrl('images/types/machine.png'),
-                'available_vehicle_count' => (int) $row['machine_count']   // consistent key name
-            ]
-        ];
-    }
+        if ($row = mysqli_fetch_assoc($query)) {
+            $types = [
+                [
+                    'id' => 1,
+                    'name' => 'car',
+                    'image' => normalizeImageUrl('images/types/car.png'),
+                    'available_vehicle_count' => (int) $row['car_count']
+                ],
+                [
+                    'id' => 2,
+                    'name' => 'machine',
+                    'image' => normalizeImageUrl('images/types/machine.png'),
+                    'available_vehicle_count' => (int) $row['machine_count']
+                ]
+            ];
+        }
 
-    // codes
-    $codes = [];
+        $codes = [];
 
-    // Makers
-    $makers = [];
-    $mq = mysqli_query($dbc, "SELECT m.maker_id, m.maker_name, m.maker_img, m.maker_sts, (SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_maker = m.maker_id AND v.vehicle_status != 'sold') AS vehicle_count FROM maker m WHERE m.maker_sts = 1 ORDER BY m.maker_name ASC");
-    while ($r = mysqli_fetch_assoc($mq)) {
-        $makers[] = [
-            'id' => (int) $r['maker_id'],
-            'name' => $r['maker_name'],
-            'image' => normalizeImageUrl($r['maker_img']),
-            'available_vehicle_count' => (int) $r['vehicle_count'],
-        ];
-    }
+        // Makers
+        $makers = [];
+        $mq = mysqli_query($dbc, "SELECT m.maker_id, m.maker_name, m.maker_img, m.maker_sts, (SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_maker = m.maker_id AND v.vehicle_status != 'sold') AS vehicle_count FROM maker m WHERE m.maker_sts = 1 ORDER BY m.maker_name ASC");
+        while ($r = mysqli_fetch_assoc($mq)) {
+            $makers[] = [
+                'id' => (int) $r['maker_id'],
+                'name' => $r['maker_name'],
+                'image' => normalizeImageUrl($r['maker_img']),
+                'available_vehicle_count' => (int) $r['vehicle_count'],
+            ];
+        }
 
-    // Brands
-    $brands = [];
-    $bq = mysqli_query($dbc, "SELECT b.brand_id, b.brand_name, b.brand_status, b.brand_m3, b.maker_id, m.maker_name, (SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_brand = b.brand_id AND v.vehicle_status != 'sold') AS vehicle_count FROM brands b LEFT JOIN maker m ON m.maker_id = b.maker_id WHERE b.brand_status = 1 ORDER BY b.brand_name ASC");
-    while ($r = mysqli_fetch_assoc($bq)) {
-        $brands[] = [
-            'id' => (int) $r['brand_id'],
-            'name' => $r['brand_name'],
-            'maker_id' => (int) $r['maker_id'],
-            'available_vehicle_count' => (int) $r['vehicle_count'],
-        ];
-    }
+        // Brands
+        $brands = [];
+        $bq = mysqli_query($dbc, "SELECT b.brand_id, b.brand_name, b.brand_status, b.brand_m3, b.maker_id, m.maker_name, (SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_brand = b.brand_id AND v.vehicle_status != 'sold') AS vehicle_count FROM brands b LEFT JOIN maker m ON m.maker_id = b.maker_id WHERE b.brand_status = 1 ORDER BY b.brand_name ASC");
+        while ($r = mysqli_fetch_assoc($bq)) {
+            $brands[] = [
+                'id' => (int) $r['brand_id'],
+                'name' => $r['brand_name'],
+                'maker_id' => (int) $r['maker_id'],
+                'available_vehicle_count' => (int) $r['vehicle_count'],
+            ];
+        }
 
-    // Types
-    $body_types = [];
-    $tq = mysqli_query($dbc, "SELECT bt.body_type_id, bt.body_type_name, bt.body_type_img, bt.body_type_sts, (SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_type = bt.body_type_id AND v.vehicle_status != 'sold') AS vehicle_count FROM body_type bt WHERE bt.body_type_sts = 1 ORDER BY bt.body_type_name ASC");
-    while ($r = mysqli_fetch_assoc($tq)) {
-        $body_types[] = [
-            'id' => (int) $r['body_type_id'],
-            'name' => $r['body_type_name'],
-            'image' => normalizeImageUrl($r['body_type_img']),
-            'available_vehicle_count' => (int) $r['vehicle_count'],
-        ];
-    }
+        // Types
+        $body_types = [];
+        $tq = mysqli_query($dbc, "SELECT bt.body_type_id, bt.body_type_name, bt.body_type_img, bt.body_type_sts, (SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_type = bt.body_type_id AND v.vehicle_status != 'sold') AS vehicle_count FROM body_type bt WHERE bt.body_type_sts = 1 ORDER BY bt.body_type_name ASC");
+        while ($r = mysqli_fetch_assoc($tq)) {
+            $body_types[] = [
+                'id' => (int) $r['body_type_id'],
+                'name' => $r['body_type_name'],
+                'image' => normalizeImageUrl($r['body_type_img']),
+                'available_vehicle_count' => (int) $r['vehicle_count'],
+            ];
+        }
 
-    // Machine Types
-    $machine_types = [];
+        // Machine Types
+        $machine_types = [];
 
-    $tq = mysqli_query($dbc, "SELECT mt.machine_type_id, mt.machine_type_name, mt.machine_type_img, mt.machine_type_sts, (SELECT COUNT(*) 
-         FROM machines m 
-         WHERE m.machine_type = mt.machine_type_id AND m.machine_sts = 1 AND (m.machine_sale_stts IS NULL OR m.machine_sale_stts != 'sold')) AS machine_count 
-    FROM machine_type mt 
-    WHERE mt.machine_type_sts = 1 
-    ORDER BY mt.machine_type_name ASC
-");
+        $tq = mysqli_query($dbc, "SELECT mt.machine_type_id, mt.machine_type_name, mt.machine_type_img, mt.machine_type_sts, (SELECT COUNT(*) 
+             FROM machines m 
+             WHERE m.machine_type = mt.machine_type_id AND m.machine_sts = 1 AND (m.machine_sale_stts IS NULL OR m.machine_sale_stts != 'sold')) AS machine_count 
+        FROM machine_type mt 
+        WHERE mt.machine_type_sts = 1 
+        ORDER BY mt.machine_type_name ASC
+    ");
 
-    while ($r = mysqli_fetch_assoc($tq)) {
-        $machine_types[] = [
-            'id' => (int) $r['machine_type_id'],
-            'name' => $r['machine_type_name'],
-            'image' => normalizeImageUrl($r['machine_type_img']),
-            'available_vehicle_count' => (int) $r['machine_count'],
-        ];
-    }
-    // Colors (from vehicle_info distinct)
-    $colors = [];
-    $cq = mysqli_query($dbc, "SELECT color_code_id,color_name,color_code_name_code FROM color_code WHERE color_code_sts = '1' ORDER BY color_name ASC");
-    while ($r = mysqli_fetch_assoc($cq))
-        $colors[] = ['name' => $r['color_name'], 'code' => $r['color_code_name_code']];
+        while ($r = mysqli_fetch_assoc($tq)) {
+            $machine_types[] = [
+                'id' => (int) $r['machine_type_id'],
+                'name' => $r['machine_type_name'],
+                'image' => normalizeImageUrl($r['machine_type_img']),
+                'available_vehicle_count' => (int) $r['machine_count'],
+            ];
+        }
+        // Colors (from vehicle_info distinct)
+        $colors = [];
+        $cq = mysqli_query($dbc, "SELECT color_code_id,color_name,color_code_name_code FROM color_code WHERE color_code_sts = '1' ORDER BY color_name ASC");
+        while ($r = mysqli_fetch_assoc($cq))
+            $colors[] = ['name' => $r['color_name'], 'code' => $r['color_code_name_code']];
 
-    // Transmissions
-    $transmissions = [];
-    $tq2 = mysqli_query($dbc, "SELECT transmission_id ,	transmission_name FROM transmission WHERE transmission_sts = '1' ORDER BY 	transmission_name  ASC");
-    while ($r = mysqli_fetch_assoc($tq2))
-        $transmissions[] = ['id' => (int) $r['transmission_id'], 'name' => $r['transmission_name']];
+        // Transmissions
+        $transmissions = [];
+        $tq2 = mysqli_query($dbc, "SELECT transmission_id ,	transmission_name FROM transmission WHERE transmission_sts = '1' ORDER BY 	transmission_name  ASC");
+        while ($r = mysqli_fetch_assoc($tq2))
+            $transmissions[] = ['id' => (int) $r['transmission_id'], 'name' => $r['transmission_name']];
 
-    // Fuel types
-    $fuels = [];
-    $fq = mysqli_query($dbc, "SELECT fuel_id, fuel_name FROM fuel WHERE fuel_sts = 1 ORDER BY fuel_name ASC");
-    while ($r = mysqli_fetch_assoc($fq))
-        $fuels[] = ['id' => (int) $r['fuel_id'], 'name' => $r['fuel_name']];
+        // Fuel types
+        $fuels = [];
+        $fq = mysqli_query($dbc, "SELECT fuel_id, fuel_name FROM fuel WHERE fuel_sts = 1 ORDER BY fuel_name ASC");
+        while ($r = mysqli_fetch_assoc($fq))
+            $fuels[] = ['id' => (int) $r['fuel_id'], 'name' => $r['fuel_name']];
 
-    $cc_range = [];
-    $c_range = mysqli_query($dbc, "SELECT cc_id, cc_name FROM cc WHERE cc_sts = 1 ORDER BY cc_id ASC");
-    while ($r = mysqli_fetch_assoc($c_range))
-        $cc_range[] = ['id' => (int) $r['cc_id'], 'name' => $r['cc_name']];
+        $cc_range = [];
+        $c_range = mysqli_query($dbc, "SELECT cc_id, cc_name FROM cc WHERE cc_sts = 1 ORDER BY cc_id ASC");
+        while ($r = mysqli_fetch_assoc($c_range))
+            $cc_range[] = ['id' => (int) $r['cc_id'], 'name' => $r['cc_name']];
 
-    // Driven
-    $driven = [];
-    $dv = mysqli_query($dbc, "SELECT drive_id, drive_name FROM drive WHERE drive_sts = 1 ORDER BY drive_name ASC");
-    while ($r = mysqli_fetch_assoc($dv))
-        $driven[] = ['id' => (int) $r['drive_id'], 'name' => $r['drive_name']];
+        // Driven
+        $driven = [];
+        $dv = mysqli_query($dbc, "SELECT drive_id, drive_name FROM drive WHERE drive_sts = 1 ORDER BY drive_name ASC");
+        while ($r = mysqli_fetch_assoc($dv))
+            $driven[] = ['id' => (int) $r['drive_id'], 'name' => $r['drive_name']];
 
-    // steering
-    $steering = [];
-    $st = mysqli_query($dbc, "SELECT option_id, option_name FROM options WHERE option_sts = 1 ORDER BY option_name ASC");
-    while ($r = mysqli_fetch_assoc($st))
-        $steering[] = ['id' => (int) $r['option_id'], 'name' => $r['option_name']];
+        // steering
+        $steering = [];
+        $st = mysqli_query($dbc, "SELECT option_id, option_name FROM options WHERE option_sts = 1 ORDER BY option_name ASC");
+        while ($r = mysqli_fetch_assoc($st))
+            $steering[] = ['id' => (int) $r['option_id'], 'name' => $r['option_name']];
 
-    // Locations
-    $locations = [];
-    $mq = mysqli_query($dbc, "SELECT c.country_id, c.country_name, c.image,  (SELECT COUNT(*) FROM vehicle_info v WHERE v.country_id = c.country_id AND v.vehicle_status != 'sold') AS vehicle_count FROM countries c ORDER BY c.country_name ASC");
-    while ($r = mysqli_fetch_assoc($mq)) {
-        $locations[] = [
-            'id' => (int) $r['country_id'],
-            'name' => $r['country_name'],
-            'image' => $r['image'],
-            'available_vehicle_count' => (int) $r['vehicle_count'],
-        ];
-    }
-    // port
-    $port = [];
-    // features
-    $features = [];
-    $fte = mysqli_query($dbc, "SELECT vehicle_feature_id, vehicle_feature_name FROM vehicle_feature WHERE vehicle_feature_sts = 1 ORDER BY vehicle_feature_name ASC");
-    while ($r = mysqli_fetch_assoc($fte))
-        $features[] = ['id' => (int) $r['vehicle_feature_id'], 'name' => $r['vehicle_feature_name']];
+        // Locations
+        $locations = [];
+        $mq = mysqli_query($dbc, "SELECT c.country_id, c.country_name, c.image,  (SELECT COUNT(*) FROM vehicle_info v WHERE v.country_id = c.country_id AND v.vehicle_status != 'sold') AS vehicle_count FROM countries c ORDER BY c.country_name ASC");
+        while ($r = mysqli_fetch_assoc($mq)) {
+            $locations[] = [
+                'id' => (int) $r['country_id'],
+                'name' => $r['country_name'],
+                'image' => $r['image'],
+                'available_vehicle_count' => (int) $r['vehicle_count'],
+            ];
+        }
+        // port
+        $port = [];
+        // features
+        $features = [];
+        $fte = mysqli_query($dbc, "SELECT vehicle_feature_id, vehicle_feature_name FROM vehicle_feature WHERE vehicle_feature_sts = 1 ORDER BY vehicle_feature_name ASC");
+        while ($r = mysqli_fetch_assoc($fte))
+            $features[] = ['id' => (int) $r['vehicle_feature_id'], 'name' => $r['vehicle_feature_name']];
 
-    respondJson(200, [
-        'status' => 'success',
-        'types' => $types,
-        'makers' => $makers,
-        'models' => $brands,
-        'codes' => $codes,
-        'fuels' => $fuels,
-        'machine_types' => $machine_types,
-        'steering' => $steering,
-        'body_types' => $body_types,
-        'transmissions' => $transmissions,
-        'colors' => $colors,
-        'locations' => $locations,
-        'port' => $port,
-        'driven' => $driven,
-        'cc_range' => $cc_range,
-        'features' => $features
-    ]);
+        return compact('types', 'makers', 'brands', 'codes', 'fuels', 'machine_types', 'steering', 'body_types', 'transmissions', 'colors', 'locations', 'port', 'driven', 'cc_range', 'features');
+    });
+
+    respondJson(200, array_merge(['status' => 'success'], $filterData));
 }
 
 
@@ -770,13 +793,13 @@ if ($resource === 'vehicle' || $resource === 'single_vehicle' || $resource === '
 
     if (!empty($params['id'])) {
         $vid = (int) $params['id'];
-        $q = "SELECT vi.*, m.maker_name, b.brand_name, bt.body_type_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id WHERE vi.vehicle_id = $vid LIMIT 1";
+        $q = "SELECT vi.*, m.maker_name, b.brand_name, bt.body_type_name, c.country_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id LEFT JOIN countries c ON vi.country_id = c.country_id WHERE vi.vehicle_id = $vid LIMIT 1";
         $res = mysqli_query($dbc, $q);
         if ($res && mysqli_num_rows($res) > 0) {
             $item = mysqli_fetch_assoc($res);
             $itemType = 'vehicle';
         } else {
-            $q = "SELECT m.*, maker.maker_name, b.brand_name, mt.machine_type_name FROM machines m LEFT JOIN maker maker ON m.machine_maker = maker.maker_id LEFT JOIN brands b ON m.machine_brand = b.brand_id LEFT JOIN machine_type mt ON m.machine_type = mt.machine_type_id WHERE m.machine_id = $vid LIMIT 1";
+            $q = "SELECT m.*, maker.maker_name, b.brand_name, mt.machine_type_name, c.country_name FROM machines m LEFT JOIN maker maker ON m.machine_maker = maker.maker_id LEFT JOIN brands b ON m.machine_brand = b.brand_id LEFT JOIN machine_type mt ON m.machine_type = mt.machine_type_id LEFT JOIN countries c ON m.country_id = c.country_id WHERE m.machine_id = $vid LIMIT 1";
             $res = mysqli_query($dbc, $q);
             if ($res && mysqli_num_rows($res) > 0) {
                 $item = mysqli_fetch_assoc($res);
@@ -787,13 +810,13 @@ if ($resource === 'vehicle' || $resource === 'single_vehicle' || $resource === '
 
     if ($item === null && $stock !== null) {
         $stock = $escape($stock);
-        $q = "SELECT vi.*, m.maker_name, b.brand_name, bt.body_type_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id WHERE vi.vehicle_stock_id = '$stock' LIMIT 1";
+        $q = "SELECT vi.*, m.maker_name, b.brand_name, bt.body_type_name, c.country_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id LEFT JOIN countries c ON vi.country_id = c.country_id WHERE vi.vehicle_stock_id = '$stock' LIMIT 1";
         $res = mysqli_query($dbc, $q);
         if ($res && mysqli_num_rows($res) > 0) {
             $item = mysqli_fetch_assoc($res);
             $itemType = 'vehicle';
         } else {
-            $q = "SELECT m.*, maker.maker_name, b.brand_name, mt.machine_type_name FROM machines m LEFT JOIN maker maker ON m.machine_maker = maker.maker_id LEFT JOIN brands b ON m.machine_brand = b.brand_id LEFT JOIN machine_type mt ON m.machine_type = mt.machine_type_id WHERE m.machine_stock_id = '$stock' LIMIT 1";
+            $q = "SELECT m.*, maker.maker_name, b.brand_name, mt.machine_type_name, c.country_name FROM machines m LEFT JOIN maker maker ON m.machine_maker = maker.maker_id LEFT JOIN brands b ON m.machine_brand = b.brand_id LEFT JOIN machine_type mt ON m.machine_type = mt.machine_type_id LEFT JOIN countries c ON m.country_id = c.country_id WHERE m.machine_stock_id = '$stock' LIMIT 1";
             $res = mysqli_query($dbc, $q);
             if ($res && mysqli_num_rows($res) > 0) {
                 $item = mysqli_fetch_assoc($res);
@@ -826,6 +849,8 @@ if ($resource === 'vehicle' || $resource === 'single_vehicle' || $resource === '
             'id' => (int) $item['machine_id'],
             'type' => 'machine',
             'stock_id' => $item['machine_stock_id'] ?? null,
+            'maker_id' => (int) ($item['machine_maker'] ?? 0),
+            'brand_id' => (int) ($item['machine_brand'] ?? 0),
             'title' => $item['maker_name'] . " " . $item['brand_name'] ?? null,
             'maker_name' => $item['maker_name'] ?? null,
             'brand_name' => $item['brand_name'] ?? null,
@@ -852,6 +877,7 @@ if ($resource === 'vehicle' || $resource === 'single_vehicle' || $resource === '
             'featured_image' => $images[0] ?? null,
             'status' => $item['machine_sale_stts'] ?? null,
             'country_id' => isset($item['country_id']) ? (int) $item['country_id'] : null,
+            'country_name' => $item['country_name'] ?? null,
         ];
     } else {
         $featureList = [];
@@ -865,6 +891,8 @@ if ($resource === 'vehicle' || $resource === 'single_vehicle' || $resource === '
             'id' => (int) $item['vehicle_id'],
             'type' => 'vehicle',
             'stock_id' => $item['vehicle_stock_id'] ?? null,
+            'maker_id' => (int) ($item['vehicle_maker'] ?? 0),
+            'brand_id' => (int) ($item['vehicle_brand'] ?? 0),
             'title' => $item['maker_name'] . " " . $item['brand_name'] ?? null,
             'maker_name' => $item['maker_name'] ?? null,
             'brand_name' => $item['brand_name'] ?? null,
@@ -891,6 +919,7 @@ if ($resource === 'vehicle' || $resource === 'single_vehicle' || $resource === '
             'featured_image' => $images[0] ?? null,
             'status' => $item['vehicle_status'] ?? null,
             'country_id' => isset($item['country_id']) ? (int) $item['country_id'] : null,
+            'country_name' => $item['country_name'] ?? null,
         ];
     }
 
@@ -915,7 +944,7 @@ if ($resource === 'vehicle' || $resource === 'single_vehicle' || $resource === '
 
     if (!empty($whereSim) && $itemType === 'vehicle') {
         $whereClause = implode(' OR ', $whereSim);
-        $simQ = mysqli_query($dbc, "SELECT vi.*, m.maker_name, b.brand_name, bt.body_type_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id WHERE ($whereClause) AND vi.vehicle_id != " . (int) $itemData['id'] . " AND vi.vehicle_status != 'sold' ORDER BY vi.vehicle_id DESC LIMIT 6");
+        $simQ = mysqli_query($dbc, "SELECT vi.*, m.maker_name, b.brand_name, bt.body_type_name, c.country_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id LEFT JOIN countries c ON vi.country_id = c.country_id WHERE ($whereClause) AND vi.vehicle_id != " . (int) $itemData['id'] . " AND vi.vehicle_status != 'sold' ORDER BY vi.vehicle_id DESC LIMIT 6");
         if ($simQ) {
             while ($row = mysqli_fetch_assoc($simQ)) {
                 $vid2 = (int) $row['vehicle_id'];
@@ -928,13 +957,18 @@ if ($resource === 'vehicle' || $resource === 'single_vehicle' || $resource === '
                     'id' => $vid2,
                     'type' => 'vehicle',
                     'stock_id' => $row['vehicle_stock_id'] ?? null,
-                    'maker_name' => $row['maker_name'] ?? null,
-                    'brand_name' => $row['brand_name'] ?? null,
+                    'title' => $row['maker_name'] . " " . $row['brand_name'] ?? null,
                     'year' => $row['vehicle_manu_year'] ?? null,
+                    'fuel' => $row['vehicle_fuel'] ?? null,
                     'price' => isset($row['vehicle_est_price']) ? (float) $row['vehicle_est_price'] : null,
-                    'discount' => isset($row['vehicle_discount']) ? (float) $row['vehicle_discount'] : null,
+                    'transmission' => $row['vehicle_transmission'] ?? null,
+                    'driven' => $row['vehicle_drive'] ?? null,
+                    'steering' => $row['vehicle_option'] ?? null,
                     'vehicle_mode' => $row['vehicle_mode'] ?? null,
+                    'mileage' => $row['vehicle_km'] ?? null,
                     'featured_image' => $img,
+                    'country_id' => isset($row['country_id']) ? (int) $row['country_id'] : null,
+                    'country_name' => $row['country_name'] ?? null,
                 ];
             }
         }
@@ -942,7 +976,7 @@ if ($resource === 'vehicle' || $resource === 'single_vehicle' || $resource === '
 
     if (!empty($whereSim) && $itemType === 'machine') {
         $whereClause = implode(' OR ', $whereSim);
-        $simQ = mysqli_query($dbc, "SELECT m.machine_id, m.machine_stock_id, m.machine_fob_price, m.machine_year, m.machine_manu_year, m.machine_steering, maker.maker_name, b.brand_name FROM machines m LEFT JOIN maker maker ON m.machine_maker = maker.maker_id LEFT JOIN brands b ON m.machine_brand = b.brand_id WHERE ($whereClause) AND m.machine_id != " . (int) $itemData['id'] . " AND m.machine_sts = 1 AND (m.machine_sale_stts IS NULL OR m.machine_sale_stts != 'sold') ORDER BY m.machine_id DESC LIMIT 6");
+        $simQ = mysqli_query($dbc, "SELECT m.machine_id, m.machine_stock_id, m.machine_fob_price, m.machine_year, m.machine_manu_year, m.machine_steering, m.machine_fuel, m.machine_transmission, m.machine_drive, m.machine_condition, m.machine_hours, m.country_id, maker.maker_name, b.brand_name, c.country_name FROM machines m LEFT JOIN maker maker ON m.machine_maker = maker.maker_id LEFT JOIN brands b ON m.machine_brand = b.brand_id LEFT JOIN countries c ON m.country_id = c.country_id WHERE ($whereClause) AND m.machine_id != " . (int) $itemData['id'] . " AND m.machine_sts = 1 AND (m.machine_sale_stts IS NULL OR m.machine_sale_stts != 'sold') ORDER BY m.machine_id DESC LIMIT 6");
         if ($simQ) {
             while ($row = mysqli_fetch_assoc($simQ)) {
                 $vid2 = (int) $row['machine_id'];
@@ -955,11 +989,18 @@ if ($resource === 'vehicle' || $resource === 'single_vehicle' || $resource === '
                     'id' => $vid2,
                     'type' => 'machine',
                     'stock_id' => $row['machine_stock_id'] ?? null,
-                    'maker_name' => $row['maker_name'] ?? null,
-                    'brand_name' => $row['brand_name'] ?? null,
+                    'title' => $row['maker_name'] . " " . $row['brand_name'] ?? null,
                     'year' => $row['machine_manu_year'] ?? null,
+                    'fuel' => $row['machine_fuel'] ?? null,
                     'price' => isset($row['machine_fob_price']) ? (float) $row['machine_fob_price'] : null,
+                    'transmission' => $row['machine_transmission'] ?? null,
+                    'driven' => $row['machine_drive'] ?? null,
+                    'steering' => $row['machine_steering'] ?? null,
+                    'vehicle_mode' => $row['machine_condition'] ?? null,
+                    'mileage' => $row['machine_hours'] ?? null,
                     'featured_image' => $img,
+                    'country_id' => isset($row['country_id']) ? (int) $row['country_id'] : null,
+                    'country_name' => $row['country_name'] ?? null,
                 ];
             }
         }
@@ -1277,16 +1318,16 @@ if ($resource === 'search') {
 
     if ($searchType === 'car') {
         $countSql = "SELECT COUNT(*) AS total FROM vehicle_info WHERE $vehicleWhere";
-        $sql = "SELECT vi.vehicle_id AS item_id, 'car' AS item_type, vi.vehicle_stock_id AS stock_id, m.maker_name, b.brand_name, bt.body_type_name AS type_name, vi.vehicle_chassis_no AS chassis_no, vi.vehicle_engine_no AS engine_no, vi.vehicle_manu_year AS year, vi.vehicle_reg_year AS registration_year, vi.vehicle_km AS mileage, vi.vehicle_cc AS cc, vi.vehicle_fuel AS fuel, vi.vehicle_transmission AS transmission, COALESCE(vi.vehicle_color_name, vi.vehicle_color) AS color, vi.vehicle_seat AS seats, vi.vehicle_door AS doors, vi.vehicle_option AS option, vi.vehicle_drive AS driven, vi.vehicle_option AS steering, vi.vehicle_mode AS mode, vi.vehicle_est_price AS price, vi.vehicle_discount AS discount, vi.vehicle_feature_list AS feature_list, vi.vehicle_status AS status, vi.country_id AS country_id FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id WHERE $vehicleWhere ORDER BY vi.vehicle_id DESC LIMIT $limit OFFSET $offset";
+        $sql = "SELECT vi.vehicle_id AS item_id, 'car' AS item_type, vi.vehicle_stock_id AS stock_id, m.maker_name, b.brand_name, bt.body_type_name AS type_name, vi.vehicle_chassis_no AS chassis_no, vi.vehicle_engine_no AS engine_no, vi.vehicle_manu_year AS year, vi.vehicle_reg_year AS registration_year, vi.vehicle_km AS mileage, vi.vehicle_cc AS cc, vi.vehicle_fuel AS fuel, vi.vehicle_transmission AS transmission, COALESCE(vi.vehicle_color_name, vi.vehicle_color) AS color, vi.vehicle_seat AS seats, vi.vehicle_door AS doors, vi.vehicle_option AS option, vi.vehicle_drive AS driven, vi.vehicle_option AS steering, vi.vehicle_mode AS mode, vi.vehicle_est_price AS price, vi.vehicle_discount AS discount, vi.vehicle_feature_list AS feature_list, vi.vehicle_status AS status, vi.country_id AS country_id, c.country_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id LEFT JOIN countries c ON vi.country_id = c.country_id WHERE $vehicleWhere ORDER BY vi.vehicle_id DESC LIMIT $limit OFFSET $offset";
     } elseif ($searchType === 'machine') {
         $countSql = "SELECT COUNT(*) AS total FROM machines WHERE $machineWhere";
-        $sql = "SELECT m.machine_id AS item_id, 'machine' AS item_type, m.machine_stock_id AS stock_id, maker.maker_name, b.brand_name, mt.machine_type_name AS type_name, m.machine_serial_no AS chassis_no, m.machine_manu_year AS year, m.machine_year AS registration_year, m.machine_hours AS mileage, NULL AS cc, m.machine_fuel AS fuel, m.machine_transmission AS transmission, m.machine_color AS color, NULL AS seats, NULL AS doors, m.machine_steering AS option, m.machine_drive AS driven, m.machine_steering AS steering, m.machine_condition AS mode, m.machine_fob_price AS price, NULL AS discount, NULL AS feature_list, m.machine_sale_stts AS status, m.country_id AS country_id FROM machines m LEFT JOIN maker maker ON m.machine_maker = maker.maker_id LEFT JOIN brands b ON m.machine_brand = b.brand_id LEFT JOIN machine_type mt ON m.machine_type = mt.machine_type_id WHERE $machineWhere ORDER BY m.machine_id DESC LIMIT $limit OFFSET $offset";
+        $sql = "SELECT m.machine_id AS item_id, 'machine' AS item_type, m.machine_stock_id AS stock_id, maker.maker_name, b.brand_name, mt.machine_type_name AS type_name, m.machine_serial_no AS chassis_no, m.machine_manu_year AS year, m.machine_year AS registration_year, m.machine_hours AS mileage, NULL AS cc, m.machine_fuel AS fuel, m.machine_transmission AS transmission, m.machine_color AS color, NULL AS seats, NULL AS doors, m.machine_steering AS option, m.machine_drive AS driven, m.machine_steering AS steering, m.machine_condition AS mode, m.machine_fob_price AS price, NULL AS discount, NULL AS feature_list, m.machine_sale_stts AS status, m.country_id AS country_id, c.country_name FROM machines m LEFT JOIN maker maker ON m.machine_maker = maker.maker_id LEFT JOIN brands b ON m.machine_brand = b.brand_id LEFT JOIN machine_type mt ON m.machine_type = mt.machine_type_id LEFT JOIN countries c ON m.country_id = c.country_id WHERE $machineWhere ORDER BY m.machine_id DESC LIMIT $limit OFFSET $offset";
     } else {
         $countSql = "SELECT COUNT(*) AS total FROM (SELECT vehicle_id AS item_id FROM vehicle_info WHERE $vehicleWhere UNION ALL SELECT machine_id AS item_id FROM machines WHERE $machineWhere) combined";
         $sql = "SELECT * FROM (" .
-            "SELECT vi.vehicle_id AS item_id, 'car' AS item_type, vi.vehicle_stock_id AS stock_id, m.maker_name, b.brand_name, bt.body_type_name AS type_name, vi.vehicle_chassis_no AS chassis_no, vi.vehicle_engine_no AS engine_no, vi.vehicle_manu_year AS year, vi.vehicle_reg_year AS registration_year, vi.vehicle_km AS mileage, vi.vehicle_cc AS cc, vi.vehicle_fuel AS fuel, vi.vehicle_transmission AS transmission, COALESCE(vi.vehicle_color_name, vi.vehicle_color) AS color, vi.vehicle_seat AS seats, vi.vehicle_door AS doors, vi.vehicle_option AS option, vi.vehicle_drive AS driven, vi.vehicle_option AS steering, vi.vehicle_mode AS mode, vi.vehicle_est_price AS price, vi.vehicle_discount AS discount, vi.vehicle_feature_list AS feature_list, vi.vehicle_status AS status, vi.country_id AS country_id, NULL AS featured_image FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id WHERE $vehicleWhere " .
+            "SELECT vi.vehicle_id AS item_id, 'car' AS item_type, vi.vehicle_stock_id AS stock_id, m.maker_name, b.brand_name, bt.body_type_name AS type_name, vi.vehicle_chassis_no AS chassis_no, vi.vehicle_engine_no AS engine_no, vi.vehicle_manu_year AS year, vi.vehicle_reg_year AS registration_year, vi.vehicle_km AS mileage, vi.vehicle_cc AS cc, vi.vehicle_fuel AS fuel, vi.vehicle_transmission AS transmission, COALESCE(vi.vehicle_color_name, vi.vehicle_color) AS color, vi.vehicle_seat AS seats, vi.vehicle_door AS doors, vi.vehicle_option AS option, vi.vehicle_drive AS driven, vi.vehicle_option AS steering, vi.vehicle_mode AS mode, vi.vehicle_est_price AS price, vi.vehicle_discount AS discount, vi.vehicle_feature_list AS feature_list, vi.vehicle_status AS status, vi.country_id AS country_id, c.country_name, NULL AS featured_image FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id LEFT JOIN countries c ON vi.country_id = c.country_id WHERE $vehicleWhere " .
             "UNION ALL " .
-            "SELECT m.machine_id AS item_id, 'machine' AS item_type, m.machine_stock_id AS stock_id, maker.maker_name, b.brand_name, mt.machine_type_name AS type_name, m.machine_serial_no AS chassis_no, NULL AS engine_no, m.machine_manu_year AS year, m.machine_year AS registration_year, m.machine_hours AS mileage, NULL AS cc, m.machine_fuel AS fuel, m.machine_transmission AS transmission, m.machine_color AS color, NULL AS seats, NULL AS doors, m.machine_steering AS option, m.machine_drive AS driven, m.machine_steering AS steering, m.machine_condition AS mode, m.machine_fob_price AS price, NULL AS discount, NULL AS feature_list, m.machine_sale_stts AS status, m.country_id AS country_id, NULL AS featured_image FROM machines m LEFT JOIN maker maker ON m.machine_maker = maker.maker_id LEFT JOIN brands b ON m.machine_brand = b.brand_id LEFT JOIN machine_type mt ON m.machine_type = mt.machine_type_id WHERE $machineWhere " .
+            "SELECT m.machine_id AS item_id, 'machine' AS item_type, m.machine_stock_id AS stock_id, maker.maker_name, b.brand_name, mt.machine_type_name AS type_name, m.machine_serial_no AS chassis_no, NULL AS engine_no, m.machine_manu_year AS year, m.machine_year AS registration_year, m.machine_hours AS mileage, NULL AS cc, m.machine_fuel AS fuel, m.machine_transmission AS transmission, m.machine_color AS color, NULL AS seats, NULL AS doors, m.machine_steering AS option, m.machine_drive AS driven, m.machine_steering AS steering, m.machine_condition AS mode, m.machine_fob_price AS price, NULL AS discount, NULL AS feature_list, m.machine_sale_stts AS status, m.country_id AS country_id, c.country_name, NULL AS featured_image FROM machines m LEFT JOIN maker maker ON m.machine_maker = maker.maker_id LEFT JOIN brands b ON m.machine_brand = b.brand_id LEFT JOIN machine_type mt ON m.machine_type = mt.machine_type_id LEFT JOIN countries c ON m.country_id = c.country_id WHERE $machineWhere " .
             ") AS combined ORDER BY item_id DESC LIMIT $limit OFFSET $offset";
     }
 
@@ -1363,6 +1404,7 @@ if ($resource === 'search') {
             'featured_image' => $image,
             'status' => $row['status'] ?? null,
             'country_id' => isset($row['country_id']) ? (int) $row['country_id'] : null,
+            'country_name' => $row['country_name'] ?? null,
         ];
     }
 
