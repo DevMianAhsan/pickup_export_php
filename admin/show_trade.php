@@ -75,9 +75,9 @@
 
             <th>Full Detail</th>
 
+            
             <th>Sold Status</th>
-
-
+            <th>Added By</th>
 
             <th>Action</th>
 
@@ -163,6 +163,10 @@
 
               </td>
 
+               <?php $added_by = !empty($r['user_id']) ? (@fetchRecord($dbc, 'users', 'user_id', $r['user_id'])['username'] ?? 'N/A') : 'N/A'; ?>
+              <td>
+               <?= htmlspecialchars($added_by) ?>
+              </td>
               <td align="center">
 
 

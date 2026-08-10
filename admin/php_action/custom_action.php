@@ -4144,6 +4144,8 @@ if (get($dbc,"color_code  WHERE color_name ='".$_POST['vehicle_color_name']."'  
 
 		if ($_POST['vehicle_id'] == "") {
 
+			$data['user_id'] = $_SESSION['userId'] ?? $_SESSION['user_id'] ?? 0;
+
 
 
 

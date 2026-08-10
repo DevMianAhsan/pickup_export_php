@@ -52,6 +52,7 @@ include_once "inc/code.php";
 								<th>Part No.</th>
 								<th>Manu. Year</th>
 								<th>Weight</th>
+								<th>Added By</th>
 								<th>Sold Status</th>
 								<th>Action</th>
 							</tr>
@@ -66,7 +67,8 @@ include_once "inc/code.php";
 							while ($r = mysqli_fetch_assoc($q)):
 								$c++;
 								$maker = fetchRecord($dbc, "maker", "maker_id", $r['machine_maker'])['maker_name'];
-								$brand = fetchRecord($dbc, "brands", "brand_id", $r['machine_brand'])['brand_name'];
+								$brand = @fetchRecord($dbc, "brands", "brand_id", $r['machine_brand'])['brand_name'];
+								$added_by = !empty($r['user_id']) ? (@fetchRecord($dbc, "users", "user_id", $r['user_id'])['username'] ?? 'N/A') : 'N/A';
 								?>
 								<tr>
 									<td><?= $c ?></td>
@@ -75,6 +77,7 @@ include_once "inc/code.php";
 									<td><?= $r['part_no'] ?></td>
 									<td><?= $r['machine_manu_year'] ?></td>
 									<td><?= $r['machine_weight'] ?></td>
+									<td><?= $added_by ?></td>
 									<td>
 										<?php
 

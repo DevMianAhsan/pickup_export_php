@@ -741,6 +741,7 @@ include_once "inc/code.php";
                   <th style="width: 20%!important">Vehicle</th>
                   <th>Full Detail</th>
                   <th>Sold Status</th>
+                  <th>Added By</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -795,6 +796,7 @@ include_once "inc/code.php";
                           }
                           ?>
                         </td>
+                        <td><?= !empty($r['user_id']) ? (@fetchRecord($dbc, "users", "user_id", $r['user_id'])['username'] ?? 'N/A') : 'N/A' ?></td>
                         <td align="center">
 
                           <div class="dropdown">

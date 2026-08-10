@@ -52,6 +52,7 @@ include_once "inc/code.php";
 								<th>Part No.</th>
 								<th>Manu. Year</th>
 								<th>Weight</th>
+								<th>Added By</th>
 								<th>Sold Status</th>
 								<th>Action</th>
 							</tr>
@@ -70,6 +71,7 @@ include_once "inc/code.php";
 								['maker_name'];
 								$brand = fetchRecord($dbc, "brands", "brand_id", $r['part_brand'])
 								['brand_name'];
+								$added_by = !empty($r['user_id']) ? (@fetchRecord($dbc, "users", "user_id", $r['user_id'])['username'] ?? 'N/A') : 'N/A';
 								$c++;
 								?>
 								<tr>
@@ -79,6 +81,7 @@ include_once "inc/code.php";
 									<td><?= $r['part_no'] ?></td>
 									<td><?= $r['part_manu_year'] ?></td>
 									<td><?= $r['part_weight'] ?></td>
+									<td><?= $added_by ?></td>
 									<td>
 										<?php
 

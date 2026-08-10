@@ -61,6 +61,7 @@ if (isset($_POST['inquiryvehicle'])) {
 			'part_fob_price' => $_POST['part_fob_price'],
 		];
 		if ($_POST['part_id'] == "") {
+			$data['user_id'] = $_SESSION['userId'] ?? $_SESSION['user_id'] ?? 0;
 			if (insert_data($dbc, "vehicle_parts", $data)) {
 
 				$response=['msg'=>"Part Added Successfully",
@@ -114,6 +115,7 @@ if (isset($_POST['machine_stock_idp'])) {
 
 		];
 		if ($_POST['machine_id'] == "") {
+			$data['user_id'] = $_SESSION['userId'] ?? $_SESSION['user_id'] ?? 0;
 			if (insert_data($dbc, "machines", $data)) {
 
 				$response=['msg'=>"Machine Added Successfully",
