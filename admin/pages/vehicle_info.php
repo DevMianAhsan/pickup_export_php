@@ -57,16 +57,12 @@ require_once("custom/vendor/autoload.php");
 
 							<select tabindex="1" name="vehicle_stock_pre" id="vehicle_stock_pre" class="form-control select2"
 								required>
-
-
-								<option value="HX-<?= date('y') ?>">HX-<?= date('y') ?></option>
-
-								<option value="HS-<?= date('y') ?>">HJ-<?= date('y') ?></option>
-
-								<option value="HT-<?= date('y') ?>">HD-<?= date('y') ?></option>
-
-								<option value="HL-<?= date('y') ?>">NL-<?= date('y') ?></option>
-
+								<option value="TPE-<?= date('y') ?>">TPE-<?= date('y') ?></option>
+								<option value="JPE-<?= date('y') ?>">JPE-<?= date('y') ?></option>
+								<option value="SPE-<?= date('y') ?>">SPE-<?= date('y') ?></option>
+								<option value="HPE-<?= date('y') ?>">HPE-<?= date('y') ?></option>
+								<option value="EPE-<?= date('y') ?>">EPE-<?= date('y') ?></option>
+								<option value="UPE-<?= date('y') ?>">UPE-<?= date('y') ?></option>
 							</select>
 
 						</div><!-- col -->

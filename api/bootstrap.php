@@ -161,6 +161,8 @@ function normalizeImageUrl($imageName): ?string
     $candidates = [
         '/admin/img/vehicles_images/' . $relativePath,
         '/img/vehicles_images/' . $relativePath,
+        '/admin/img/slider/' . $relativePath,
+        '/img/slider/' . $relativePath,
     ];
 
     foreach ($candidates as $publicPath) {

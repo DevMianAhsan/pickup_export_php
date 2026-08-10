@@ -38,14 +38,12 @@ if (isset($_GET['part_id'])) {
     <div class="col-sm-2">
        <label for="">Stock ID</label>      
             <select tabindex="1" name="part_stock_idp" id="part_stock_id" class="form-control select2" required> 
-                <option <?=@($PartDe['part_stock_id']=="HX-2022")?"selected":""?> value="HX-2022">HX-2022</option>   
-
-                <option <?=@($PartDe['part_stock_id']=="HS-2022")?"selected":""?> value="HS-2022">HJ-2022</option>   
-
-                <option <?=@($PartDe['part_stock_id']=="HT-2022")?"selected":""?> value="HT-2022">HD-2022</option>  
-
-                <option <?=@($PartDe['part_stock_id']=="HL-2022")?"selected":""?> value="HL-2022">NL-<?=date('y')?></option>  
-
+               <option <?=@($PartDe['part_stock_id']=="TPE-".date('y'))?"selected":""?> value="TPE-<?= date('y') ?>">TPE-<?= date('y') ?></option>
+<option <?=@($PartDe['part_stock_id']=="JPE-".date('y'))?"selected":""?> value="JPE-<?= date('y') ?>">JPE-<?= date('y') ?></option>
+<option <?=@($PartDe['part_stock_id']=="SPE-".date('y'))?"selected":""?> value="SPE-<?= date('y') ?>">SPE-<?= date('y') ?></option>
+<option <?=@($PartDe['part_stock_id']=="HPE-".date('y'))?"selected":""?> value="HPE-<?= date('y') ?>">HPE-<?= date('y') ?></option>
+<option <?=@($PartDe['part_stock_id']=="EPE-".date('y'))?"selected":""?> value="EPE-<?= date('y') ?>">EPE-<?= date('y') ?></option>
+<option <?=@($PartDe['part_stock_id']=="UPE-".date('y'))?"selected":""?> value="UPE-<?= date('y') ?>">UPE-<?= date('y') ?></option>
             </select>
     </div><!-- col -->
     <div class="col-sm-3">

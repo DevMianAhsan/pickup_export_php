@@ -66,7 +66,7 @@ $glober_role = $fetch_globeluser['user_role'];
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
               <a class="dropdown-item" href="index.php?nav=profile">Profile</a>
               <a class="dropdown-item" href="#">Settings</a>
-              <a class="dropdown-item" href="../logout.php">Logout</a>
+              <a class="dropdown-item" href="logout.php">Logout</a>
             </div>
           </li>
         </ul>
