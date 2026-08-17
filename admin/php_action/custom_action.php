@@ -6071,7 +6071,7 @@ echo json_encode($response);
 
 
 
-	 	$q = mysqli_query($dbc,"SELECT vehicle_info.*,brands.*,models.* FROM vehicle_info INNER JOIN brands ON brands.brand_id =vehicle_info.vehicle_brand INNER JOIN models ON models.model_id =vehicle_info.vehicle_chassis_code WHERE vehicle_info.vehicle_id = $id ");
+	 	$q = mysqli_query($dbc,"SELECT vehicle_info.*,brands.*,models.* FROM vehicle_info INNER JOIN brands ON brands.brand_id =vehicle_info.vehicle_brand LEFT JOIN models ON models.model_id =vehicle_info.vehicle_chassis_code WHERE vehicle_info.vehicle_id = $id ");
 
 
 
@@ -6862,7 +6862,7 @@ if (mysqli_num_rows($q)>0) {
 
 
 
-		 	$q = mysqli_query($dbc,"SELECT vehicle_info.*, maker.*, brands.*,models.*,body_type.* FROM vehicle_info INNER JOIN maker ON vehicle_info.vehicle_maker = maker.maker_id INNER JOIN brands ON brands.brand_id = vehicle_info.vehicle_brand INNER JOIN models ON models.model_id = vehicle_info.vehicle_chassis_code INNER JOIN body_type ON body_type.body_type_id = vehicle_info.vehicle_type WHERE vehicle_info.vehicle_id = $colID");
+		 	$q = mysqli_query($dbc,"SELECT vehicle_info.*, maker.*, brands.*,models.*,body_type.* FROM vehicle_info INNER JOIN maker ON vehicle_info.vehicle_maker = maker.maker_id INNER JOIN brands ON brands.brand_id = vehicle_info.vehicle_brand LEFT JOIN models ON models.model_id = vehicle_info.vehicle_chassis_code INNER JOIN body_type ON body_type.body_type_id = vehicle_info.vehicle_type WHERE vehicle_info.vehicle_id = $colID");
 
 
 
