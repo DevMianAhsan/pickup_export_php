@@ -60,7 +60,8 @@ if ($segments === []) {
             '/api/catalog/driven',
             '/api/catalog/cc-range',
             '/api/catalog/features',
-            '/api/catalog/sliders'
+            '/api/catalog/sliders',
+            '/api/catalog/vertical-sliders'
         ]
     ]);
 }
@@ -71,7 +72,7 @@ $action = $segments[1] ?? '';
 if ($resource === 'makers') {
     requireApiToken();
 
-    $items = cache_remember('makers:v2', 86400, function () use ($dbc) {
+    $items = cache_remember('makers:v2', 60, function () use ($dbc) {
         $query = "SELECT m.maker_id, m.maker_name, m.maker_img, m.maker_sts, ";
         $query .= "((SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_maker = m.maker_id AND v.vehicle_status != 'sold') + (SELECT COUNT(*) FROM machines mch WHERE mch.machine_maker = m.maker_id AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS item_count ";
         $query .= "FROM maker m";
@@ -121,7 +122,7 @@ if ($resource === 'brands') {
     }
 
     $cacheKey = 'brands:v2:' . ($makerId ?? 'all');
-    $items = cache_remember($cacheKey, 86400, function () use ($dbc, $makerId) {
+    $items = cache_remember($cacheKey, 60, function () use ($dbc, $makerId) {
         $query = "SELECT b.brand_id, b.brand_name, b.brand_status, b.brand_m3, b.maker_id, ";
         $query .= "((SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_brand = b.brand_id AND v.vehicle_status != 'sold') + (SELECT COUNT(*) FROM machines mch WHERE mch.machine_brand = b.brand_id AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS item_count";
         $query .= " FROM brands b LEFT JOIN maker m ON m.maker_id = b.maker_id";
@@ -163,7 +164,7 @@ if ($resource === 'brands') {
 if ($resource === 'fuels' || $resource === 'fuel_types') {
     requireApiToken();
 
-    $items = cache_remember('fuels', 86400, function () use ($dbc) {
+    $items = cache_remember('fuels', 60, function () use ($dbc) {
         $query = "SELECT fuel_id, fuel_name, fuel_sts FROM fuel";
         $query .= " WHERE fuel_sts = 1";
         $query .= " ORDER BY fuel_name ASC";
@@ -197,7 +198,7 @@ if ($resource === 'fuels' || $resource === 'fuel_types') {
 if ($resource === 'machine-types' || $resource === 'machine_types') {
     requireApiToken();
 
-    $items = cache_remember('machine-types', 86400, function () use ($dbc) {
+    $items = cache_remember('machine-types', 60, function () use ($dbc) {
         $query = "SELECT mt.machine_type_id, mt.machine_type_name, mt.machine_type_img, mt.machine_type_sts, ";
         $query .= "(SELECT COUNT(*) FROM machines m WHERE m.machine_type = mt.machine_type_id AND m.machine_sts = 1 AND (m.machine_sale_stts IS NULL OR m.machine_sale_stts != 'sold')) AS machine_count ";
         $query .= "FROM machine_type mt";
@@ -235,7 +236,7 @@ if ($resource === 'machine-types' || $resource === 'machine_types') {
 if ($resource === 'types' || $resource === 'body-types' || $resource === 'body_types') {
     requireApiToken();
 
-    $items = cache_remember('body-types', 86400, function () use ($dbc) {
+    $items = cache_remember('body-types', 60, function () use ($dbc) {
         $query = "SELECT bt.body_type_id, bt.body_type_name, bt.body_type_img, bt.body_type_sts, ";
         $query .= "(SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_type = bt.body_type_id AND v.vehicle_status != 'sold') AS vehicle_count ";
         $query .= "FROM body_type bt";
@@ -273,7 +274,7 @@ if ($resource === 'types' || $resource === 'body-types' || $resource === 'body_t
 if ($resource === 'steering' || $resource === 'steerings' || $resource === 'options') {
     requireApiToken();
 
-    $items = cache_remember('steering', 86400, function () use ($dbc) {
+    $items = cache_remember('steering', 60, function () use ($dbc) {
         $query = "SELECT option_id, option_name, option_sts FROM options";
         $query .= " WHERE option_sts = 1";
         $query .= " ORDER BY option_name ASC";
@@ -307,7 +308,7 @@ if ($resource === 'steering' || $resource === 'steerings' || $resource === 'opti
 if ($resource === 'transmissions' || $resource === 'transmission') {
     requireApiToken();
 
-    $items = cache_remember('transmissions', 86400, function () use ($dbc) {
+    $items = cache_remember('transmissions', 60, function () use ($dbc) {
         $query = "SELECT transmission_id, transmission_name, transmission_sts FROM transmission";
         $query .= " WHERE transmission_sts = 1";
         $query .= " ORDER BY transmission_name ASC";
@@ -341,7 +342,7 @@ if ($resource === 'transmissions' || $resource === 'transmission') {
 if ($resource === 'locations' || $resource === 'location' || $resource === 'countries') {
     requireApiToken();
 
-    $items = cache_remember('locations:v2', 86400, function () use ($dbc) {
+    $items = cache_remember('locations:v2', 60, function () use ($dbc) {
         $query = "SELECT c.country_id, c.country_name, c.image, ";
         $query .= "((SELECT COUNT(*) FROM vehicle_info v WHERE v.country_id = c.country_id AND v.vehicle_status != 'sold') + (SELECT COUNT(*) FROM machines mch WHERE mch.country_id = c.country_id AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS item_count ";
         $query .= "FROM countries c";
@@ -378,7 +379,7 @@ if ($resource === 'locations' || $resource === 'location' || $resource === 'coun
 if ($resource === 'colors' || $resource === 'color') {
     requireApiToken();
 
-    $items = cache_remember('colors', 86400, function () use ($dbc) {
+    $items = cache_remember('colors', 60, function () use ($dbc) {
         $query = "SELECT color_code_id, color_name, color_code_name_code, color_code_sts FROM color_code";
         $query .= " WHERE color_code_sts = 1";
         $query .= " ORDER BY color_name ASC";
@@ -413,7 +414,7 @@ if ($resource === 'colors' || $resource === 'color') {
 if ($resource === 'driven' || $resource === 'drive' || $resource === 'drives') {
     requireApiToken();
 
-    $items = cache_remember('driven', 86400, function () use ($dbc) {
+    $items = cache_remember('driven', 60, function () use ($dbc) {
         $query = "SELECT drive_id, drive_name, drive_sts FROM drive";
         $query .= " WHERE drive_sts = 1";
         $query .= " ORDER BY drive_name ASC";
@@ -447,7 +448,7 @@ if ($resource === 'driven' || $resource === 'drive' || $resource === 'drives') {
 if ($resource === 'cc-range' || $resource === 'cc_range' || $resource === 'ccrange' || $resource === 'cc') {
     requireApiToken();
 
-    $items = cache_remember('cc-range', 86400, function () use ($dbc) {
+    $items = cache_remember('cc-range', 60, function () use ($dbc) {
         $query = "SELECT cc_id, cc_name, cc_sts FROM cc";
         $query .= " WHERE cc_sts = 1";
         $query .= " ORDER BY cc_id ASC";
@@ -481,7 +482,7 @@ if ($resource === 'cc-range' || $resource === 'cc_range' || $resource === 'ccran
 if ($resource === 'features' || $resource === 'feature' || $resource === 'vehicle-features') {
     requireApiToken();
 
-    $items = cache_remember('features', 86400, function () use ($dbc) {
+    $items = cache_remember('features', 60, function () use ($dbc) {
         $query = "SELECT vehicle_feature_id, vehicle_feature_name, vehicle_feature_sts FROM vehicle_feature";
         $query .= " WHERE vehicle_feature_sts = 1";
         $query .= " ORDER BY vehicle_feature_name ASC";
@@ -521,42 +522,94 @@ if ($resource === 'sliders' || $resource === 'slider' || $resource === 'slides' 
 
     $onlyActive = !isset($params['all']) || $params['all'] !== '1';
     $limit = isset($params['limit']) && is_numeric($params['limit']) ? (int) $params['limit'] : 0;
-    $cacheKey = 'sliders:' . ($onlyActive ? 'active' : 'all') . ($limit > 0 ? ':limit_' . $limit : '');
 
-    $items = cache_remember($cacheKey, 86400, function () use ($dbc, $onlyActive, $limit) {
-        $query = "SELECT slider_img_id, slider_img, slider_img_heading, slider_img_desc, slider_img_sts FROM slider_img";
+    $query = "SELECT slider_img_id, slider_img, slider_img_heading, slider_img_desc, slider_img_sts, slider_img_type FROM slider_img";
 
-        $query .= " WHERE slider_img_sts = 1";
+    $query .= " WHERE slider_img_sts = 1";
 
-        $query .= " ORDER BY slider_img_id ASC";
-        if ($limit > 0) {
-            $query .= " LIMIT " . (int) $limit;
+    $query .= " AND (slider_img_type = 'horizontal' OR slider_img_type = '')";
+
+    $query .= " ORDER BY slider_img_id ASC";
+    if ($limit > 0) {
+        $query .= " LIMIT " . (int) $limit;
+    }
+
+    $result = mysqli_query($dbc, $query);
+    if (!$result) {
+        respondJson(500, [
+            'status' => 'error',
+            'message' => 'Failed to fetch slider images.',
+            'details' => mysqli_error($dbc)
+        ]);
+    }
+
+    $items = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $imgName = trim((string) $row['slider_img']);
+        $imgUrl = normalizeImageUrl($imgName);
+        if ($imgUrl === null && $imgName !== '') {
+            $imgUrl = '/admin/img/slider/' . ltrim($imgName, '/');
         }
 
-        $result = mysqli_query($dbc, $query);
-        if (!$result) {
-            respondJson(500, [
-                'status' => 'error',
-                'message' => 'Failed to fetch slider images.',
-                'details' => mysqli_error($dbc)
-            ]);
+        $items[] = [
+            'id' => (int) $row['slider_img_id'],
+            'image' => $imgUrl,
+            'type' => $row['slider_img_type'] ?? 'horizontal'
+        ];
+    }
+
+    respondJson(200, [
+        'status' => 'success',
+        'count' => count($items),
+        'data' => $items
+    ]);
+}
+
+if ($resource === 'vertical-sliders') {
+    requireApiToken();
+
+    $qs = $_SERVER['QUERY_STRING'] ?? '';
+    $qs = ltrim($qs, '?');
+    parse_str($qs, $params);
+
+    $onlyActive = !isset($params['all']) || $params['all'] !== '1';
+    $limit = isset($params['limit']) && is_numeric($params['limit']) ? (int) $params['limit'] : 0;
+
+    $query = "SELECT slider_img_id, slider_img, slider_img_heading, slider_img_desc, slider_img_sts FROM slider_img";
+
+    $query .= " WHERE slider_img_sts = 1";
+
+    $query .= " AND slider_img_type = 'vertical'";
+
+    $query .= " ORDER BY slider_img_id ASC";
+    if ($limit > 0) {
+        $query .= " LIMIT " . (int) $limit;
+    }
+
+    $result = mysqli_query($dbc, $query);
+    if (!$result) {
+        respondJson(500, [
+            'status' => 'error',
+            'message' => 'Failed to fetch vertical slider images.',
+            'details' => mysqli_error($dbc)
+        ]);
+    }
+
+    $items = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $imgName = trim((string) $row['slider_img']);
+        $imgUrl = normalizeImageUrl($imgName);
+        if ($imgUrl === null && $imgName !== '') {
+            $imgUrl = '/admin/img/slider/' . ltrim($imgName, '/');
         }
 
-        $items = [];
-        while ($row = mysqli_fetch_assoc($result)) {
-            $imgName = trim((string) $row['slider_img']);
-            $imgUrl = normalizeImageUrl($imgName);
-            if ($imgUrl === null && $imgName !== '') {
-                $imgUrl = '/admin/img/slider/' . ltrim($imgName, '/');
-            }
-
-            $items[] = [
-                'id' => (int) $row['slider_img_id'],
-                'image' => $imgUrl
-            ];
-        }
-        return $items;
-    });
+        $items[] = [
+            'id' => (int) $row['slider_img_id'],
+            'image' => $imgUrl,
+            'heading' => $row['slider_img_heading'] ?? '',
+            'description' => $row['slider_img_desc'] ?? ''
+        ];
+    }
 
     respondJson(200, [
         'status' => 'success',
@@ -569,7 +622,7 @@ if ($resource === 'sliders' || $resource === 'slider' || $resource === 'slides' 
 if ($resource === 'filters') {
     requireApiToken();
 
-    $filterData = cache_remember('filters', 86400, function () use ($dbc) {
+    $filterData = cache_remember('filters', 60, function () use ($dbc) {
         // Type
         $types = [];
 

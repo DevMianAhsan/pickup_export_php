@@ -76,7 +76,7 @@
         <div class="carousel-inner">
             <?php
             $active = "active";
-            $q = mysqli_query($dbc, "SELECT * FROM slider_img WHERE slider_img_sts = 1");
+            $q = mysqli_query($dbc, "SELECT * FROM slider_img WHERE slider_img_sts = 1 AND slider_img_type = 'horizontal'");
             while($r = mysqli_fetch_assoc($q)):
             ?>
                 <div class="carousel-item <?= $active ?>">

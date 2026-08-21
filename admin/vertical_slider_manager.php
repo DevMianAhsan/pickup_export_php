@@ -12,6 +12,7 @@
 			$uploaded = upload_pic($_FILES['slider_img'],'img/slider/');
 
 			if (!$uploaded) {
+				// upload_pic() already set $msg/$sts (e.g. invalid type)
 				$sts = @$sts ?: "danger";
 				$msg = @$msg ?: "Image Not Uploaded";
 			} else {
@@ -20,13 +21,13 @@
 					'slider_img_heading' => @$_POST['slider_img_heading'],
 					'slider_img_desc' => @$_POST['slider_img_desc'],
 					'slider_img_sts' => @$_POST['slider_img_sts'],
-					'slider_img_type' => 'horizontal'
+					'slider_img_type' => 'vertical'
 		 				
 				];	
 	 			if (insert_data($dbc,'slider_img', $data)) {
 					$msg = "Image Added";
 					$sts = 'success';
-					redirect("slider_manager.php",2000);
+					redirect("vertical_slider_manager.php",2000);
 				}else{
 					$msg = mysqli_error($dbc);
 					$sts ="danger";
@@ -44,11 +45,11 @@
 		if ($file != "" && file_exists('img/slider/'.$file)) {
 			@unlink('img/slider/'.$file);
 		}
-		$sql = "DELETE FROM slider_img WHERE slider_img_id = '$id' AND slider_img_type = 'horizontal' ";
+		$sql = "DELETE FROM slider_img WHERE slider_img_id = '$id' AND slider_img_type = 'vertical' ";
 		if(mysqli_query($dbc,$sql)){
-			$msg = "Slider Image Deleted...!";
+			$msg = "Vertical Slider Image Deleted...!";
 			$sts = 'success';
-			redirect("slider_manager.php",2000);
+			redirect("vertical_slider_manager.php",2000);
 		}
 		else{
 			$msg = mysqli_error($dbc);
@@ -65,7 +66,7 @@
 			'slider_img_heading' => @$_POST['slider_img_heading'],
 			'slider_img_desc' => @$_POST['slider_img_desc'],
 			'slider_img_sts' => @$_POST['slider_img_sts'],
-			'slider_img_type' => 'horizontal'
+			'slider_img_type' => 'vertical'
 		];
 
 		$proceed = true;
@@ -85,7 +86,7 @@
 			if (update_data($dbc,'slider_img', $data , 'slider_img_id',$slider_id)) {
 				$msg = "Image Updated";
 				$sts = 'success';
-				redirect("slider_manager.php",2000);
+				redirect("vertical_slider_manager.php",2000);
 			}else{
 				$msg = mysqli_error($dbc);
 				$sts ="danger";
@@ -117,7 +118,7 @@
 				confirmButtonText: 'Yes, delete it!'
 			}).then(function (result) {
 				if (result.isConfirmed) {
-					window.location.href = 'slider_manager.php?delete_img_slider=' + id;
+					window.location.href = 'vertical_slider_manager.php?delete_img_slider=' + id;
 				}
 			});
 		});
@@ -140,7 +141,7 @@
 		<?php
 			if (@$_GET['i']) {
 				$slider_img_id = $_GET['i'];
-				$selectProduct = "SELECT * FROM slider_img WHERE slider_img_id = '$slider_img_id' AND slider_img_type = 'horizontal' ";
+				$selectProduct = "SELECT * FROM slider_img WHERE slider_img_id = '$slider_img_id' AND slider_img_type = 'vertical' ";
 				$run = mysqli_query($dbc,$selectProduct);
 					while($row = mysqli_fetch_assoc($run)){
 
@@ -156,11 +157,10 @@
 		?>
 		<div class="col-sm-4">
 			<div class="card">
-				<div class="card-header card-bg" align="center"><em>Add Slider Image</em></div>
+				<div class="card-header card-bg" align="center"><em>Add Vertical Slider Image</em></div>
 				<div class="card-body">
 					<form action="" method="post" enctype="multipart/form-data">
 					
-
 
 					  <div class="form-group">
 					    <label for="email">Slider img </label>
@@ -190,7 +190,7 @@
 					<?php
 						if (isset($_GET['i'])) {
 							?>
-							<input type="submit" name="editimg" class="btn btn-info" value="Edit Slider Img">
+							<input type="submit" name="editimg" class="btn btn-info" value="Edit Vertical Slider Img">
 							<?php
 						}else{
 					?>
@@ -207,7 +207,7 @@
 
 		<div class="col-sm-8">
 			<div class="card card-info">
-				<div class="card-header card-bg" align="center"><em>Show Slider Images</em></div>
+				<div class="card-header card-bg" align="center"><em>Show Vertical Slider Images</em></div>
 				<div class="card-body">
 						<table class="table" id="myTable" class="table-responsive">
 
@@ -223,7 +223,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<?php $q=mysqli_query($dbc,"SELECT * FROM slider_img WHERE slider_img_type = 'horizontal'  ORDER BY slider_img_id DESC LIMIT 50 ");
+			<?php $q=mysqli_query($dbc,"SELECT * FROM slider_img WHERE slider_img_type = 'vertical'  ORDER BY slider_img_id DESC LIMIT 50 ");
 			while($r=mysqli_fetch_assoc($q)):
 				//$customer_id = $r['customer_id'];
 			 ?>
@@ -234,7 +234,7 @@
 				<td><?=$r['slider_img_heading']?></td>
 				<td style="font-size: 5px;"><?=$r['slider_img_desc']?></td>
 				<td><?=$r['slider_img_sts']?></td>
-				<td><a href="slider_manager.php?i=<?=$r['slider_img_id'];?>"> <button class="btn btn-primary"><span class="glyphicon glyphicon-edit"></span>Edit</button></a></td>
+				<td><a href="vertical_slider_manager.php?i=<?=$r['slider_img_id'];?>"> <button class="btn btn-primary"><span class="glyphicon glyphicon-edit"></span>Edit</button></a></td>
 				<td><a href="javascript:void(0);" class="deleteSliderBtn" data-id="<?=$r['slider_img_id'];?>"> <button class="btn btn-primary"><span class="glyphicon glyphicon-trash"></span>DELETE</button></a></td>
 				
 			</tr>
@@ -249,7 +249,8 @@
 
 	</div><!-- row end -->
 
-<?php
+
+	<?php
 
 	include_once "includes/footer.php";
 

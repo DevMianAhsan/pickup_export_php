@@ -542,11 +542,11 @@ unlink($temp_name);
 
 }
 
-elseif(!preg_match("/\.(gif|jpg|png|jpeg)$/i", $file_name)){
+elseif(!preg_match("/\.(gif|jpg|jpeg|png|jfif|webp)$/i", $file_name)){
 
 $sts="info";
 
-$msg= "Only .jpg , .png and .gif file types are allowed";
+$msg= "Only .jpg , .png , .gif , .jfif and .webp file types are allowed";
 
 unlink($temp_name);
 
