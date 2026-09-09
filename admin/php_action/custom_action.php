@@ -11,6 +11,13 @@
 
 	require_once '../inc/functions.php';
 
+	function customActionTableExists($dbc, $table)
+	{
+		$table = mysqli_real_escape_string($dbc, $table);
+		$result = mysqli_query($dbc, "SHOW TABLES LIKE '$table'");
+		return $result && mysqli_num_rows($result) > 0;
+	}
+
 
 
 	if (isset($_REQUEST['column'])) {
@@ -6338,9 +6345,11 @@ echo json_encode($response);
 
 	 	if ($action == "load") {
 
-
-
-		 	$q = mysqli_query($dbc,"SELECT ricksu.*, ricksu_company.*,sub_yards.* FROM ricksu INNER JOIN ricksu_company ON ricksu.ricksu_company = ricksu_company.ricksu_company_id INNER JOIN sub_yards ON sub_yards.sub_yard_id = ricksu.ricksu_sub_yard WHERE ricksu.vehicle_id = '$id' AND mini_ricksu!=1 AND ricksu_sts=1 ");
+			if (customActionTableExists($dbc, 'sub_yards')) {
+				$q = mysqli_query($dbc,"SELECT ricksu.*, ricksu_company.*,sub_yards.* FROM ricksu INNER JOIN ricksu_company ON ricksu.ricksu_company = ricksu_company.ricksu_company_id INNER JOIN sub_yards ON sub_yards.sub_yard_id = ricksu.ricksu_sub_yard WHERE ricksu.vehicle_id = '$id' AND mini_ricksu!=1 AND ricksu_sts=1 ");
+			} else {
+				$q = mysqli_query($dbc,"SELECT ricksu.*, ricksu_company.* FROM ricksu INNER JOIN ricksu_company ON ricksu.ricksu_company = ricksu_company.ricksu_company_id WHERE ricksu.vehicle_id = '$id' AND mini_ricksu!=1 AND ricksu_sts=1 ");
+			}
 
 
 
@@ -6349,7 +6358,11 @@ echo json_encode($response);
 
 
 		 	// $q = mysqli_query($dbc,"SELECT * FROM ricksu WHERE ricksu_id = $id");
-		 	$q = mysqli_query($dbc,"SELECT ricksu.*, ricksu_company.*,sub_yards.* FROM ricksu INNER JOIN ricksu_company ON ricksu.ricksu_company = ricksu_company.ricksu_company_id INNER JOIN sub_yards ON sub_yards.sub_yard_id = ricksu.ricksu_sub_yard WHERE ricksu.vehicle_id = '$id' AND mini_ricksu!=1  AND ricksu_sts=1 ");
+			if (customActionTableExists($dbc, 'sub_yards')) {
+				$q = mysqli_query($dbc,"SELECT ricksu.*, ricksu_company.*,sub_yards.* FROM ricksu INNER JOIN ricksu_company ON ricksu.ricksu_company = ricksu_company.ricksu_company_id INNER JOIN sub_yards ON sub_yards.sub_yard_id = ricksu.ricksu_sub_yard WHERE ricksu.vehicle_id = '$id' AND mini_ricksu!=1  AND ricksu_sts=1 ");
+			} else {
+				$q = mysqli_query($dbc,"SELECT ricksu.*, ricksu_company.* FROM ricksu INNER JOIN ricksu_company ON ricksu.ricksu_company = ricksu_company.ricksu_company_id WHERE ricksu.vehicle_id = '$id' AND mini_ricksu!=1  AND ricksu_sts=1 ");
+			}
 
 
 
@@ -6675,6 +6688,10 @@ if (mysqli_num_rows($q)>0) {
 
 
 	 	$action = $_POST['action'];
+		if (!customActionTableExists($dbc, 'airmail')) {
+			echo json_encode([]);
+			exit();
+		}
 
 
 
@@ -16424,6 +16441,10 @@ if (isset($_POST['vehicle_brand1']) && isset($_POST['vehicle_brand1']) != "") {
 
 
 	$id = $_POST['vehicle_brand1'];
+	if (!ctype_digit((string) $id) || (int) $id < 1) {
+		echo json_encode([]);
+		exit();
+	}
 
 
 
@@ -16461,6 +16482,10 @@ if (isset($_POST['vehicle_brand_m3']) && isset($_POST['vehicle_brand_m3']) != ""
 
 
 	$id = $_POST['vehicle_brand_m3'];
+	if (!ctype_digit((string) $id) || (int) $id < 1) {
+		echo json_encode(['m3' => 0, 'sts' => 0]);
+		exit();
+	}
 
 
 

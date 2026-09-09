@@ -1631,6 +1631,7 @@ function countryBySelect($id = "", $name = "", $classes = "",$defaultoption = ""
 function getCountryName($id){
 
     global $countryArray; // Assuming the array is placed above this function
+  $selected = '';
 
   foreach($countryArray as $code => $country){
   
