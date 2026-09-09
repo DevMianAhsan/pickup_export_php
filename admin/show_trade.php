@@ -108,7 +108,7 @@
 
                   <br>
 
-                  Brand Name : <?= fetchRecord($dbc, "brands", "brand_id", $r['vehicle_brand'])['brand_name'] ?> <br>
+                  Brand Name : <?= @fetchRecord($dbc, "brands", "brand_id", $r['vehicle_brand'])['brand_name'] ?> <br>
 
                   Stock ID : <?= $r['vehicle_stock_id'] ?> <br>
 

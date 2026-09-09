@@ -74,9 +74,10 @@ if ($resource === 'makers') {
 
     $items = cache_remember('makers:v2', 60, function () use ($dbc) {
         $query = "SELECT m.maker_id, m.maker_name, m.maker_img, m.maker_sts, ";
-        $query .= "((SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_maker = m.maker_id AND v.vehicle_status != 'sold') + (SELECT COUNT(*) FROM machines mch WHERE mch.machine_maker = m.maker_id AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS item_count ";
+        $query .= "((SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_maker = m.maker_id AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) + (SELECT COUNT(*) FROM machines mch WHERE mch.machine_maker = m.maker_id AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS item_count ";
         $query .= "FROM maker m";
         $query .= " WHERE m.maker_sts = 1";
+        $query .= " HAVING item_count > 0";
         $query .= " ORDER BY m.maker_id ASC";
 
         $result = mysqli_query($dbc, $query);
@@ -124,12 +125,13 @@ if ($resource === 'brands') {
     $cacheKey = 'brands:v2:' . ($makerId ?? 'all');
     $items = cache_remember($cacheKey, 60, function () use ($dbc, $makerId) {
         $query = "SELECT b.brand_id, b.brand_name, b.brand_status, b.brand_m3, b.maker_id, ";
-        $query .= "((SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_brand = b.brand_id AND v.vehicle_status != 'sold') + (SELECT COUNT(*) FROM machines mch WHERE mch.machine_brand = b.brand_id AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS item_count";
+        $query .= "((SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_brand = b.brand_id AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) + (SELECT COUNT(*) FROM machines mch WHERE mch.machine_brand = b.brand_id AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS item_count";
         $query .= " FROM brands b LEFT JOIN maker m ON m.maker_id = b.maker_id";
         $query .= " WHERE b.brand_status = 1";
         if ($makerId !== null) {
             $query .= " AND b.maker_id = " . mysqli_real_escape_string($dbc, (string) $makerId);
         }
+        $query .= " HAVING item_count > 0";
         $query .= " ORDER BY b.brand_id ASC";
 
         $result = mysqli_query($dbc, $query);
@@ -203,6 +205,7 @@ if ($resource === 'machine-types' || $resource === 'machine_types') {
         $query .= "(SELECT COUNT(*) FROM machines m WHERE m.machine_type = mt.machine_type_id AND m.machine_sts = 1 AND (m.machine_sale_stts IS NULL OR m.machine_sale_stts != 'sold')) AS machine_count ";
         $query .= "FROM machine_type mt";
         $query .= " WHERE mt.machine_type_sts = 1";
+        $query .= " HAVING machine_count > 0";
         $query .= " ORDER BY mt.machine_type_name ASC";
 
         $result = mysqli_query($dbc, $query);
@@ -238,9 +241,10 @@ if ($resource === 'types' || $resource === 'body-types' || $resource === 'body_t
 
     $items = cache_remember('body-types', 60, function () use ($dbc) {
         $query = "SELECT bt.body_type_id, bt.body_type_name, bt.body_type_img, bt.body_type_sts, ";
-        $query .= "(SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_type = bt.body_type_id AND v.vehicle_status != 'sold') AS vehicle_count ";
+        $query .= "(SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_type = bt.body_type_id AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) AS vehicle_count ";
         $query .= "FROM body_type bt";
         $query .= " WHERE bt.body_type_sts = 1";
+        $query .= " HAVING vehicle_count > 0";
         $query .= " ORDER BY bt.body_type_id ASC";
 
         $result = mysqli_query($dbc, $query);
@@ -344,8 +348,9 @@ if ($resource === 'locations' || $resource === 'location' || $resource === 'coun
 
     $items = cache_remember('locations:v2', 60, function () use ($dbc) {
         $query = "SELECT c.country_id, c.country_name, c.image, ";
-        $query .= "((SELECT COUNT(*) FROM vehicle_info v WHERE v.country_id = c.country_id AND v.vehicle_status != 'sold') + (SELECT COUNT(*) FROM machines mch WHERE mch.country_id = c.country_id AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS item_count ";
+        $query .= "((SELECT COUNT(*) FROM vehicle_info v WHERE v.country_id = c.country_id AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) + (SELECT COUNT(*) FROM machines mch WHERE mch.country_id = c.country_id AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS item_count ";
         $query .= "FROM countries c";
+        $query .= " HAVING item_count > 0";
         $query .= " ORDER BY c.country_name ASC";
 
         $result = mysqli_query($dbc, $query);
@@ -380,9 +385,13 @@ if ($resource === 'colors' || $resource === 'color') {
     requireApiToken();
 
     $items = cache_remember('colors', 60, function () use ($dbc) {
-        $query = "SELECT color_code_id, color_name, color_code_name_code, color_code_sts FROM color_code";
-        $query .= " WHERE color_code_sts = 1";
-        $query .= " ORDER BY color_name ASC";
+        $query = "SELECT cc.color_code_id, cc.color_name, cc.color_code_name_code, cc.color_code_sts, ";
+        $query .= "((SELECT COUNT(*) FROM vehicle_info v WHERE (v.vehicle_color_name = cc.color_name OR v.vehicle_color = cc.color_name) AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) + ";
+        $query .= "(SELECT COUNT(*) FROM machines mch WHERE mch.machine_color = cc.color_name AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS item_count ";
+        $query .= "FROM color_code cc";
+        $query .= " WHERE cc.color_code_sts = 1";
+        $query .= " HAVING item_count > 0";
+        $query .= " ORDER BY cc.color_name ASC";
 
         $result = mysqli_query($dbc, $query);
         if (!$result) {
@@ -626,31 +635,35 @@ if ($resource === 'filters') {
         // Type
         $types = [];
 
-        $query = mysqli_query($dbc, "SELECT (SELECT COUNT(*) FROM vehicle_info WHERE vehicle_status != 'sold' AND vehicle_sts = 1) AS car_count,
+        $query = mysqli_query($dbc, "SELECT (SELECT COUNT(*) FROM vehicle_info WHERE (vehicle_sale_stts IS NULL OR vehicle_sale_stts != 'sold') AND vehicle_sts = 1) AS car_count,
             (SELECT COUNT(*) FROM machines WHERE machine_sts = 1 AND (machine_sale_stts IS NULL OR machine_sale_stts != 'sold')) AS machine_count");
 
         if ($row = mysqli_fetch_assoc($query)) {
-            $types = [
-                [
+            $carCount = (int) $row['car_count'];
+            $machineCount = (int) $row['machine_count'];
+            if ($carCount > 0) {
+                $types[] = [
                     'id' => 1,
                     'name' => 'car',
                     'image' => normalizeImageUrl('images/types/car.png'),
-                    'available_vehicle_count' => (int) $row['car_count']
-                ],
-                [
+                    'available_vehicle_count' => $carCount
+                ];
+            }
+            if ($machineCount > 0) {
+                $types[] = [
                     'id' => 2,
                     'name' => 'machine',
                     'image' => normalizeImageUrl('images/types/machine.png'),
-                    'available_vehicle_count' => (int) $row['machine_count']
-                ]
-            ];
+                    'available_vehicle_count' => $machineCount
+                ];
+            }
         }
 
         $codes = [];
 
         // Makers
         $makers = [];
-        $mq = mysqli_query($dbc, "SELECT m.maker_id, m.maker_name, m.maker_img, m.maker_sts, (SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_maker = m.maker_id AND v.vehicle_status != 'sold') AS vehicle_count FROM maker m WHERE m.maker_sts = 1 ORDER BY m.maker_name ASC");
+        $mq = mysqli_query($dbc, "SELECT m.maker_id, m.maker_name, m.maker_img, m.maker_sts, ((SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_maker = m.maker_id AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) + (SELECT COUNT(*) FROM machines mch WHERE mch.machine_maker = m.maker_id AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS vehicle_count FROM maker m WHERE m.maker_sts = 1 HAVING vehicle_count > 0 ORDER BY m.maker_name ASC");
         while ($r = mysqli_fetch_assoc($mq)) {
             $makers[] = [
                 'id' => (int) $r['maker_id'],
@@ -662,7 +675,7 @@ if ($resource === 'filters') {
 
         // Brands
         $brands = [];
-        $bq = mysqli_query($dbc, "SELECT b.brand_id, b.brand_name, b.brand_status, b.brand_m3, b.maker_id, m.maker_name, (SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_brand = b.brand_id AND v.vehicle_status != 'sold') AS vehicle_count FROM brands b LEFT JOIN maker m ON m.maker_id = b.maker_id WHERE b.brand_status = 1 ORDER BY b.brand_name ASC");
+        $bq = mysqli_query($dbc, "SELECT b.brand_id, b.brand_name, b.brand_status, b.brand_m3, b.maker_id, m.maker_name, ((SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_brand = b.brand_id AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) + (SELECT COUNT(*) FROM machines mch WHERE mch.machine_brand = b.brand_id AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS vehicle_count FROM brands b LEFT JOIN maker m ON m.maker_id = b.maker_id WHERE b.brand_status = 1 HAVING vehicle_count > 0 ORDER BY b.brand_name ASC");
         while ($r = mysqli_fetch_assoc($bq)) {
             $brands[] = [
                 'id' => (int) $r['brand_id'],
@@ -674,7 +687,7 @@ if ($resource === 'filters') {
 
         // Types
         $body_types = [];
-        $tq = mysqli_query($dbc, "SELECT bt.body_type_id, bt.body_type_name, bt.body_type_img, bt.body_type_sts, (SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_type = bt.body_type_id AND v.vehicle_status != 'sold') AS vehicle_count FROM body_type bt WHERE bt.body_type_sts = 1 ORDER BY bt.body_type_name ASC");
+        $tq = mysqli_query($dbc, "SELECT bt.body_type_id, bt.body_type_name, bt.body_type_img, bt.body_type_sts, (SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_type = bt.body_type_id AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) AS vehicle_count FROM body_type bt WHERE bt.body_type_sts = 1 HAVING vehicle_count > 0 ORDER BY bt.body_type_name ASC");
         while ($r = mysqli_fetch_assoc($tq)) {
             $body_types[] = [
                 'id' => (int) $r['body_type_id'],
@@ -692,6 +705,7 @@ if ($resource === 'filters') {
              WHERE m.machine_type = mt.machine_type_id AND m.machine_sts = 1 AND (m.machine_sale_stts IS NULL OR m.machine_sale_stts != 'sold')) AS machine_count 
         FROM machine_type mt 
         WHERE mt.machine_type_sts = 1 
+        HAVING machine_count > 0
         ORDER BY mt.machine_type_name ASC
     ");
 
@@ -705,42 +719,42 @@ if ($resource === 'filters') {
         }
         // Colors (from vehicle_info distinct)
         $colors = [];
-        $cq = mysqli_query($dbc, "SELECT color_code_id,color_name,color_code_name_code FROM color_code WHERE color_code_sts = '1' ORDER BY color_name ASC");
+        $cq = mysqli_query($dbc, "SELECT cc.color_code_id, cc.color_name, cc.color_code_name_code, ((SELECT COUNT(*) FROM vehicle_info v WHERE (v.vehicle_color_name = cc.color_name OR v.vehicle_color = cc.color_name) AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) + (SELECT COUNT(*) FROM machines mch WHERE mch.machine_color = cc.color_name AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS item_count FROM color_code cc WHERE cc.color_code_sts = '1' HAVING item_count > 0 ORDER BY cc.color_name ASC");
         while ($r = mysqli_fetch_assoc($cq))
             $colors[] = ['name' => $r['color_name'], 'code' => $r['color_code_name_code']];
 
         // Transmissions
         $transmissions = [];
-        $tq2 = mysqli_query($dbc, "SELECT transmission_id ,	transmission_name FROM transmission WHERE transmission_sts = '1' ORDER BY 	transmission_name  ASC");
+        $tq2 = mysqli_query($dbc, "SELECT t.transmission_id, t.transmission_name, ((SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_transmission = t.transmission_name AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) + (SELECT COUNT(*) FROM machines mch WHERE mch.machine_transmission = t.transmission_name AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS item_count FROM transmission t WHERE t.transmission_sts = '1' HAVING item_count > 0 ORDER BY t.transmission_name ASC");
         while ($r = mysqli_fetch_assoc($tq2))
             $transmissions[] = ['id' => (int) $r['transmission_id'], 'name' => $r['transmission_name']];
 
         // Fuel types
         $fuels = [];
-        $fq = mysqli_query($dbc, "SELECT fuel_id, fuel_name FROM fuel WHERE fuel_sts = 1 ORDER BY fuel_name ASC");
+        $fq = mysqli_query($dbc, "SELECT f.fuel_id, f.fuel_name, ((SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_fuel = f.fuel_name AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) + (SELECT COUNT(*) FROM machines mch WHERE mch.machine_fuel = f.fuel_name AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS item_count FROM fuel f WHERE f.fuel_sts = 1 HAVING item_count > 0 ORDER BY f.fuel_name ASC");
         while ($r = mysqli_fetch_assoc($fq))
             $fuels[] = ['id' => (int) $r['fuel_id'], 'name' => $r['fuel_name']];
 
         $cc_range = [];
-        $c_range = mysqli_query($dbc, "SELECT cc_id, cc_name FROM cc WHERE cc_sts = 1 ORDER BY cc_id ASC");
+        $c_range = mysqli_query($dbc, "SELECT c.cc_id, c.cc_name, (SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_cc = c.cc_name AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) AS item_count FROM cc c WHERE c.cc_sts = 1 HAVING item_count > 0 ORDER BY c.cc_id ASC");
         while ($r = mysqli_fetch_assoc($c_range))
             $cc_range[] = ['id' => (int) $r['cc_id'], 'name' => $r['cc_name']];
 
         // Driven
         $driven = [];
-        $dv = mysqli_query($dbc, "SELECT drive_id, drive_name FROM drive WHERE drive_sts = 1 ORDER BY drive_name ASC");
+        $dv = mysqli_query($dbc, "SELECT d.drive_id, d.drive_name, ((SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_drive = d.drive_name AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) + (SELECT COUNT(*) FROM machines mch WHERE mch.machine_drive = d.drive_name AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS item_count FROM drive d WHERE d.drive_sts = 1 HAVING item_count > 0 ORDER BY d.drive_name ASC");
         while ($r = mysqli_fetch_assoc($dv))
             $driven[] = ['id' => (int) $r['drive_id'], 'name' => $r['drive_name']];
 
         // steering
         $steering = [];
-        $st = mysqli_query($dbc, "SELECT option_id, option_name FROM options WHERE option_sts = 1 ORDER BY option_name ASC");
+        $st = mysqli_query($dbc, "SELECT o.option_id, o.option_name, ((SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_option = o.option_name AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) + (SELECT COUNT(*) FROM machines mch WHERE mch.machine_steering = o.option_name AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS item_count FROM options o WHERE o.option_sts = 1 HAVING item_count > 0 ORDER BY o.option_name ASC");
         while ($r = mysqli_fetch_assoc($st))
             $steering[] = ['id' => (int) $r['option_id'], 'name' => $r['option_name']];
 
         // Locations
         $locations = [];
-        $mq = mysqli_query($dbc, "SELECT c.country_id, c.country_name, c.image,  (SELECT COUNT(*) FROM vehicle_info v WHERE v.country_id = c.country_id AND v.vehicle_status != 'sold') AS vehicle_count FROM countries c ORDER BY c.country_name ASC");
+        $mq = mysqli_query($dbc, "SELECT c.country_id, c.country_name, c.image, ((SELECT COUNT(*) FROM vehicle_info v WHERE v.country_id = c.country_id AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) + (SELECT COUNT(*) FROM machines mch WHERE mch.country_id = c.country_id AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS vehicle_count FROM countries c HAVING vehicle_count > 0 ORDER BY c.country_name ASC");
         while ($r = mysqli_fetch_assoc($mq)) {
             $locations[] = [
                 'id' => (int) $r['country_id'],
@@ -753,7 +767,7 @@ if ($resource === 'filters') {
         $port = [];
         // features
         $features = [];
-        $fte = mysqli_query($dbc, "SELECT vehicle_feature_id, vehicle_feature_name FROM vehicle_feature WHERE vehicle_feature_sts = 1 ORDER BY vehicle_feature_name ASC");
+        $fte = mysqli_query($dbc, "SELECT vf.vehicle_feature_id, vf.vehicle_feature_name, (SELECT COUNT(*) FROM vehicle_info v WHERE JSON_CONTAINS(v.vehicle_feature_list, CONCAT('\"', vf.vehicle_feature_name, '\"')) AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) AS item_count FROM vehicle_feature vf WHERE vf.vehicle_feature_sts = 1 HAVING item_count > 0 ORDER BY vf.vehicle_feature_name ASC");
         while ($r = mysqli_fetch_assoc($fte))
             $features[] = ['id' => (int) $r['vehicle_feature_id'], 'name' => $r['vehicle_feature_name']];
 
@@ -828,7 +842,7 @@ if ($resource === 'latest_discounted' || $resource === 'latest-discounted') {
 
     // Latest vehicles and machines
     $vehicleItems = [];
-    $vehicleQuery = mysqli_query($dbc, "SELECT vi.vehicle_id AS item_id, 'car' AS item_type, vi.vehicle_stock_id AS stock_id, m.maker_name, b.brand_name, bt.body_type_name AS type_name, vi.vehicle_chassis_no AS chassis_no, vi.vehicle_engine_no AS engine_no, vi.vehicle_manu_year AS year, vi.vehicle_reg_year AS registration_year, vi.vehicle_km AS mileage, vi.vehicle_cc AS cc, vi.vehicle_fuel AS fuel, vi.vehicle_transmission AS transmission, COALESCE(vi.vehicle_color_name, vi.vehicle_color) AS color, vi.vehicle_seat AS seats, vi.vehicle_door AS doors, vi.vehicle_drive AS driven, vi.vehicle_option AS steering, vi.vehicle_mode AS vehicle_mode, vi.vehicle_est_price AS price, vi.vehicle_discount AS discount, vi.vehicle_feature_list AS feature_list, vi.vehicle_status AS status, vi.country_id AS country_id, c.country_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id LEFT JOIN countries c ON vi.country_id = c.country_id WHERE vi.vehicle_status != 'sold' ORDER BY vi.vehicle_id DESC LIMIT $LIMIT");
+    $vehicleQuery = mysqli_query($dbc, "SELECT vi.vehicle_id AS item_id, 'car' AS item_type, vi.vehicle_stock_id AS stock_id, m.maker_name, b.brand_name, bt.body_type_name AS type_name, vi.vehicle_chassis_no AS chassis_no, vi.vehicle_engine_no AS engine_no, vi.vehicle_manu_year AS year, vi.vehicle_reg_year AS registration_year, vi.vehicle_km AS mileage, vi.vehicle_cc AS cc, vi.vehicle_fuel AS fuel, vi.vehicle_transmission AS transmission, COALESCE(vi.vehicle_color_name, vi.vehicle_color) AS color, vi.vehicle_seat AS seats, vi.vehicle_door AS doors, vi.vehicle_drive AS driven, vi.vehicle_option AS steering, vi.vehicle_mode AS vehicle_mode, vi.vehicle_est_price AS price, vi.vehicle_discount AS discount, vi.vehicle_feature_list AS feature_list, vi.vehicle_status AS status, vi.country_id AS country_id, c.country_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id LEFT JOIN countries c ON vi.country_id = c.country_id WHERE (vi.vehicle_sale_stts IS NULL OR vi.vehicle_sale_stts != 'sold') ORDER BY vi.vehicle_id DESC LIMIT $LIMIT");
     if ($vehicleQuery) {
         while ($row = mysqli_fetch_assoc($vehicleQuery)) {
             $vehicleItems[] = $row;
@@ -876,7 +890,7 @@ if ($resource === 'latest_discounted' || $resource === 'latest-discounted') {
         if ($sec['type'] === 'country') {
             $cid = $sec['cid'];
             $rows = [];
-            $vq = mysqli_query($dbc, "SELECT vi.vehicle_id AS item_id, 'car' AS item_type, vi.vehicle_stock_id AS stock_id, m.maker_name, b.brand_name, bt.body_type_name AS type_name, vi.vehicle_chassis_no AS chassis_no, vi.vehicle_engine_no AS engine_no, vi.vehicle_manu_year AS year, vi.vehicle_reg_year AS registration_year, vi.vehicle_km AS mileage, vi.vehicle_cc AS cc, vi.vehicle_fuel AS fuel, vi.vehicle_transmission AS transmission, COALESCE(vi.vehicle_color_name, vi.vehicle_color) AS color, vi.vehicle_seat AS seats, vi.vehicle_door AS doors, vi.vehicle_drive AS driven, vi.vehicle_option AS steering, vi.vehicle_mode AS vehicle_mode, vi.vehicle_est_price AS price, vi.vehicle_discount AS discount, vi.vehicle_feature_list AS feature_list, vi.vehicle_status AS status, vi.country_id AS country_id, c.country_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id LEFT JOIN countries c ON vi.country_id = c.country_id WHERE vi.country_id = $cid AND vi.vehicle_status != 'sold' ORDER BY vi.vehicle_id DESC LIMIT $LIMIT");
+            $vq = mysqli_query($dbc, "SELECT vi.vehicle_id AS item_id, 'car' AS item_type, vi.vehicle_stock_id AS stock_id, m.maker_name, b.brand_name, bt.body_type_name AS type_name, vi.vehicle_chassis_no AS chassis_no, vi.vehicle_engine_no AS engine_no, vi.vehicle_manu_year AS year, vi.vehicle_reg_year AS registration_year, vi.vehicle_km AS mileage, vi.vehicle_cc AS cc, vi.vehicle_fuel AS fuel, vi.vehicle_transmission AS transmission, COALESCE(vi.vehicle_color_name, vi.vehicle_color) AS color, vi.vehicle_seat AS seats, vi.vehicle_door AS doors, vi.vehicle_drive AS driven, vi.vehicle_option AS steering, vi.vehicle_mode AS vehicle_mode, vi.vehicle_est_price AS price, vi.vehicle_discount AS discount, vi.vehicle_feature_list AS feature_list, vi.vehicle_status AS status, vi.country_id AS country_id, c.country_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id LEFT JOIN countries c ON vi.country_id = c.country_id WHERE vi.country_id = $cid AND (vi.vehicle_sale_stts IS NULL OR vi.vehicle_sale_stts != 'sold') ORDER BY vi.vehicle_id DESC LIMIT $LIMIT");
             if ($vq) {
                 while ($row = mysqli_fetch_assoc($vq)) {
                     $rows[] = $row;
@@ -1110,7 +1124,7 @@ if ($resource === 'vehicle' || $resource === 'single_vehicle' || $resource === '
 
     if (!empty($whereSim) && $itemType === 'vehicle') {
         $whereClause = implode(' OR ', $whereSim);
-        $simQ = mysqli_query($dbc, "SELECT vi.*, m.maker_name, b.brand_name, bt.body_type_name, c.country_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id LEFT JOIN countries c ON vi.country_id = c.country_id WHERE ($whereClause) AND vi.vehicle_id != " . (int) $itemData['id'] . " AND vi.vehicle_status != 'sold' ORDER BY vi.vehicle_id DESC LIMIT 6");
+        $simQ = mysqli_query($dbc, "SELECT vi.*, m.maker_name, b.brand_name, bt.body_type_name, c.country_name FROM vehicle_info vi LEFT JOIN maker m ON vi.vehicle_maker = m.maker_id LEFT JOIN brands b ON vi.vehicle_brand = b.brand_id LEFT JOIN body_type bt ON vi.vehicle_type = bt.body_type_id LEFT JOIN countries c ON vi.country_id = c.country_id WHERE ($whereClause) AND vi.vehicle_id != " . (int) $itemData['id'] . " AND (vi.vehicle_sale_stts IS NULL OR vi.vehicle_sale_stts != 'sold') ORDER BY vi.vehicle_id DESC LIMIT 6");
         if ($simQ) {
             while ($row = mysqli_fetch_assoc($simQ)) {
                 $vid2 = (int) $row['vehicle_id'];
@@ -1305,7 +1319,7 @@ if ($resource === 'search') {
     $isMachine = $searchType === 'machine';
     $useBoth = $searchType === null;
 
-    $vehicleConditions = ["vehicle_status != ''"];
+    $vehicleConditions = ["(vehicle_sale_stts IS NULL OR vehicle_sale_stts != 'sold')"];
     $machineConditions = ["machine_sts = 1", "(machine_sale_stts IS NULL OR machine_sale_stts != 'sold')"];
 
     $addVehicle = function ($condition) use (&$vehicleConditions) {
@@ -1454,7 +1468,13 @@ if ($resource === 'search') {
     if (!empty($params['from_date']) && !empty($params['to_date'])) {
         $fromDate = $escape($params['from_date']);
         $toDate = $escape($params['to_date']);
-        $addVehicle("buying_date BETWEEN '$fromDate' AND '$toDate'");
+        $addVehicle("(buying_date IS NULL OR buying_date = '' OR buying_date BETWEEN '$fromDate' AND '$toDate')");
+    } elseif (!empty($params['from_date'])) {
+        $fromDate = $escape($params['from_date']);
+        $addVehicle("(buying_date IS NULL OR buying_date = '' OR buying_date >= '$fromDate')");
+    } elseif (!empty($params['to_date'])) {
+        $toDate = $escape($params['to_date']);
+        $addVehicle("(buying_date IS NULL OR buying_date = '' OR buying_date <= '$toDate')");
     }
 
     $featureNames = [];
@@ -1626,7 +1646,7 @@ if ($resource === 'search-text' || $resource === 'search-keyword' || $resource =
     $exactVehicle = null;
     $exactMachine = null;
     if ($isCar || $useBoth) {
-        $vq = mysqli_query($dbc, "SELECT vehicle_id AS item_id, 'car' AS item_type, vehicle_stock_id AS stock_id FROM vehicle_info WHERE vehicle_stock_id = '$escapedQ' LIMIT 1");
+        $vq = mysqli_query($dbc, "SELECT vehicle_id AS item_id, 'car' AS item_type, vehicle_stock_id AS stock_id FROM vehicle_info WHERE vehicle_stock_id = '$escapedQ' AND (vehicle_sale_stts IS NULL OR vehicle_sale_stts != 'sold') LIMIT 1");
         if ($vq) {
             $exactVehicle = mysqli_fetch_assoc($vq);
         }
@@ -1766,7 +1786,7 @@ if ($resource === 'search-text' || $resource === 'search-keyword' || $resource =
         $machineKeywordWhere = '1=1';
     }
 
-    $vehicleWhere = "(vehicle_status != 'sold') AND $vehicleKeywordWhere";
+    $vehicleWhere = "(vehicle_sale_stts IS NULL OR vehicle_sale_stts != 'sold') AND $vehicleKeywordWhere";
     $machineWhere = "(machine_sts = 1 AND (machine_sale_stts IS NULL OR machine_sale_stts != 'sold')) AND $machineKeywordWhere";
 
     if ($searchType === 'car') {

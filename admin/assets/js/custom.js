@@ -2615,6 +2615,12 @@ function loadVehicle(load_vehicle_idMain, action) {
                 });
                 $("#vehicle_idTable").empty().append(vehicle_infoTable);
             }else if (action == 'edit') {
+                if (!msg || !msg.length) {
+                    return;
+                }
+
+                window.editVehicleBrandId = msg[0].vehicle_brand;
+                window.editVehicleBrandName = msg[0].brand_name || 'Unknown brand';
                 // loadBrands(msg[0].vehicle_maker);
                 // loadChassis(msg[0].vehicle_brand);
                 $("#vehicle_stock_pre").hide();
@@ -4993,8 +4999,18 @@ function loadBrands(makers) {
                 $.each(response, function (index, value) {
                     model += '<option class="text-capitalize" value="'+value['brand_id']+'">'+value['brand_name']+'</option>';
                 });
+                if (window.editVehicleBrandId && !response.some(function (brand) {
+                    return String(brand.brand_id) === String(window.editVehicleBrandId);
+                })) {
+                    model += '<option class="text-capitalize" value="'+window.editVehicleBrandId+'">'+window.editVehicleBrandName+'</option>';
+                }
                 var vehicle_idMain = $("#vehicle_idMain").val();
                 $("#vehicle_brand").empty().append(model);
+                if (window.editVehicleBrandId) {
+                    $("#vehicle_brand").val(window.editVehicleBrandId).trigger('change');
+                    window.editVehicleBrandId = null;
+                    window.editVehicleBrandName = null;
+                }
             }
         });
        
