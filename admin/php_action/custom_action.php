@@ -15844,7 +15844,7 @@ if (isset($_POST['vehicle_feature_list'])) {
 		exit();
 	}
 
-} else {
+} elseif (isset($_POST['vehicle_id'])) {
 	if (isset($_POST['vehicle_id']) && $_POST['vehicle_id'] != "") {
 		$data = ['vehicle_feature_list' => '[]'];
 		if (update_data($dbc, "vehicle_info", $data, "vehicle_id", $_POST['vehicle_id'])) {

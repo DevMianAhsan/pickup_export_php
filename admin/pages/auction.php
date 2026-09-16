@@ -73,7 +73,7 @@ $date->modify('+3 day');
 			
 
         ?>
-        <input type="text" value="<?=@$auction_info?>" id="get_auction_idMain" class=" d-none" >
+		<input type="text" value="<?=@$auction_info['auction_id']?>" id="get_auction_idMain" class=" d-none" >
         <input type="text" value="<?=@$id?>" class="vehicle_idMain d-none" name="vehicle_id">
 
      

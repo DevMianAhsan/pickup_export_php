@@ -343,7 +343,7 @@ span.step {
 
                       @$brand = fetchRecord($dbc,"brands","brand_id",$stock['vehicle_brand'])['brand_name'];
 
-                      @$auction_info = fetchRecord($dbc,"auction_info","vehicle_id",$stock['vehicle_id'])['auction_id'];
+                      @$auction_info = fetchRecord($dbc,"auction_info","vehicle_id",$stock['vehicle_id']);
 
                       @$get_ricksu = fetchRecord($dbc,"ricksu","vehicle_id",$stock['vehicle_id']);
 

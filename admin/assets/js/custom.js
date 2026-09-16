@@ -2635,10 +2635,6 @@ function loadVehicle(load_vehicle_idMain, action) {
                 $(".customStockIDEDIT").attr('class', 'col-sm-12')
                 $("#vehicle_stock_id").val(msg[0].vehicle_stock_id)
                 $('#vehicle_maker').val(msg[0].vehicle_maker).trigger('change');
-                if (!$('#vehicle_brand option[value="'+msg[0].vehicle_brand+'"]').length) {
-                    $('#vehicle_brand').append('<option value="'+msg[0].vehicle_brand+'">'+window.editVehicleBrandName+'</option>');
-                }
-                $('#vehicle_brand').val(msg[0].vehicle_brand).trigger('change');
                 //$('#vehicle_brand option[value="'+msg[0].vehicle_brand+'"]').prop('selected', false).trigger('change');
                  $('#vehicle_manu_year').val(msg[0].vehicle_manu_year).trigger('change');
                // $("#vehicle_manu_month").val(msg[0].vehicle_manu_month)
@@ -2647,12 +2643,6 @@ function loadVehicle(load_vehicle_idMain, action) {
                                      $('#vehicle_manu_month').val(msg[0].vehicle_manu_month).trigger('change');
                // $("#vehicle_reg_month").val(msg[0].vehicle_reg_month)
                  $("#vehicle_chassis_no").val(msg[0].vehicle_chassis_no)
-                 if (msg[0].vehicle_chassis_code) {
-                     if (!$('#vehicle_chassis_code option[value="'+msg[0].vehicle_chassis_code+'"]').length) {
-                         $('#vehicle_chassis_code').append('<option value="'+msg[0].vehicle_chassis_code+'">'+window.editVehicleModelName+'</option>');
-                     }
-                     $('#vehicle_chassis_code').val(msg[0].vehicle_chassis_code).trigger('change');
-                 }
                  if (msg[0].vehicle_drive) {
                      var driveVal = msg[0].vehicle_drive;
                      var $drive = $('#vehicle_drive');

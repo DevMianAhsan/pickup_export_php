@@ -92,7 +92,7 @@ require_once("custom/vendor/autoload.php");
 							<!-- <input list="manu_year" name="vehicle_manu_year" id="vehicle_manu_year" class="form-control"> -->
 
 							<select tabindex="1" list="manu_year" onchange="validateyears()" name="vehicle_manu_year"
-								id="vehicle_manu_year" class="form-control select2">
+								id="vehicle_manu_year" class="form-control select2" required>
 
 								<!-- <datalist id="manu_year"> -->
 
@@ -125,7 +125,7 @@ require_once("custom/vendor/autoload.php");
 
 
 							<select tabindex="2" name="vehicle_manu_month" id="vehicle_manu_month"
-								onchange="validatemonth()" class="form-control select2">
+								onchange="validatemonth()" class="form-control select2" required>
 
 								<option data-id="0" value="">~~SELECT~~</option>
 
