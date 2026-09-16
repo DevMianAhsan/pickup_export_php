@@ -7474,6 +7474,10 @@ if (mysqli_num_rows($q)>0) {
 
 
 
+	    exit;
+
+
+
 	}
 
 

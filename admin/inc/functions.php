@@ -2436,7 +2436,8 @@ function uploadfile($file,$path)
 
 function getUserPri($dbc,$page)
 {
-    $checkurlvalidQ = mysqli_query($dbc, "SELECT privileges.*,menus.*  FROM privileges INNER JOIN menus ON privileges.nav_id=menus.id WHERE privileges.user_id = '$_SESSION[userId]' AND menus.page LIKE '%$page%' ");
+  $userId = $_SESSION['userId'] ?? 0;
+  $checkurlvalidQ = mysqli_query($dbc, "SELECT privileges.*,menus.*  FROM privileges INNER JOIN menus ON privileges.nav_id=menus.id WHERE privileges.user_id = '$userId' AND menus.page LIKE '%$page%' ");
   
   if (mysqli_num_rows($checkurlvalidQ)>0) {
     $userPrivileges=mysqli_fetch_assoc($checkurlvalidQ);
@@ -2447,8 +2448,9 @@ function getUserPri($dbc,$page)
 }
 function getUserRole($dbc)
 {
-  $fetch_globeluser = mysqli_fetch_assoc(mysqli_query($dbc,"SELECT * FROM users WHERE user_id = '$_SESSION[userId]' "));
-   return $fetch_globeluser['user_role'];
+  $userId = $_SESSION['userId'] ?? 0;
+  $fetch_globeluser = mysqli_fetch_assoc(mysqli_query($dbc,"SELECT * FROM users WHERE user_id = '$userId' "));
+   return $fetch_globeluser['user_role'] ?? '';
 }
 function invoicehtml_mailto($dbc,$id)
 

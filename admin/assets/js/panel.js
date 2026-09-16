@@ -6,14 +6,18 @@ $(document).ready(function () {
 
   
 
-      $('.dataTable').DataTable(
-      {
-        autoWidth: true,
-        "lengthMenu": [
-          [10, 20, 50, -1],
-          [10, 20, 50, "All"]
-        ],
-         "order": [[ 0, "desc" ]]
+      $('.dataTable').each(function () {
+        if (!$.fn.dataTable.isDataTable(this)) {
+          $(this).DataTable(
+          {
+            autoWidth: true,
+            "lengthMenu": [
+              [10, 20, 50, -1],
+              [10, 20, 50, "All"]
+            ],
+             "order": [[ 0, "desc" ]]
+          });
+        }
       });
          $('.credit_order').DataTable(
       {
