@@ -1086,7 +1086,8 @@ require_once("custom/vendor/autoload.php");
 
 	<form action="php_action/custom_action.php" method="POST" role="form" id="formData15">
 
-		<input type="text" value="<?= @$id ?>" class="vehicle_idMain d-none" name="vehicle_id">
+		<input type="hidden" name="save_vehicle_features" value="1">
+		<input type="hidden" value="<?= @$id ?>" id="feature_vehicle_id" name="vehicle_id">
 
 		<div class="row">
 

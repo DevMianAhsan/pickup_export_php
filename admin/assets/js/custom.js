@@ -1182,6 +1182,7 @@ $("#save_vehicle_docs").on('click',function() {
                     return;
                 }
                 $(".vehicle_idMain").val(responeID);
+                $("#feature_vehicle_id").val(responeID);
                 $(".stockMain").val(responeID);
                 loadVehicle(responeID,'load');
                 var url = 'trade.php?vehicle_id='+(msg.trim());

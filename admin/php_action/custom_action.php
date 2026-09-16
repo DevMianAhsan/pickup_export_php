@@ -15807,11 +15807,11 @@ if (isset($_POST['vehicle_feature_name'])) {
 
 
 
-if (isset($_POST['vehicle_feature_list'])) {
+if (isset($_POST['save_vehicle_features'])) {
 
 
 
-	$vehicle_feature_list = $_POST['vehicle_feature_list'];
+	$vehicle_feature_list = $_POST['vehicle_feature_list'] ?? [];
 
 
 
@@ -15844,20 +15844,6 @@ if (isset($_POST['vehicle_feature_list'])) {
 		exit();
 	}
 
-} elseif (isset($_POST['vehicle_id'])) {
-	if (isset($_POST['vehicle_id']) && $_POST['vehicle_id'] != "") {
-		$data = ['vehicle_feature_list' => '[]'];
-		if (update_data($dbc, "vehicle_info", $data, "vehicle_id", $_POST['vehicle_id'])) {
-			echo json_encode(['sts' => 'success', 'msg' => 'Vehicle Features Updated Successfully']);
-			exit();
-		} else {
-			echo json_encode(['sts' => 'error', 'msg' => mysqli_error($dbc)]);
-			exit();
-		}
-	} else {
-		echo json_encode(['sts' => 'error', 'msg' => 'Vehicle ID is missing']);
-		exit();
-	}
 }
 
 
