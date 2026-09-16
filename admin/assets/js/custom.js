@@ -2684,6 +2684,28 @@ function loadVehicle(load_vehicle_idMain, action) {
                 $("#vehicle_access").val(msg[0].vehicle_access)
                 $("#vehicle_km").val(msg[0].vehicle_km)
                 $("#vehicle_km2").val(msg[0].vehicle_km2)
+
+                function selectVehicleOption(selector, value) {
+                    if (!value) {
+                        return;
+                    }
+                    var $select = $(selector);
+                    var matchedValue = null;
+                    $select.find('option').each(function() {
+                        if (String(this.value).toLowerCase() === String(value).toLowerCase()) {
+                            matchedValue = this.value;
+                            return false;
+                        }
+                    });
+                    if (matchedValue === null) {
+                        $select.append('<option value="' + $('<div>').text(value).html() + '">' + $('<div>').text(value).html() + '</option>');
+                        matchedValue = value;
+                    }
+                    $select.val(matchedValue).trigger('change');
+                }
+
+                selectVehicleOption('#vehicle_transmission', msg[0].vehicle_transmission);
+                selectVehicleOption('#vehicle_option', msg[0].vehicle_option);
     
                 $("#vehicle_cc").val(msg[0].vehicle_cc).trigger('change');
 
@@ -2692,7 +2714,6 @@ function loadVehicle(load_vehicle_idMain, action) {
                 $("#vehicle_height").val(msg[0].vehicle_height)
                 $("#vehicle_m3").val(msg[0].vehicle_m3)
                          
-                $('#vehicle_option').val(msg[0].vehicle_option).trigger('change');
                 $('#vehicle_door').val(msg[0].vehicle_door).trigger('change');
                 $("#vehicle_seat").val(msg[0].vehicle_seat)
                 $('#vehicle_seat').val(msg[0].vehicle_seat).trigger('change');
