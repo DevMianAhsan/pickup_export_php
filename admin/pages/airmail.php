@@ -425,7 +425,7 @@
 						<label for="">Date of Dispatch</label>
 					</div><!-- col -->
 					<div class="col-sm-4">		
-					<input type="hidden"  value="<?=@$shipment['shipment_date']?>" id="shipment_date_c" class="form-control">
+					<input type="hidden"  value="<?=@(is_array($shipment) ? $shipment['shipment_date'] : @$get_shipment['shipment_date'])?>" id="shipment_date_c" class="form-control">
 						<input type="date"  onchange="checkDateValidty('airmail_date_of_dispatch');compareDateByless('airmail_date_of_dispatch','shipment_date_c','Date of Dispatch')" name="airmail_date_of_dispatch"  id="airmail_date_of_dispatch" class="form-control form-control-sm">
 					</div><!-- col -->
 					<div class="col-sm-2">

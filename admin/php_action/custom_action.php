@@ -3948,168 +3948,168 @@ if (get($dbc,"color_code  WHERE color_name ='".$_POST['vehicle_color_name']."'  
 
 		$data = [
 
-			'vehicle_chassis_no' => $_POST['vehicle_chassis_no'],
+			'vehicle_chassis_no' => $_POST['vehicle_chassis_no'] ?? '',
 
 
 
-			'vehicle_engine_no' => strtoupper($_POST['vehicle_engine_no']),
+			'vehicle_engine_no' => strtoupper($_POST['vehicle_engine_no'] ?? ''),
 
 
 
-			'vehicle_engine_type' => strtoupper($_POST['vehicle_engine_type']),
+			'vehicle_engine_type' => strtoupper($_POST['vehicle_engine_type'] ?? ''),
 
 
 
-			'vehicle_loading_capacity' => $_POST['vehicle_loading_capacity'],
+			'vehicle_loading_capacity' => $_POST['vehicle_loading_capacity'] ?? '',
 
 
 
-			'vehicle_weight' => $_POST['vehicle_weight'],
+			'vehicle_weight' => $_POST['vehicle_weight'] ?? '',
 
 
 
-			'vehicle_access' => $_POST['vehicle_access'],
+			'vehicle_access' => $_POST['vehicle_access'] ?? '',
 
 
 
-			'vehicle_m3' => $_POST['vehicle_m3'],
+			'vehicle_m3' => $_POST['vehicle_m3'] ?? '',
 
 
 
-			'vehicle_km' => $_POST['vehicle_km'],
+			'vehicle_km' => $_POST['vehicle_km'] ?? '',
 
 
 
-			'vehicle_km2' => $_POST['vehicle_km2'],
+			'vehicle_km2' => $_POST['vehicle_km2'] ?? '',
 
 
 
-			'vehicle_manu_year' => $_POST['vehicle_manu_year'],
+			'vehicle_manu_year' => $_POST['vehicle_manu_year'] ?? '',
 
 
 
-			'vehicle_reg_month' => $_POST['vehicle_reg_month'],
+			'vehicle_reg_month' => $_POST['vehicle_reg_month'] ?? '',
 
 
 
-			'vehicle_reg_year' => $_POST['vehicle_reg_year'],
+			'vehicle_reg_year' => $_POST['vehicle_reg_year'] ?? '',
 
 
 
-			'vehicle_maker' => $_POST['vehicle_maker'],
+			'vehicle_maker' => $_POST['vehicle_maker'] ?? '',
 
 
 
-			'vehicle_brand' => $_POST['vehicle_brand'],
+			'vehicle_brand' => $_POST['vehicle_brand'] ?? '',
 
 
 
-			'vehicle_grade' => $_POST['vehicle_grade'],
+			'vehicle_grade' => $_POST['vehicle_grade'] ?? '',
 
 
 
-			'vehicle_cc' => $_POST['vehicle_cc'],
+			'vehicle_cc' => $_POST['vehicle_cc'] ?? '',
 
 
 
-			'vehicle_transmission' => $_POST['vehicle_transmission'],
+			'vehicle_transmission' => $_POST['vehicle_transmission'] ?? '',
 
 
 
-			'vehicle_drive' => $_POST['vehicle_drive'],
+			'vehicle_drive' => $_POST['vehicle_drive'] ?? '',
 
 
 
-			'vehicle_fuel' => $_POST['vehicle_fuel'],
+			'vehicle_fuel' => $_POST['vehicle_fuel'] ?? '',
 
 
 
-			'vehicle_package' => $_POST['vehicle_package'],
+			'vehicle_package' => $_POST['vehicle_package'] ?? '',
 
 
 
-			'vehicle_option' => $_POST['vehicle_option'],
+			'vehicle_option' => $_POST['vehicle_option'] ?? '',
 
 
 
-			'vehicle_door' => $_POST['vehicle_door'],
+			'vehicle_door' => $_POST['vehicle_door'] ?? '',
 
 
 
-			'vehicle_seat' => $_POST['vehicle_seat'],
+			'vehicle_seat' => $_POST['vehicle_seat'] ?? '',
 
 
 
-			'vehicle_color' => strtoupper($_POST['vehicle_color']),
+			'vehicle_color' => strtoupper($_POST['vehicle_color'] ?? ''),
 
 
 
-			'vehicle_color_name' => $_POST['vehicle_color_name'],
+			'vehicle_color_name' => $_POST['vehicle_color_name'] ?? '',
 
 
 
-			'vehicle_interior' => $_POST['vehicle_interior'],
+			'vehicle_interior' => $_POST['vehicle_interior'] ?? '',
 
 
 
-			'vehicle_exterior' => $_POST['vehicle_exterior'],
+			'vehicle_exterior' => $_POST['vehicle_exterior'] ?? '',
 
 
 
-			'vehicle_width' => $_POST['vehicle_width'],
+			'vehicle_width' => $_POST['vehicle_width'] ?? '',
 
 
 
-			'vehicle_length' => $_POST['vehicle_length'],
+			'vehicle_length' => $_POST['vehicle_length'] ?? '',
 
 
 
-			'vehicle_note' => $_POST['vehicle_note'],
+			'vehicle_note' => $_POST['vehicle_note'] ?? '',
 
 
 
-			'vehicle_height' => $_POST['vehicle_height'],
+			'vehicle_height' => $_POST['vehicle_height'] ?? '',
 
 
 
-			'vehicle_chassis_code' => $_POST['vehicle_chassis_code'],
+			'vehicle_chassis_code' => $_POST['vehicle_chassis_code'] ?? '',
 
 
 
-			'vehicle_type' => $_POST['vehicle_type'],
+			'vehicle_type' => $_POST['vehicle_type'] ?? '',
 
 
 
-			'vehicle_url' => $_POST['vehicle_url'],
+			'vehicle_url' => $_POST['vehicle_url'] ?? '',
 
 
 
-			'vehicle_est_price' => $_POST['vehicle_est_price'],
+			'vehicle_est_price' => $_POST['vehicle_est_price'] ?? '',
 
 
 
-			'vehicle_interior_color' => $_POST['vehicle_interior_color'],
+			'vehicle_interior_color' => $_POST['vehicle_interior_color'] ?? '',
 
 
 
-			'vehicle_manu_month' => $_POST['vehicle_manu_month'],
+			'vehicle_manu_month' => $_POST['vehicle_manu_month'] ?? '',
 
 
 
-			'vehicle_mode' => @$_POST['vehicle_mode'],
+			'vehicle_mode' => $_POST['vehicle_mode'] ?? '',
 		
-			'vehicle_note_comp' => $_POST['vehicle_note_comp'],
+			'vehicle_note_comp' => $_POST['vehicle_note_comp'] ?? '',
 			
 
 
 
-			'vehicle_discount' => $_POST['vehicle_discount'],
+			'vehicle_discount' => $_POST['vehicle_discount'] ?? '',
 
-			'vehicle_auctionhouse' => $_POST['vehicle_auctionhouse'],
-			'buying_date' => $_POST['buying_date'],
-			'buying_price' => $_POST['buying_price'],
-			'lot_number' => $_POST['lot_number'],
-			'country_id' => @$_POST['country_id'],
+			'vehicle_auctionhouse' => $_POST['vehicle_auctionhouse'] ?? '',
+			'buying_date' => $_POST['buying_date'] ?? '',
+			'buying_price' => $_POST['buying_price'] ?? '',
+			'lot_number' => $_POST['lot_number'] ?? '',
+			'country_id' => $_POST['country_id'] ?? '',
 			
 
 
@@ -6134,7 +6134,7 @@ echo json_encode($response);
 
 
 
-			$q = mysqli_query($dbc,"SELECT auction_info.*, auction_home.* FROM auction_info INNER JOIN auction_home WHERE auction_info.vehicle_id = $id GROUP BY vehicle_id");
+			$q = mysqli_query($dbc,"SELECT auction_info.*, auction_home.* FROM auction_info LEFT JOIN auction_home ON auction_info.auction_house = auction_home.auction_home_id WHERE auction_info.vehicle_id = $id GROUP BY auction_info.vehicle_id");
 
 			//echo "SELECT auction_info.*, auction_home.* FROM auction_info INNER JOIN auction_home WHERE auction_info.vehicle_id = $id GROUP BY vehicle_id";
 
@@ -6204,7 +6204,7 @@ echo json_encode($response);
 
  
 
-			$q = mysqli_query($dbc,"SELECT auction_person.*, auction_home.* FROM auction_person INNER JOIN auction_home WHERE auction_person.vehicle_id = '$id' GROUP BY vehicle_id");
+			$q = mysqli_query($dbc,"SELECT auction_person.*, auction_home.* FROM auction_person LEFT JOIN auction_home ON auction_person.auction_id = auction_home.auction_home_id WHERE auction_person.vehicle_id = '$id' GROUP BY auction_person.vehicle_id");
 
 			//echo "SELECT auction_info.*, auction_home.* FROM auction_info INNER JOIN auction_home WHERE auction_info.vehicle_id = $id GROUP BY vehicle_id";
 
@@ -6216,7 +6216,7 @@ echo json_encode($response);
 
 			//$q = mysqli_query($dbc,"SELECT * FROM auction_person WHERE auction_id = '$id'");
 
-			$q = mysqli_query($dbc,"SELECT auction_person.*, auction_home.*FROM auction_person INNER JOIN auction_home WHERE auction_person.vehicle_id = '$id'");
+			$q = mysqli_query($dbc,"SELECT auction_person.*, auction_home.* FROM auction_person LEFT JOIN auction_home ON auction_person.auction_id = auction_home.auction_home_id WHERE auction_person.vehicle_id = '$id'");
 
 			//echo "SELECT * FROM auction_person WHERE auction_id = '$id'";
 
@@ -6278,9 +6278,9 @@ echo json_encode($response);
 
 	 		$reservation =mysqli_num_rows(mysqli_query($dbc,"SELECT * FROM invoice WHERE invoice_vehicle = $id"));
 	 		if ($reservation>0) {
-	 			$q = mysqli_query($dbc,"SELECT  reservation.*,invoice.*,customers.*,users.*,vehicle_info.* FROM reservation INNER JOIN customers ON customers.customer_id = reservation.reservation_customer INNER JOIN vehicle_info ON vehicle_info.vehicle_id = reservation.vehicle_id INNER JOIN invoice ON invoice.invoice_vehicle = reservation.vehicle_id INNER JOIN users ON users.user_id = reservation.reservation_by   WHERE reservation.vehicle_id = '$id' ORDER BY reservation.reservation_id ASC ");
+	 			$q = mysqli_query($dbc,"SELECT reservation.*,invoice.*,customers.*,users.*,vehicle_info.* FROM reservation LEFT JOIN customers ON customers.customer_id = reservation.reservation_customer LEFT JOIN vehicle_info ON vehicle_info.vehicle_id = reservation.vehicle_id LEFT JOIN invoice ON invoice.invoice_vehicle = reservation.vehicle_id LEFT JOIN users ON users.user_id = reservation.reservation_by WHERE reservation.vehicle_id = '$id' ORDER BY reservation.reservation_id ASC ");
 	 		}else{
-	 			$q = mysqli_query($dbc,"SELECT  reservation.*,customers.*,users.*,vehicle_info.* FROM reservation INNER JOIN customers ON customers.customer_id = reservation.reservation_customer INNER JOIN vehicle_info ON vehicle_info.vehicle_id = reservation.vehicle_id INNER JOIN users ON users.user_id = reservation.reservation_by   WHERE reservation.vehicle_id = '$id' ORDER BY reservation.reservation_id ASC ");
+	 			$q = mysqli_query($dbc,"SELECT reservation.*,customers.*,users.*,vehicle_info.* FROM reservation LEFT JOIN customers ON customers.customer_id = reservation.reservation_customer LEFT JOIN vehicle_info ON vehicle_info.vehicle_id = reservation.vehicle_id LEFT JOIN users ON users.user_id = reservation.reservation_by WHERE reservation.vehicle_id = '$id' ORDER BY reservation.reservation_id ASC ");
 	 		}
 
 	 	}else{
@@ -6346,9 +6346,9 @@ echo json_encode($response);
 	 	if ($action == "load") {
 
 			if (customActionTableExists($dbc, 'sub_yards')) {
-				$q = mysqli_query($dbc,"SELECT ricksu.*, ricksu_company.*,sub_yards.* FROM ricksu INNER JOIN ricksu_company ON ricksu.ricksu_company = ricksu_company.ricksu_company_id INNER JOIN sub_yards ON sub_yards.sub_yard_id = ricksu.ricksu_sub_yard WHERE ricksu.vehicle_id = '$id' AND mini_ricksu!=1 AND ricksu_sts=1 ");
+				$q = mysqli_query($dbc,"SELECT ricksu.*, ricksu_company.*,sub_yards.* FROM ricksu LEFT JOIN ricksu_company ON ricksu.ricksu_company = ricksu_company.ricksu_company_id LEFT JOIN sub_yards ON sub_yards.sub_yard_id = ricksu.ricksu_sub_yard WHERE ricksu.vehicle_id = '$id' AND mini_ricksu!=1 AND ricksu_sts=1 ");
 			} else {
-				$q = mysqli_query($dbc,"SELECT ricksu.*, ricksu_company.* FROM ricksu INNER JOIN ricksu_company ON ricksu.ricksu_company = ricksu_company.ricksu_company_id WHERE ricksu.vehicle_id = '$id' AND mini_ricksu!=1 AND ricksu_sts=1 ");
+				$q = mysqli_query($dbc,"SELECT ricksu.*, ricksu_company.* FROM ricksu LEFT JOIN ricksu_company ON ricksu.ricksu_company = ricksu_company.ricksu_company_id WHERE ricksu.vehicle_id = '$id' AND mini_ricksu!=1 AND ricksu_sts=1 ");
 			}
 
 
@@ -6359,9 +6359,9 @@ echo json_encode($response);
 
 		 	// $q = mysqli_query($dbc,"SELECT * FROM ricksu WHERE ricksu_id = $id");
 			if (customActionTableExists($dbc, 'sub_yards')) {
-				$q = mysqli_query($dbc,"SELECT ricksu.*, ricksu_company.*,sub_yards.* FROM ricksu INNER JOIN ricksu_company ON ricksu.ricksu_company = ricksu_company.ricksu_company_id INNER JOIN sub_yards ON sub_yards.sub_yard_id = ricksu.ricksu_sub_yard WHERE ricksu.vehicle_id = '$id' AND mini_ricksu!=1  AND ricksu_sts=1 ");
+				$q = mysqli_query($dbc,"SELECT ricksu.*, ricksu_company.*,sub_yards.* FROM ricksu LEFT JOIN ricksu_company ON ricksu.ricksu_company = ricksu_company.ricksu_company_id LEFT JOIN sub_yards ON sub_yards.sub_yard_id = ricksu.ricksu_sub_yard WHERE ricksu.vehicle_id = '$id' AND mini_ricksu!=1  AND ricksu_sts=1 ");
 			} else {
-				$q = mysqli_query($dbc,"SELECT ricksu.*, ricksu_company.* FROM ricksu INNER JOIN ricksu_company ON ricksu.ricksu_company = ricksu_company.ricksu_company_id WHERE ricksu.vehicle_id = '$id' AND mini_ricksu!=1  AND ricksu_sts=1 ");
+				$q = mysqli_query($dbc,"SELECT ricksu.*, ricksu_company.* FROM ricksu LEFT JOIN ricksu_company ON ricksu.ricksu_company = ricksu_company.ricksu_company_id WHERE ricksu.vehicle_id = '$id' AND mini_ricksu!=1  AND ricksu_sts=1 ");
 			}
 
 
@@ -6490,14 +6490,14 @@ echo json_encode($response);
 
 
 
-		 		$q = mysqli_query($dbc,"SELECT consignee_info.*, customers.*,consignee.*  FROM consignee_info INNER JOIN customers ON customers.customer_id = consignee_info.consignee_info_customer INNER JOIN consignee ON consignee.consignee_id = consignee_info.consignee_info_consignee  WHERE consignee_info.vehicle_id = $id");
+		 		$q = mysqli_query($dbc,"SELECT consignee_info.*, customers.*,consignee.* FROM consignee_info LEFT JOIN customers ON customers.customer_id = consignee_info.consignee_info_customer LEFT JOIN consignee ON consignee.consignee_id = consignee_info.consignee_info_consignee WHERE consignee_info.vehicle_id = $id");
 
 
 	 	}else{
 
 
 
-		 	$q = mysqli_query($dbc,"SELECT consignee_info.*, customers.*,consignee.*  FROM consignee_info INNER JOIN customers ON customers.customer_id = consignee_info.consignee_info_customer INNER JOIN consignee ON consignee.consignee_id = consignee_info.consignee_info_consignee WHERE consignee_info.consignee_info_id='$id' "); 		
+		 	$q = mysqli_query($dbc,"SELECT consignee_info.*, customers.*,consignee.* FROM consignee_info LEFT JOIN customers ON customers.customer_id = consignee_info.consignee_info_customer LEFT JOIN consignee ON consignee.consignee_id = consignee_info.consignee_info_consignee WHERE consignee_info.consignee_info_id='$id' "); 		
 
 
 
@@ -6557,7 +6557,7 @@ echo json_encode($response);
 
 
 
-		 	$q = mysqli_query($dbc,"SELECT inspection_info.*, inspection_company.* FROM inspection_info INNER JOIN inspection_company ON inspection_info.inspection_info_company = inspection_company.inspection_company_id WHERE inspection_info.vehicle_id = $id");
+		 	$q = mysqli_query($dbc,"SELECT inspection_info.*, inspection_company.* FROM inspection_info LEFT JOIN inspection_company ON inspection_info.inspection_info_company = inspection_company.inspection_company_id WHERE inspection_info.vehicle_id = $id");
 
 
 
@@ -6633,7 +6633,7 @@ echo json_encode($response);
 
 
 
-		 	$q = mysqli_query($dbc,"SELECT shipment.*, vehicle_info.* FROM shipment INNER JOIN vehicle_info ON vehicle_info.vehicle_id = shipment.vehicle_id WHERE shipment.vehicle_id = $id"); 		
+		 	$q = mysqli_query($dbc,"SELECT shipment.*, vehicle_info.* FROM shipment LEFT JOIN vehicle_info ON vehicle_info.vehicle_id = shipment.vehicle_id WHERE shipment.vehicle_id = $id"); 			
 
 
 
@@ -6707,7 +6707,7 @@ if (mysqli_num_rows($q)>0) {
 
 
 
-		 	$q = mysqli_query($dbc,"SELECT airmail.*,users.* FROM airmail INNER JOIN users ON users.user_id=airmail.airmail_confirmed_by WHERE airmail.vehicle_id = $id "); 		
+		 	$q = mysqli_query($dbc,"SELECT airmail.*,users.* FROM airmail LEFT JOIN users ON users.user_id=airmail.airmail_confirmed_by WHERE airmail.vehicle_id = $id "); 		
 
 
 
@@ -6879,7 +6879,7 @@ if (mysqli_num_rows($q)>0) {
 
 
 
-			$q = mysqli_query($dbc,"SELECT vehicle_info.*, maker.*, brands.*,models.*,body_type.* FROM vehicle_info INNER JOIN maker ON vehicle_info.vehicle_maker = maker.maker_id LEFT JOIN brands ON brands.brand_id = vehicle_info.vehicle_brand LEFT JOIN models ON models.model_id = vehicle_info.vehicle_chassis_code INNER JOIN body_type ON body_type.body_type_id = vehicle_info.vehicle_type WHERE vehicle_info.vehicle_id = $colID");
+			$q = mysqli_query($dbc,"SELECT vehicle_info.*, maker.*, brands.*,models.*,body_type.* FROM vehicle_info LEFT JOIN maker ON vehicle_info.vehicle_maker = maker.maker_id LEFT JOIN brands ON brands.brand_id = vehicle_info.vehicle_brand LEFT JOIN models ON models.model_id = vehicle_info.vehicle_chassis_code LEFT JOIN body_type ON body_type.body_type_id = vehicle_info.vehicle_type WHERE vehicle_info.vehicle_id = $colID");
 
 
 
@@ -15840,8 +15840,20 @@ if (isset($_POST['vehicle_feature_list'])) {
 		exit();
 	}
 
-
-
+} else {
+	if (isset($_POST['vehicle_id']) && $_POST['vehicle_id'] != "") {
+		$data = ['vehicle_feature_list' => '[]'];
+		if (update_data($dbc, "vehicle_info", $data, "vehicle_id", $_POST['vehicle_id'])) {
+			echo json_encode(['sts' => 'success', 'msg' => 'Vehicle Features Updated Successfully']);
+			exit();
+		} else {
+			echo json_encode(['sts' => 'error', 'msg' => mysqli_error($dbc)]);
+			exit();
+		}
+	} else {
+		echo json_encode(['sts' => 'error', 'msg' => 'Vehicle ID is missing']);
+		exit();
+	}
 }
 
 
@@ -16276,7 +16288,7 @@ if (isset($_POST['makers']) && isset($_POST['makers']) != "") {
 
 
 
-	$q = mysqli_query($dbc,"SELECT * FROM brands WHERE maker_id = $id ORDER BY brand_name ASC");
+	$q = mysqli_query($dbc,"SELECT * FROM brands WHERE maker_id = $id AND brand_name IS NOT NULL AND brand_name != '' ORDER BY brand_name ASC");
 
 
 
@@ -16448,7 +16460,7 @@ if (isset($_POST['vehicle_brand1']) && isset($_POST['vehicle_brand1']) != "") {
 
 
 
-	$q = mysqli_query($dbc,"SELECT * FROM models WHERE brand_id = $id");
+	$q = mysqli_query($dbc,"SELECT * FROM models WHERE brand_id = $id AND model_name IS NOT NULL AND model_name != ''");
 
 
 

@@ -1870,6 +1870,10 @@ $("#save_vehicle_docs").on('click',function() {
                 } else {
                     Swal.fire({ title: 'Error', text: msg.msg, icon: 'error', showConfirmButton: true });
                 }
+            },
+            error: function(xhr, status, error) {
+                $('#featureBtn').attr("disabled",false);
+                Swal.fire({ title: 'Error', text: 'Request failed: ' + error, icon: 'error', showConfirmButton: true });
             }
         });//ajax call
     });//main
@@ -2621,6 +2625,8 @@ function loadVehicle(load_vehicle_idMain, action) {
 
                 window.editVehicleBrandId = msg[0].vehicle_brand;
                 window.editVehicleBrandName = msg[0].brand_name || 'Unknown brand';
+                window.editVehicleModelId = msg[0].vehicle_chassis_code;
+                window.editVehicleModelName = msg[0].model_name || 'Unknown model';
                 // loadBrands(msg[0].vehicle_maker);
                 // loadChassis(msg[0].vehicle_brand);
                 $("#vehicle_stock_pre").hide();
@@ -2628,17 +2634,57 @@ function loadVehicle(load_vehicle_idMain, action) {
                 $("#vehicle_stock_pre").prop("required",false);
                 $(".customStockIDEDIT").attr('class', 'col-sm-12')
                 $("#vehicle_stock_id").val(msg[0].vehicle_stock_id)
-                $('#vehicle_maker option[value="'+msg[0].vehicle_maker+'"]').prop("selected", true).trigger('change');
+                $('#vehicle_maker').val(msg[0].vehicle_maker).trigger('change');
+                if (!$('#vehicle_brand option[value="'+msg[0].vehicle_brand+'"]').length) {
+                    $('#vehicle_brand').append('<option value="'+msg[0].vehicle_brand+'">'+window.editVehicleBrandName+'</option>');
+                }
+                $('#vehicle_brand').val(msg[0].vehicle_brand).trigger('change');
                 //$('#vehicle_brand option[value="'+msg[0].vehicle_brand+'"]').prop('selected', false).trigger('change');
-                 $('#vehicle_manu_year option[value="'+msg[0].vehicle_manu_year+'"]').prop("selected", true).trigger('change');
+                 $('#vehicle_manu_year').val(msg[0].vehicle_manu_year).trigger('change');
                // $("#vehicle_manu_month").val(msg[0].vehicle_manu_month)
-                 $('#vehicle_reg_year option[value="'+msg[0].vehicle_reg_year+'"]').prop("selected", true).trigger('change');
-                  $('#vehicle_reg_month option[value="'+msg[0].vehicle_reg_month+'"]').prop("selected", true).trigger('change');
-                   $('#vehicle_manu_month option[value="'+msg[0].vehicle_manu_month+'"]').prop("selected", true).trigger('change');
+                                 $('#vehicle_reg_year').val(msg[0].vehicle_reg_year).trigger('change');
+                                    $('#vehicle_reg_month').val(msg[0].vehicle_reg_month).trigger('change');
+                                     $('#vehicle_manu_month').val(msg[0].vehicle_manu_month).trigger('change');
                // $("#vehicle_reg_month").val(msg[0].vehicle_reg_month)
                  $("#vehicle_chassis_no").val(msg[0].vehicle_chassis_no)
-                 $('#vehicle_drive option[value="'+msg[0].vehicle_drive+'"]').prop("selected", true).trigger('change');
-                 $('#vehicle_grade option[value="'+msg[0].vehicle_grade+'"]').prop("selected", true).trigger('change');
+                 if (msg[0].vehicle_chassis_code) {
+                     if (!$('#vehicle_chassis_code option[value="'+msg[0].vehicle_chassis_code+'"]').length) {
+                         $('#vehicle_chassis_code').append('<option value="'+msg[0].vehicle_chassis_code+'">'+window.editVehicleModelName+'</option>');
+                     }
+                     $('#vehicle_chassis_code').val(msg[0].vehicle_chassis_code).trigger('change');
+                 }
+                 if (msg[0].vehicle_drive) {
+                     var driveVal = msg[0].vehicle_drive;
+                     var $drive = $('#vehicle_drive');
+                     var driveMatched = false;
+                     $drive.find('option').each(function() {
+                         if (this.value.toLowerCase() === driveVal.toLowerCase()) {
+                             $drive.val(this.value).trigger('change');
+                             driveMatched = true;
+                             return false;
+                         }
+                     });
+                     if (!driveMatched) {
+                         $drive.append('<option value="' + driveVal + '">' + driveVal + '</option>');
+                         $drive.val(driveVal).trigger('change');
+                     }
+                 }
+                 if (msg[0].vehicle_grade) {
+                     var gradeVal = msg[0].vehicle_grade;
+                     var $grade = $('#vehicle_grade');
+                     var gradeMatched = false;
+                     $grade.find('option').each(function() {
+                         if (this.value.toLowerCase() === gradeVal.toLowerCase()) {
+                             $grade.val(this.value).trigger('change');
+                             gradeMatched = true;
+                             return false;
+                         }
+                     });
+                     if (!gradeMatched) {
+                         $grade.append('<option value="' + gradeVal + '">' + gradeVal + '</option>');
+                         $grade.val(gradeVal).trigger('change');
+                     }
+                 }
                 
                 $("#vehicle_engine_no").val(msg[0].vehicle_engine_no)
                 $("#vehicle_engine_type").val(msg[0].vehicle_engine_type)
@@ -2648,43 +2694,30 @@ function loadVehicle(load_vehicle_idMain, action) {
                 $("#vehicle_km").val(msg[0].vehicle_km)
                 $("#vehicle_km2").val(msg[0].vehicle_km2)
     
-                $("#vehicle_maker").trigger('change');
                 $("#vehicle_cc").val(msg[0].vehicle_cc).trigger('change');
-                
-                setTimeout(function(){ $('#vehicle_brand').append(`<option selected value="${msg[0].vehicle_brand}"> 
-                                      ${msg[0].brand_name}
-                                  </option>`); 
-                $("#vehicle_brand").trigger('change');
-                  setTimeout(function(){ 
-                    $('#vehicle_chassis_code').append(`<option selected value="${msg[0].vehicle_chassis_code}"> 
-                                      ${msg[0].model_name}
-                                  </option>`);
+
                 $("#vehicle_width").val(msg[0].vehicle_width)
                 $("#vehicle_length").val(msg[0].vehicle_length)
                 $("#vehicle_height").val(msg[0].vehicle_height)
                 $("#vehicle_m3").val(msg[0].vehicle_m3)
-          
-                      }, 2000); 
-                    }, 4000);
-              
                          
-                $('#vehicle_option option[value="'+msg[0].vehicle_option+'"]').prop("selected", true).trigger('change');
-                $('#vehicle_door option[value="'+msg[0].vehicle_door+'"]').prop("selected", true).trigger('change');
+                $('#vehicle_option').val(msg[0].vehicle_option).trigger('change');
+                $('#vehicle_door').val(msg[0].vehicle_door).trigger('change');
                 $("#vehicle_seat").val(msg[0].vehicle_seat)
-                $('#vehicle_seat option[value="'+msg[0].vehicle_seat+'"]').prop("selected", true).trigger('change');
+                $('#vehicle_seat').val(msg[0].vehicle_seat).trigger('change');
                 $("#vehicle_color").val(msg[0].vehicle_color)
                 $("#vehicle_color_name").val(msg[0].vehicle_color_name)
-                $('#vehicle_color_name option[value="'+msg[0].vehicle_color_name+'"]').prop("selected", true).trigger('change');
+                $('#vehicle_color_name').val(msg[0].vehicle_color_name).trigger('change');
                 $("#vehicle_interior_color").val(msg[0].vehicle_interior_color)
 
                 $("#vehicle_note").val(msg[0].vehicle_note)
                 $("#vehicle_url").val(msg[0].vehicle_url)
                 $("#vehicle_est_price").val(msg[0].vehicle_est_price)
-                $('#vehicle_type option[value="'+msg[0].vehicle_type+'"]').prop("selected", true).trigger('change');
-                $('#country_id option[value="'+msg[0].country_id+'"]').prop("selected", true).trigger('change');
+                $('#vehicle_type').val(msg[0].vehicle_type).trigger('change');
+                $('#country_id').val(msg[0].country_id).trigger('change');
                 $("#vehicle_mode").val(msg[0].vehicle_type).trigger('change');		$("#vehicle_auctionhouse").val(msg[0].vehicle_auctionhouse);		$("#buying_date").val(msg[0].buying_date);		$("#buying_price").val(msg[0].buying_price);		$("#lot_number").val(msg[0].lot_number);
 
-                $('#vehicle_discount option[value="'+msg[0].vehicle_discount+'"]').prop("selected", true).trigger('change');
+                $('#vehicle_discount').val(msg[0].vehicle_discount);
                 $("#vehicle_mode").val(msg[0].vehicle_mode).trigger('change');
             }
         }    
@@ -2715,6 +2748,9 @@ function loadAuction(load_auction_idMain, action) {
                 });
                 $("#auction_idTable").empty().append(auction_infoTable);
             }else if (action == 'edit') {
+                if (!msg || !msg.length) {
+                    return;
+                }
 
                 AuctionInfNow(msg[0].auction_id);
                 $('#auction_loading_point option[value="'+msg[0].auction_loading_point+'"]').prop("selected", true).trigger('change');
@@ -2909,6 +2945,9 @@ console.log(user_role);
                 });
                 $("#reservation_idTable").empty().append(auction_infoTable);
             }else if (action == 'edit') {
+                if (!msg || !msg.length) {
+                    return;
+                }
                 $('#reservation_id').val(msg[0].reservation_id);
                 $('#res_vehicle_id').val(msg[0].vehicle_id);
                 $('#reservation_by').val(msg[0].reservation_by);
@@ -2979,6 +3018,9 @@ function loadRicksu(load_ricksu_idMain, action) {
                 });
                 $("#ricksu_idTable").empty().append(auction_infoTable);
             }else if (action == 'edit') {
+                if (!msg || !msg.length) {
+                    return;
+                }
                 
                
                // var vehicle_idMain=$('.vehicle_idMain').val();
@@ -3056,6 +3098,9 @@ function loadExport(load_export_idMain, action) {
                 });
                 $("#export_idTable").empty().append(export_infoTable);
             }else if (action == 'edit') {
+                if (!msg || !msg.length) {
+                    return;
+                }
                 console.log(msg[0]);
                 $("#export_info_id").val(msg[0].export_info_id);
                 $("#export_info_mashou").val(msg[0].export_info_mashou);
@@ -3128,6 +3173,9 @@ function loadConsignee(load_consignee_idMain, action) {
                 });
                 $("#consignee_idTable").empty().append(consignee_infoTable);
             }else if (action == 'edit') {
+                if (!msg || !msg.length) {
+                    return;
+                }
            
                 $("#consignee_info_id").val(msg[0].consignee_info_id);
            
@@ -3178,6 +3226,9 @@ function loadInspection(load_inspection_idMain, action) {
                 });
                 $("#inspection_idTable").empty().append(inspection_infoTable);
             }else if (action == 'edit') {
+                if (!msg || !msg.length) {
+                    return;
+                }
                 
 
                 $('#inspection_info_for option[value="'+msg[0].inspection_info_for+'"]').prop("selected", true).trigger('change');
@@ -3244,6 +3295,9 @@ function loadShipment(load_shipment_idMain, action) {
                 });
                 $("#shipment_idTable").empty().append(shipment_infoTable);
             }else if (action == 'edit') {
+                if (!msg || !msg.length) {
+                    return;
+                }
                 $('#shipment_id').val(msg[0].shipment_id);
                 $('#shipment_company option[value="'+msg[0].shipment_company+'"]').prop("selected", true).trigger('change');
                 $('#shipper option[value="'+msg[0].shipper_id+'"]').prop("selected", true).trigger('change');
@@ -3349,6 +3403,9 @@ function loadAirmail(load_airmail_idMain, action) {
                 });
                 $("#airmail_idTable").empty().append(airmail_infoTable);
             }else if (action == 'edit') {
+                if (!msg || !msg.length) {
+                    return;
+                }
                 $("#airmail_id").val(msg[0].airmail_id)
                 if (msg[0].airmail_consignee==0) {
                     $("#airmail_consignee_name").val(msg[0].airmail_consignee_name)
@@ -4997,12 +5054,14 @@ function loadBrands(makers) {
             success:function(response) {
                 var model = "<option>~~SELECT~~</option>";
                 $.each(response, function (index, value) {
-                    model += '<option class="text-capitalize" value="'+value['brand_id']+'">'+value['brand_name']+'</option>';
+                    if (value['brand_name']) {
+                        model += '<option class="text-capitalize" value="'+value['brand_id']+'">'+value['brand_name']+'</option>';
+                    }
                 });
                 if (window.editVehicleBrandId && !response.some(function (brand) {
                     return String(brand.brand_id) === String(window.editVehicleBrandId);
                 })) {
-                    model += '<option class="text-capitalize" value="'+window.editVehicleBrandId+'">'+window.editVehicleBrandName+'</option>';
+                    model += '<option class="text-capitalize" value="'+window.editVehicleBrandId+'">'+(window.editVehicleBrandName || 'Unknown')+'</option>';
                 }
                 var vehicle_idMain = $("#vehicle_idMain").val();
                 $("#vehicle_brand").empty().append(model);
@@ -5040,9 +5099,21 @@ function loadChassis(vehicle_brand) {
             console.log(response)
             var fucked = "<option>~~SELECT~~</option>";
             $.each(response, function (index, value) {
-                fucked += '<option class="text-capitalize" style="text-transform: uppercase!important;" value="'+value['model_id']+'">'+value['model_name']+'</option>';
+                if (value['model_name']) {
+                    fucked += '<option class="text-capitalize" style="text-transform: uppercase!important;" value="'+value['model_id']+'">'+value['model_name']+'</option>';
+                }
             });
             $("#vehicle_chassis_code").empty().append(fucked);
+            if (window.editVehicleModelId) {
+                if (!response.some(function (model) {
+                    return String(model.model_id) === String(window.editVehicleModelId);
+                })) {
+                    $("#vehicle_chassis_code").append('<option value="' + window.editVehicleModelId + '">' + (window.editVehicleModelName || 'Unknown') + '</option>');
+                }
+                $("#vehicle_chassis_code").val(window.editVehicleModelId).trigger('change');
+                window.editVehicleModelId = null;
+                window.editVehicleModelName = null;
+            }
         }
     });
         $.ajax({

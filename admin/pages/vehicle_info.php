@@ -360,10 +360,21 @@ require_once("custom/vendor/autoload.php");
 							success: function (response) {
 								var model = "<option>~~SELECT~~</option>";
 								$.each(response, function (index, value) {
-									model += '<option class="text-capitalize" value="' + value['brand_id'] + '">' + value['brand_name'] + '</option>';
+									if (value['brand_name']) {
+										model += '<option class="text-capitalize" value="' + value['brand_id'] + '">' + value['brand_name'] + '</option>';
+									}
 								});
-								var vehicle_idMain = $("#vehicle_idMain").val();
+								if (window.editVehicleBrandId && !response.some(function (brand) {
+									return String(brand.brand_id) === String(window.editVehicleBrandId);
+								})) {
+									model += '<option class="text-capitalize" value="' + window.editVehicleBrandId + '">' + (window.editVehicleBrandName || 'Unknown') + '</option>';
+								}
 								$("#vehicle_brand").empty().append(model);
+								if (window.editVehicleBrandId) {
+									$("#vehicle_brand").val(window.editVehicleBrandId).trigger('change');
+									window.editVehicleBrandId = null;
+									window.editVehicleBrandName = null;
+								}
 							}
 						});
 
@@ -378,9 +389,21 @@ require_once("custom/vendor/autoload.php");
 							success: function (response) {
 								var fucked = "<option>~~SELECT~~</option>";
 								$.each(response, function (index, value) {
-									fucked += '<option class="text-capitalize" style="text-transform: uppercase!important;" value="' + value['model_id'] + '">' + value['model_name'] + '</option>';
+									if (value['model_name']) {
+										fucked += '<option class="text-capitalize" style="text-transform: uppercase!important;" value="' + value['model_id'] + '">' + value['model_name'] + '</option>';
+									}
 								});
 								$("#vehicle_chassis_code").empty().append(fucked);
+								if (window.editVehicleModelId) {
+									if (!response.some(function (model) {
+										return String(model.model_id) === String(window.editVehicleModelId);
+									})) {
+										$("#vehicle_chassis_code").append('<option value="' + window.editVehicleModelId + '">' + (window.editVehicleModelName || 'Unknown') + '</option>');
+									}
+									$("#vehicle_chassis_code").val(window.editVehicleModelId).trigger('change');
+									window.editVehicleModelId = null;
+									window.editVehicleModelName = null;
+								}
 							}
 						});
 					}
@@ -1059,7 +1082,7 @@ require_once("custom/vendor/autoload.php");
 
 
 
-<div class="feature_form">
+<div class="feature_form" style="display: none;">
 
 	<form action="php_action/custom_action.php" method="POST" role="form" id="formData15">
 

@@ -334,8 +334,6 @@ span.step {
 
                       @$stock = fetchRecord($dbc,"vehicle_info","vehicle_id",$_GET['vehicle_id']);
                       @$models = fetchRecord($dbc,"models","model_id",$stock['vehicle_chassis_code']);
-                    $vehicle_expense = fetchRecord($dbc,"vehicle_expense","vehicle_info_id",$stock['vehicle_id']);
-                      print_r($vehicle_expense);
 
                       
 
@@ -357,7 +355,8 @@ span.step {
   
                       @$inspection_info=fetchRecord($dbc,"inspection_info","vehicle_id",$stock['vehicle_id'])['inspection_info_id'];
 
-                      @$shipment=fetchRecord($dbc,"shipment","vehicle_id",$stock['vehicle_id'])['shipment_id'];
+                      @$get_shipment = fetchRecord($dbc,"shipment","vehicle_id",$stock['vehicle_id']);
+                      @$shipment = @$get_shipment['shipment_id'];
 
                       // @$airmail=fetchRecord($dbc,"airmail","vehicle_id",$stock['vehicle_id'])['airmail_id'];
                   
@@ -800,10 +799,21 @@ function loadBrands(makers) {
             success:function(response) {
                 var model = "<option>~~SELECT~~</option>";
                 $.each(response, function (index, value) {
-                    model += '<option class="text-capitalize" value="'+value['brand_id']+'">'+value['brand_name']+'</option>';
+                    if (value['brand_name']) {
+                        model += '<option class="text-capitalize" value="'+value['brand_id']+'">'+value['brand_name']+'</option>';
+                    }
                 });
-                var vehicle_idMain = $("#vehicle_idMain").val();
+                if (window.editVehicleBrandId && !response.some(function (brand) {
+                    return String(brand.brand_id) === String(window.editVehicleBrandId);
+                })) {
+                    model += '<option class="text-capitalize" value="'+window.editVehicleBrandId+'">'+(window.editVehicleBrandName || 'Unknown')+'</option>';
+                }
                 $("#vehicle_brand").empty().append(model);
+                if (window.editVehicleBrandId) {
+                    $("#vehicle_brand").val(window.editVehicleBrandId).trigger('change');
+                    window.editVehicleBrandId = null;
+                    window.editVehicleBrandName = null;
+                }
             }
         });
        
