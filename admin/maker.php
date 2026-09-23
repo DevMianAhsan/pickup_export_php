@@ -12,7 +12,7 @@ include_once "inc/code.php";
 				<div class="card">
 					<div class="card-header card-bg" align="center"><h4>Create Maker</h4></div>
 						<div class="card-body" >
-							<form action="php_action/custom_action.php" method="POST" role="form" id="formData">
+							<form action="php_action/custom_action.php" method="POST" enctype="multipart/form-data" role="form" id="formData" onsubmit="return validateMakerImage();">
 								<div class="msg"></div>
 								<div class="form-group">
 									<label for="">Maker</label>
@@ -21,14 +21,14 @@ include_once "inc/code.php";
 								</div>
 								<div class="form-group">
 									<label for="">Maker Image</label>
-									<input type="file" class="form-control" id="maker_img" name="maker_img">
+									<input type="file" class="form-control" id="maker_img" name="maker_img" accept="image/*">
 									<img id="maker_img_preview" src="" style="max-width:150px;margin-top:8px;display:none;">
 								</div>
 								<div class="form-group">
 									<label for="">Maker Status</label>
 									<select class="form-control select2" id="maker_sts" name="maker_sts"> 
 										<option value="">~~SELECT~~</option>
-										<option value="1">Active</option>
+										<option value="1" selected>Active</option>
 										<option value="0">Inactive</option>
 									</select>
 								</div>
@@ -36,6 +36,27 @@ include_once "inc/code.php";
 								<button type="submit" class="btn btn-primary" class="saveData">Save</button>
 								<?php endif ?>
 							</form>
+							<script>
+								function validateMakerImage() {
+									var imageInput = document.getElementById('maker_img');
+									var imagePreview = document.getElementById('maker_img_preview');
+									var hasSelectedImage = imageInput.files && imageInput.files.length > 0;
+									var hasPreviewImage = imagePreview.src && imagePreview.style.display !== 'none';
+
+									if (!hasSelectedImage && !hasPreviewImage) {
+										imageInput.setCustomValidity('Please select a maker image.');
+										imageInput.reportValidity();
+										return false;
+									}
+
+									imageInput.setCustomValidity('');
+									return true;
+								}
+
+								document.getElementById('maker_img').addEventListener('change', function () {
+									this.setCustomValidity('');
+								});
+							</script>
 							</div>
 						</div>
 					</div>

@@ -16,14 +16,14 @@ include_once "inc/code.php";
 								<div class="msg"></div>
 								<div class="form-group">
 									<label for="">Interior Grade</label>
-									<input type="text" class="form-control" id="interior_grade_name" name="interior_grade_name"> 
+									<input type="text" class="form-control" id="interior_grade_name" name="interior_grade_name" required> 
 									<input type="text" class="form-control d-none" id="interior_grade_id" name="interior_grade_id"> 
 								</div>
 								<div class="form-group">
 									<label for="">Interior Grade Status</label>
 									<select class="form-control select2" id="interior_grade_sts" name="interior_grade_sts"> 
 										<option value="">~~SELECT~~</option>
-										<option value="1">Active</option>
+										<option value="1" selected>Active</option>
 										<option value="0">Inactive</option>
 									</select>
 								</div>

@@ -15,12 +15,12 @@ include_once "inc/code.php";
 								<div class="msg"></div>
 								<div class="form-group">
 									<label for="">Brand</label>
-									<input type="text" class="form-control" id="brand_name" name="brand_name"> 
+									<input type="text" class="form-control" id="brand_name" name="brand_name" required> 
 									<input type="text" class="form-control d-none" id="brand_id" name="brand_id"> 
 								</div>
 								<div class="form-group">
 									<label for="">Maker Name</label>
-									<select class="form-control select2" id="maker_id" name="maker_id"> 
+									<select class="form-control select2" id="maker_id" name="maker_id" required> 
 										<option value="">~~SELECT~~</option>
 										<?php 
 										$q = get($dbc,"maker");
@@ -37,7 +37,7 @@ include_once "inc/code.php";
 									<label for="">Brand Status</label>
 									<select class="form-control select2" id="brand_status" name="brand_status"> 
 										<option value="">~~SELECT~~</option>
-										<option value="1">Active</option>
+										<option value="1" selected>Active</option>
 										<option value="0">Inactive</option>
 									</select>
 								</div>

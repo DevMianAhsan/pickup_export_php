@@ -3901,6 +3901,11 @@ if (isset($_POST['consignee_name_sep'])) {
 	if (isset($_POST['vehicle_stock_id'])) {
 
 
+		$vehicleWeight = filter_var($_POST['vehicle_weight'] ?? '', FILTER_VALIDATE_INT);
+		if ($vehicleWeight === false || $vehicleWeight < 1000 || $vehicleWeight > 50000) {
+			echo 'Vehicle weight must be between 1000 and 50000 kg.';
+			exit();
+		}
 
 if (get($dbc,"color_code  WHERE color_name ='".$_POST['vehicle_color_name']."'  AND color_maker = '".$_POST['vehicle_maker']."' ")) {	
 

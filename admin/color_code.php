@@ -38,7 +38,7 @@ include_once "inc/code.php";
 								<div class="form-group">
 									<label for="">Color Code</label>
 							     <div class="input-group my-colorpicker2">
-                   <input type="text" class="form-control" id="color_code_name" name="color_code_name">
+                   <input type="text" class="form-control" id="color_code_name" name="color_code_name" required>
 
                     <div class="input-group-append">
                       <span class="input-group-text"><i class="fa fa-square"></i></span>
@@ -49,7 +49,7 @@ include_once "inc/code.php";
 									<label for="">Color Code Status</label>
 									<select class="form-control select2" id="color_code_sts" name="color_code_sts"> 
 										<option value="">~~SELECT~~</option>
-										<option value="1">Active</option>
+										<option value="1" selected>Active</option>
 										<option value="0">Inactive</option>
 									</select>
 								</div>

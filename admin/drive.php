@@ -17,14 +17,14 @@ include_once "inc/code.php";
 								<div class="msg"></div>
 								<div class="form-group">
 									<label for="">Drive</label>
-									<input type="text" class="form-control" id="drive_name" name="drive_name"> 
+									<input type="text" class="form-control" id="drive_name" name="drive_name" required> 
 									<input type="text" class="form-control d-none" id="drive_id" name="drive_id"> 
 								</div>
 								<div class="form-group">
 									<label for="">Drive Status</label>
 									<select class="form-control select2" id="drive_sts" name="drive_sts"> 
 										<option value="">~~SELECT~~</option>
-										<option value="1">Active</option>
+										<option value="1" selected>Active</option>
 										<option value="0">Inactive</option>
 									</select>
 								</div>

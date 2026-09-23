@@ -787,6 +787,7 @@ require_once("custom/vendor/autoload.php");
 					<label for="">Total Weight (kg)</label>
 
 					<input type="number" name="vehicle_weight" id="vehicle_weight" required="required"
+						min="1000" max="50000"
 						class="form-control form-control-sm">
 
 				</div><!-- form group -->

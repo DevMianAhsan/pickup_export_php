@@ -16,14 +16,14 @@ include_once "inc/code.php";
 								<div class="msg"></div>
 								<div class="form-group">
 									<label for="">Fuel Type</label>
-									<input type="text" class="form-control" id="fuel_name" name="fuel_name"> 
+									<input type="text" class="form-control" id="fuel_name" name="fuel_name" required> 
 									<input type="text" class="form-control d-none" id="fuel_id" name="fuel_id"> 
 								</div>
 								<div class="form-group">
 									<label for="">Fuel Type Status</label>
 									<select class="form-control select2" id="fuel_sts" name="fuel_sts"> 
 										<option value="">~~SELECT~~</option>
-										<option value="1">Active</option>
+										<option value="1" selected>Active</option>
 										<option value="0">Inactive</option>
 									</select>
 								</div>

@@ -1090,6 +1090,15 @@ $("#save_vehicle_docs").on('click',function() {
                     }, 4000);
 });
     $("#formData").on('submit',function(e) {
+        if (typeof validateMakerImage === 'function' && !validateMakerImage()) {
+            return false;
+        }
+        if (typeof validateBodyTypeImage === 'function' && !validateBodyTypeImage()) {
+            return false;
+        }
+        if (typeof validateMachineTypeImage === 'function' && !validateMachineTypeImage()) {
+            return false;
+        }
         e.preventDefault();
         var form = $('#formData');
         $.ajax({

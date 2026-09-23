@@ -15,7 +15,7 @@ include_once "inc/code.php";
 								<div class="msg"></div>
 								<div class="form-group">
 									<label for="">Category</label>
-									<select class="form-control select2" id="vehicle_feature_category" name="vehicle_feature_category"> 
+									<select class="form-control select2" id="vehicle_feature_category" name="vehicle_feature_category" required> 
 										<option value="">~~SELECT~~</option>
 										<option value="exterior">Exterior Options</option>
 										<option value="interior">Interior Options</option>
@@ -28,7 +28,7 @@ include_once "inc/code.php";
 								</div>
 								<div class="form-group">
 									<label for="">Feature Name</label>
-									<input type="text" class="form-control" id="vehicle_feature_name" name="vehicle_feature_name"> 
+									<input type="text" class="form-control" id="vehicle_feature_name" name="vehicle_feature_name" required> 
 								</div>						
 <?php if (@$userPrivileges['nav_add']==1 || $fetchedUserRole=="admin"): ?>
 								<button type="submit" class="btn btn-primary" class="saveData">Save</button>

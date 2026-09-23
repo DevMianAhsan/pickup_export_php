@@ -11,22 +11,22 @@ include_once "inc/code.php";
 						    <b class="h4 text-center card-text">Machine Type</b>
 					</div>
 						<div class="card-body">
-							<form action="php_action/custom_action.php" method="POST" enctype="multipart/form-data" role="form" id="formData">
+							<form action="php_action/custom_action.php" method="POST" enctype="multipart/form-data" role="form" id="formData" onsubmit="return validateMachineTypeImage();">
 								<div class="form-group">
 									<label for="">Machine Type</label>
-									<input type="text" class="form-control" id="machine_type_name" name="machine_type_name"> 
+									<input type="text" class="form-control" id="machine_type_name" name="machine_type_name" required> 
 									<input type="text" class="form-control d-none" id="machine_type_id" name="machine_type_id"> 
 								</div>
 								<div class="form-group">
 									<label for="">Machine Type Image</label>
-									<input type="file" class="form-control" id="machine_type_img" name="machine_type_img">
+									<input type="file" class="form-control" id="machine_type_img" name="machine_type_img" accept="image/*">
 									<img id="machine_type_img_preview" src="" style="max-width:150px;margin-top:8px;display:none;">
 								</div>
 								<div class="form-group">
 									<label for="">Machine Type Status</label>
 									<select class="form-control select2" id="machine_type_sts" name="machine_type_sts"> 
 										<option value="">~~SELECT~~</option>
-										<option value="1">Active</option>
+										<option value="1" selected>Active</option>
 										<option value="0">Inactive</option>
 									</select>
 								</div>
@@ -34,6 +34,27 @@ include_once "inc/code.php";
 								<button type="submit" class="btn btn-primary" class="saveData">Save</button>
 								<?php endif ?>
 							</form>
+							<script>
+								function validateMachineTypeImage() {
+									var imageInput = document.getElementById('machine_type_img');
+									var imagePreview = document.getElementById('machine_type_img_preview');
+									var hasSelectedImage = imageInput.files && imageInput.files.length > 0;
+									var hasPreviewImage = imagePreview.src && imagePreview.style.display !== 'none';
+
+									if (!hasSelectedImage && !hasPreviewImage) {
+										imageInput.setCustomValidity('Please select a machine type image.');
+										imageInput.reportValidity();
+										return false;
+									}
+
+									imageInput.setCustomValidity('');
+									return true;
+								}
+
+								document.getElementById('machine_type_img').addEventListener('change', function () {
+									this.setCustomValidity('');
+								});
+							</script>
 							</div>
 						</div>
 					</div>

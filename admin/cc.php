@@ -12,14 +12,14 @@ include_once "inc/code.php";
 								<div class="msg"></div>
 								<div class="form-group">
 									<label for="">CC</label>
-									<input type="text" class="form-control" id="cc_name" name="cc_name"> 
+									<input type="text" class="form-control" id="cc_name" name="cc_name" required> 
 									<input type="text" class="form-control d-none" id="cc_id" name="cc_id"> 
 								</div>
 								<div class="form-group">
 									<label for="">CC Status</label>
 									<select class="form-control select2" id="cc_sts" name="cc_sts"> 
 										<option value="">~~SELECT~~</option>
-										<option value="1">Active</option>
+										<option value="1" selected>Active</option>
 										<option value="0">Inactive</option>
 									</select>
 								</div>
