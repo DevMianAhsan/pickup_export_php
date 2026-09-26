@@ -34,9 +34,9 @@ require_once("custom/vendor/autoload.php");
 
 	@$id = $_GET['vehicle_id'];
 
-	$q = mysqli_query($dbc, "SELECT vehicle_id FROM vehicle_info ORDER BY vehicle_id DESC");
-
-	$abc = mysqli_num_rows($q) + 1;
+	$is_edit = (!empty($id) && !empty($stock['vehicle_stock_id']));
+	$next_num = function_exists('getNextVehicleStockNumber') ? getNextVehicleStockNumber($dbc) : 1;
+	$display_stock_id = $is_edit ? $stock['vehicle_stock_id'] : sprintf("%03d", $next_num);
 
 	?>
 
@@ -54,10 +54,10 @@ require_once("custom/vendor/autoload.php");
 
 					<div class="row">
 
-						<div class="col-sm-6">
+						<div class="col-sm-6 <?= $is_edit ? 'd-none' : '' ?>">
 
 							<select tabindex="1" name="vehicle_stock_pre" id="vehicle_stock_pre" class="form-control select2"
-								required>
+								<?= $is_edit ? '' : 'required' ?>>
 								<option value="TPE-<?= date('y') ?>">TPE-<?= date('y') ?></option>
 								<option value="JPE-<?= date('y') ?>">JPE-<?= date('y') ?></option>
 								<option value="SPE-<?= date('y') ?>">SPE-<?= date('y') ?></option>
@@ -68,9 +68,9 @@ require_once("custom/vendor/autoload.php");
 
 						</div><!-- col -->
 
-						<div class="col-sm-6 customStockIDEDIT">
+						<div class="<?= $is_edit ? 'col-sm-12' : 'col-sm-6' ?> customStockIDEDIT">
 
-							<input type="text" value="<?= sprintf("%03d", $abc) ?>" readonly name="vehicle_stock_id"
+							<input type="text" value="<?= htmlspecialchars($display_stock_id) ?>" readonly name="vehicle_stock_id"
 								id="vehicle_stock_id" class="form-control form-control-sm">
 
 						</div><!-- col -->

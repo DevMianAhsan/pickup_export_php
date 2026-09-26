@@ -16,7 +16,7 @@ include_once "inc/code.php";
 								<div class="msg"></div>
 								<div class="form-group">
 									<label for="">Maker</label>
-									<input type="text" class="form-control" id="maker_name" name="maker_name"> 
+									<input type="text" class="form-control" id="maker_name" name="maker_name" required> 
 									<input type="text" class="form-control d-none" id="maker_id" name="maker_id"> 
 								</div>
 								<div class="form-group">

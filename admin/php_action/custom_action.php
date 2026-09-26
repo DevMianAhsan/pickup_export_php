@@ -4200,14 +4200,20 @@ if (get($dbc,"color_code  WHERE color_name ='".$_POST['vehicle_color_name']."'  
 
 
 
+			$stock_prefix = !empty($_POST['vehicle_stock_pre']) ? $_POST['vehicle_stock_pre'] : ('TPE-' . date('y'));
+			$safe_stock_id = generateSafeVehicleStockId($dbc, $stock_prefix);
+			$data['vehicle_stock_id'] = $safe_stock_id;
+
 			if (insert_data($dbc, "vehicle_info", $data)) {
 
-				echo $last_id = mysqli_insert_id($dbc);
+				$last_id = mysqli_insert_id($dbc);
 				$stock_id=[
-					'vehicle_stock_id' => $_POST['vehicle_stock_pre'].$_POST['vehicle_stock_id'],
+					'vehicle_stock_id' => $safe_stock_id,
 					
 				];
 				update_data($dbc, "vehicle_info", $stock_id, "vehicle_id ", $last_id);
+
+				echo $last_id;
 
 		
 				
@@ -4240,18 +4246,20 @@ if (get($dbc,"color_code  WHERE color_name ='".$_POST['vehicle_color_name']."'  
 
 		}else{
 
-
-
 			$q = mysqli_query($dbc,"INSERT INTO package (pack_name, pack_sts)  VALUES ('$_POST[vehicle_package]', '1')");
 
-
+			// Fetch existing vehicle to ensure Stock ID ALWAYS stays identical to previous value
+			$existing_vehicle = fetchRecord($dbc, "vehicle_info", "vehicle_id", $_POST['vehicle_id']);
+			$existing_stock_id = trim($existing_vehicle['vehicle_stock_id'] ?? '');
 
 			if (update_data($dbc, "vehicle_info", $data, "vehicle_id ", $_POST['vehicle_id'])) {
 
-				$stock_id=[
-					'vehicle_stock_id' =>$_POST['vehicle_stock_id'],
-				];
-				update_data($dbc, "vehicle_info", $stock_id, "vehicle_id ", $_POST['vehicle_id']);
+				// Only if vehicle previously had NO stock ID at all, assign a safe one; otherwise leave previous stock ID untouched
+				if (empty($existing_stock_id)) {
+					$stock_prefix = !empty($_POST['vehicle_stock_pre']) ? $_POST['vehicle_stock_pre'] : ('TPE-' . date('y'));
+					$safe_stock_id = generateSafeVehicleStockId($dbc, $stock_prefix);
+					update_data($dbc, "vehicle_info", ['vehicle_stock_id' => $safe_stock_id], "vehicle_id ", $_POST['vehicle_id']);
+				}
 
 				echo  $_POST['vehicle_id'];
 				
