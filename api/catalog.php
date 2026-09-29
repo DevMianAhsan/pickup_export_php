@@ -1455,6 +1455,30 @@ if (strtolower($resource) === 'search') {
             $addMachine("machine_stock_id = '" . $escape($params['stockid']) . "'");
         }
     }
+    // Support year aliases: from_year, to_year, start_year, end_year, year, or 4-digit from_date/to_date
+    if (empty($params['min_year']) || $params['min_year'] === 'null') {
+        if (!empty($params['from_year']) && $params['from_year'] !== 'null') {
+            $params['min_year'] = $params['from_year'];
+        } elseif (!empty($params['start_year']) && $params['start_year'] !== 'null') {
+            $params['min_year'] = $params['start_year'];
+        } elseif (!empty($params['from_date']) && preg_match('/^\d{4}$/', trim((string) $params['from_date']))) {
+            $params['min_year'] = trim((string) $params['from_date']);
+        } elseif (!empty($params['year']) && $params['year'] !== 'null') {
+            $params['min_year'] = $params['year'];
+        }
+    }
+    if (empty($params['max_year']) || $params['max_year'] === 'null') {
+        if (!empty($params['to_year']) && $params['to_year'] !== 'null') {
+            $params['max_year'] = $params['to_year'];
+        } elseif (!empty($params['end_year']) && $params['end_year'] !== 'null') {
+            $params['max_year'] = $params['end_year'];
+        } elseif (!empty($params['to_date']) && preg_match('/^\d{4}$/', trim((string) $params['to_date']))) {
+            $params['max_year'] = trim((string) $params['to_date']);
+        } elseif (!empty($params['year']) && $params['year'] !== 'null') {
+            $params['max_year'] = $params['year'];
+        }
+    }
+
     if (!empty($params['min_year']) && $params['min_year'] !== 'null' && !empty($params['max_year']) && $params['max_year'] !== 'null') {
         if ($isCar || $useBoth) {
             $addVehicle('vehicle_manu_year BETWEEN ' . (int) $params['min_year'] . ' AND ' . (int) $params['max_year']);
@@ -1503,16 +1527,22 @@ if (strtolower($resource) === 'search') {
             $addVehicle('vehicle_km <= ' . (int) $params['to_km']);
         }
     }
-    if (!empty($params['from_date']) && !empty($params['to_date'])) {
-        $fromDate = $escape($params['from_date']);
-        $toDate = $escape($params['to_date']);
-        $addVehicle("(buying_date IS NULL OR buying_date = '' OR buying_date BETWEEN '$fromDate' AND '$toDate')");
-    } elseif (!empty($params['from_date'])) {
-        $fromDate = $escape($params['from_date']);
-        $addVehicle("(buying_date IS NULL OR buying_date = '' OR buying_date >= '$fromDate')");
-    } elseif (!empty($params['to_date'])) {
-        $toDate = $escape($params['to_date']);
-        $addVehicle("(buying_date IS NULL OR buying_date = '' OR buying_date <= '$toDate')");
+    // Only apply buying_date filter if non-year dates (e.g. YYYY-MM-DD) are passed
+    $fromRaw = isset($params['from_date']) ? trim((string) $params['from_date']) : '';
+    $toRaw = isset($params['to_date']) ? trim((string) $params['to_date']) : '';
+    $isFromYear = preg_match('/^\d{4}$/', $fromRaw);
+    $isToYear = preg_match('/^\d{4}$/', $toRaw);
+
+    if ($fromRaw !== '' && $fromRaw !== 'null' && $toRaw !== '' && $toRaw !== 'null' && (!$isFromYear || !$isToYear)) {
+        $fromDate = $escape($fromRaw);
+        $toDate = $escape($toRaw);
+        $addVehicle("(buying_date IS NOT NULL AND buying_date != '' AND buying_date BETWEEN '$fromDate' AND '$toDate')");
+    } elseif ($fromRaw !== '' && $fromRaw !== 'null' && !$isFromYear) {
+        $fromDate = $escape($fromRaw);
+        $addVehicle("(buying_date IS NOT NULL AND buying_date != '' AND buying_date >= '$fromDate')");
+    } elseif ($toRaw !== '' && $toRaw !== 'null' && !$isToYear) {
+        $toDate = $escape($toRaw);
+        $addVehicle("(buying_date IS NOT NULL AND buying_date != '' AND buying_date <= '$toDate')");
     }
 
     $featureNames = [];
