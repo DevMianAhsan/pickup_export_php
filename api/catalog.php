@@ -385,15 +385,33 @@ if ($resource === 'colors' || $resource === 'color') {
     requireApiToken();
 
     $items = cache_remember('colors', 60, function () use ($dbc) {
-        $query = "SELECT cc.color_code_id, cc.color_name, cc.color_code_name_code, cc.color_code_sts, ";
-        $query .= "((SELECT COUNT(*) FROM vehicle_info v WHERE (v.vehicle_color_name = cc.color_name OR v.vehicle_color = cc.color_name) AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) + ";
-        $query .= "(SELECT COUNT(*) FROM machines mch WHERE mch.machine_color = cc.color_name AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS item_count ";
-        $query .= "FROM color_code cc";
-        $query .= " WHERE cc.color_code_sts = 1";
-        $query .= " HAVING item_count > 0";
-        $query .= " ORDER BY cc.color_name ASC";
+        $query = "SELECT  
+                    cc.color_code_id, 
+                    cc.color_name, 
+                    cc.color_code_name_code, 
+                    cc.color_code_sts, 
+                    (
+                        (SELECT COUNT(*)  
+                         FROM vehicle_info v  
+                         WHERE v.vehicle_color_name = cc.color_name
+                         AND (v.vehicle_sale_stts IS NULL 
+                              OR v.vehicle_sale_stts != 'sold')) 
+                        + 
+                        (SELECT COUNT(*)  
+                         FROM machines mch  
+                         WHERE mch.machine_color = cc.color_name  
+                         AND mch.machine_sts = 1 
+                         AND (mch.machine_sale_stts IS NULL 
+                              OR mch.machine_sale_stts != 'sold'))
+                    ) AS item_count 
+                  FROM color_code cc 
+                  WHERE cc.color_code_sts = 1 
+                  GROUP BY cc.color_name 
+                  HAVING item_count > 0 
+                  ORDER BY cc.color_name ASC";
 
         $result = mysqli_query($dbc, $query);
+
         if (!$result) {
             respondJson(500, [
                 'status' => 'error',
@@ -403,13 +421,16 @@ if ($resource === 'colors' || $resource === 'color') {
         }
 
         $items = [];
+
         while ($row = mysqli_fetch_assoc($result)) {
             $items[] = [
                 'id' => (int) $row['color_code_id'],
                 'name' => $row['color_name'],
                 'code' => $row['color_code_name_code'],
+                'count' => (int) $row['item_count'],
             ];
         }
+
         return $items;
     });
 
@@ -1289,15 +1310,16 @@ if ($resource === 'download_vehicle_images' || $resource === 'download-vehicle-i
     exit;
 }
 
-if ($resource === 'search') {
+if (strtolower($resource) === 'search') {
     requireApiToken();
 
     // Normalize query string to handle malformed client requests (e.g. extra leading '?')
     $qs = $_SERVER['QUERY_STRING'] ?? '';
     $qs = ltrim($qs, '?');
     parse_str($qs, $params);
+    $params = array_change_key_case($params, CASE_LOWER);
 
-    $escape = fn($value) => mysqli_real_escape_string($dbc, trim((string) $value));
+    $escape = fn($value) => mysqli_real_escape_string($dbc, preg_replace('/\s+/', ' ', trim((string) $value, " \t\n\r\0\x0B'\"")));
     $typeParam = strtolower(trim((string) ($params['type'] ?? '')));
     $searchType = null;
     if ($typeParam === 'car' || $typeParam === '1') {
@@ -1305,12 +1327,25 @@ if ($resource === 'search') {
     } elseif ($typeParam === 'machine' || $typeParam === '2') {
         $searchType = 'machine';
     }
-    $steeringValue = null;
-    if (!empty($params['options']) && $params['options'] !== 'null' && (empty($params['steering']) || $params['steering'] === 'null')) {
-        $params['steering'] = $params['options'];
+
+    // Handle drivetrain alias: if client passes 'options' with 'wheel drive' or '4wd', route to 'driven'
+    if (!empty($params['options']) && $params['options'] !== 'null') {
+        $optClean = trim((string) $params['options'], " \t\n\r\0\x0B'\"");
+        if (preg_match('/(?:wheel\s*drive|4wd|2wd|awd)/i', $optClean)) {
+            if (empty($params['driven']) || $params['driven'] === 'null') {
+                $params['driven'] = $optClean;
+            }
+        } elseif (empty($params['steering']) || $params['steering'] === 'null') {
+            $params['steering'] = $optClean;
+        }
     }
+    if (!empty($params['drive']) && empty($params['driven'])) {
+        $params['driven'] = $params['drive'];
+    }
+
+    $steeringValue = null;
     if (!empty($params['steering']) && $params['steering'] !== 'null') {
-        $steeringValue = strtoupper(trim((string) $params['steering']));
+        $steeringValue = strtoupper(trim((string) $params['steering'], " \t\n\r\0\x0B'\""));
         if ($steeringValue === '') {
             $steeringValue = null;
         }
@@ -1365,28 +1400,30 @@ if ($resource === 'search') {
         }
     }
     if (!empty($params['fuel_type']) && $params['fuel_type'] !== 'null') {
+        $fuel = $escape($params['fuel_type']);
         if ($isCar || $useBoth) {
-            $addVehicle("vehicle_fuel = '" . $escape($params['fuel_type']) . "'");
+            $addVehicle("TRIM(vehicle_fuel) = '$fuel'");
         }
         if ($isMachine || $useBoth) {
-            $addMachine("machine_fuel = '" . $escape($params['fuel_type']) . "'");
+            $addMachine("TRIM(machine_fuel) = '$fuel'");
         }
     }
     if (!empty($params['transmission']) && $params['transmission'] !== 'null') {
+        $trans = $escape($params['transmission']);
         if ($isCar || $useBoth) {
-            $addVehicle("vehicle_transmission = '" . $escape($params['transmission']) . "'");
+            $addVehicle("TRIM(vehicle_transmission) = '$trans'");
         }
         if ($isMachine || $useBoth) {
-            $addMachine("machine_transmission = '" . $escape($params['transmission']) . "'");
+            $addMachine("TRIM(machine_transmission) = '$trans'");
         }
     }
     if (!empty($params['color']) && $params['color'] !== 'null') {
         $color = $escape($params['color']);
         if ($isCar || $useBoth) {
-            $addVehicle("(vehicle_color_name = '$color' OR vehicle_color = '$color')");
+            $addVehicle("(TRIM(vehicle_color_name) = '$color' OR TRIM(vehicle_color) = '$color')");
         }
         if ($isMachine || $useBoth) {
-            $addMachine("machine_color = '$color'");
+            $addMachine("TRIM(machine_color) = '$color'");
         }
     }
     if ($steeringValue !== null) {
@@ -1399,11 +1436,12 @@ if ($resource === 'search') {
         }
     }
     if (!empty($params['driven']) && $params['driven'] !== 'null') {
+        $driven = $escape($params['driven']);
         if ($isCar || $useBoth) {
-            $addVehicle("vehicle_drive = '" . $escape($params['driven']) . "'");
+            $addVehicle("TRIM(vehicle_drive) = '$driven'");
         }
         if ($isMachine || $useBoth) {
-            $addMachine("machine_drive = '" . $escape($params['driven']) . "'");
+            $addMachine("TRIM(machine_drive) = '$driven'");
         }
     }
     if (!empty($params['lot_number'])) {
@@ -1488,9 +1526,10 @@ if ($resource === 'search') {
         if ($featureName === '' || strtolower($featureName) === 'null') {
             continue;
         }
-        $jsonFeature = json_encode(trim($featureName));
+        $cleanFeature = trim($featureName);
+        $jsonFeatureLower = json_encode(mb_strtolower($cleanFeature));
         if ($isCar || $useBoth) {
-            $addVehicle("JSON_CONTAINS(vehicle_feature_list, '$jsonFeature')");
+            $addVehicle("JSON_CONTAINS(LOWER(COALESCE(NULLIF(vehicle_feature_list, ''), '[]')), '$jsonFeatureLower')");
         }
     }
 
@@ -1610,12 +1649,13 @@ if ($resource === 'search') {
 }
 
 // Free-text keyword search — user types anything (stock ID, keyword, etc.)
-if ($resource === 'search-text' || $resource === 'search-keyword' || $resource === 'search_free' || $resource === 'search_text') {
+if (in_array(strtolower($resource), ['search-text', 'search-keyword', 'search_free', 'search_text'], true)) {
     requireApiToken();
 
     $qs = $_SERVER['QUERY_STRING'] ?? '';
     $qs = ltrim($qs, '?');
     parse_str($qs, $params);
+    $params = array_change_key_case($params, CASE_LOWER);
 
     $q = trim((string) ($params['q'] ?? $params['query'] ?? $params['keyword'] ?? ''));
     if ($q === 'null') {
@@ -1884,12 +1924,13 @@ if ($resource === 'search-text' || $resource === 'search-keyword' || $resource =
     ]);
 }
 
-if ($resource === 'search-parts') {
+if (strtolower($resource) === 'search-parts') {
     requireApiToken();
 
     $qs = $_SERVER['QUERY_STRING'] ?? '';
     $qs = ltrim($qs, '?');
     parse_str($qs, $params);
+    $params = array_change_key_case($params, CASE_LOWER);
 
     $makerId = null;
     if (!empty($params['maker']) && $params['maker'] !== 'null' && $params['maker'] !== '0') {
