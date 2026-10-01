@@ -2637,6 +2637,12 @@ function loadVehicle(load_vehicle_idMain, action) {
                 window.editVehicleBrandName = msg[0].brand_name || 'Unknown brand';
                 window.editVehicleModelId = msg[0].vehicle_chassis_code;
                 window.editVehicleModelName = msg[0].model_name || 'Unknown model';
+                window.editVehicleDimensions = {
+                    width: msg[0].vehicle_width,
+                    length: msg[0].vehicle_length,
+                    height: msg[0].vehicle_height,
+                    m3: msg[0].vehicle_m3
+                };
                 // loadBrands(msg[0].vehicle_maker);
                 // loadChassis(msg[0].vehicle_brand);
                 $("#vehicle_stock_pre").hide();
@@ -5144,6 +5150,25 @@ function loadChassis(vehicle_brand) {
         dataType:"json",
         success:function(response) {
             console.log(response);
+            if (window.editVehicleDimensions) {
+                var editDims = window.editVehicleDimensions;
+                $("#vehicle_length").val(editDims.length);
+                $("#vehicle_width").val(editDims.width);
+                $("#vehicle_height").val(editDims.height);
+                $("#vehicle_m3").val(editDims.m3);
+                var hasDimensions = (parseFloat(editDims.length) > 0 || parseFloat(editDims.width) > 0 || parseFloat(editDims.height) > 0);
+                if (hasDimensions || response.sts == 0) {
+                    $("#vehicle_length").prop("readonly", false).prop("required", true);
+                    $("#vehicle_width").prop("readonly", false).prop("required", true);
+                    $("#vehicle_height").prop("readonly", false).prop("required", true);
+                } else if (response.sts == 1) {
+                    $("#vehicle_length").prop("readonly", true).prop("required", false);
+                    $("#vehicle_width").prop("readonly", true).prop("required", false);
+                    $("#vehicle_height").prop("readonly", true).prop("required", false);
+                }
+                window.editVehicleDimensions = null;
+                return;
+            }
             if (response.sts==1) {
                      $("#vehicle_m3").val(response.m3);
                 $("#vehicle_length").prop("readonly",true);

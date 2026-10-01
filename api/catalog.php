@@ -93,7 +93,7 @@ if ($resource === 'makers') {
         while ($row = mysqli_fetch_assoc($result)) {
             $items[] = [
                 'id' => (int) $row['maker_id'],
-                'name' => $row['maker_name'],
+                'name' => mb_strtoupper((string) $row['maker_name'], 'UTF-8'),
                 'image' => normalizeImageUrl($row['maker_img']),
                 'available_vehicle_count' => (int) $row['item_count'],
             ];
@@ -147,7 +147,7 @@ if ($resource === 'brands') {
         while ($row = mysqli_fetch_assoc($result)) {
             $items[] = [
                 'id' => (int) $row['brand_id'],
-                'name' => $row['brand_name'],
+                'name' => mb_strtoupper((string) $row['brand_name'], 'UTF-8'),
                 'maker_id' => (int) $row['maker_id'],
                 'available_vehicle_count' => (int) $row['item_count'],
             ];
@@ -184,7 +184,7 @@ if ($resource === 'fuels' || $resource === 'fuel_types') {
         while ($row = mysqli_fetch_assoc($result)) {
             $items[] = [
                 'id' => (int) $row['fuel_id'],
-                'name' => $row['fuel_name'],
+                'name' => mb_strtoupper((string) $row['fuel_name'], 'UTF-8'),
             ];
         }
         return $items;
@@ -221,7 +221,7 @@ if ($resource === 'machine-types' || $resource === 'machine_types') {
         while ($row = mysqli_fetch_assoc($result)) {
             $items[] = [
                 'id' => (int) $row['machine_type_id'],
-                'name' => $row['machine_type_name'],
+                'name' => mb_strtoupper((string) $row['machine_type_name'], 'UTF-8'),
                 'image' => normalizeImageUrl($row['machine_type_img']),
                 'available_vehicle_count' => (int) $row['machine_count'],
             ];
@@ -260,7 +260,7 @@ if ($resource === 'types' || $resource === 'body-types' || $resource === 'body_t
         while ($row = mysqli_fetch_assoc($result)) {
             $items[] = [
                 'id' => (int) $row['body_type_id'],
-                'name' => $row['body_type_name'],
+                'name' => mb_strtoupper((string) $row['body_type_name'], 'UTF-8'),
                 'image' => normalizeImageUrl($row['body_type_img']),
                 'available_vehicle_count' => (int) $row['vehicle_count'],
             ];
@@ -296,7 +296,7 @@ if ($resource === 'steering' || $resource === 'steerings' || $resource === 'opti
         while ($row = mysqli_fetch_assoc($result)) {
             $items[] = [
                 'id' => (int) $row['option_id'],
-                'name' => $row['option_name'],
+                'name' => mb_strtoupper((string) $row['option_name'], 'UTF-8'),
             ];
         }
         return $items;
@@ -330,7 +330,7 @@ if ($resource === 'transmissions' || $resource === 'transmission') {
         while ($row = mysqli_fetch_assoc($result)) {
             $items[] = [
                 'id' => (int) $row['transmission_id'],
-                'name' => $row['transmission_name'],
+                'name' => mb_strtoupper((string) $row['transmission_name'], 'UTF-8'),
             ];
         }
         return $items;
@@ -366,7 +366,7 @@ if ($resource === 'locations' || $resource === 'location' || $resource === 'coun
         while ($row = mysqli_fetch_assoc($result)) {
             $items[] = [
                 'id' => (int) $row['country_id'],
-                'name' => $row['country_name'],
+                'name' => mb_strtoupper((string) $row['country_name'], 'UTF-8'),
                 'image' => $row['image'],
                 'available_vehicle_count' => (int) $row['item_count'],
             ];
@@ -425,7 +425,7 @@ if ($resource === 'colors' || $resource === 'color') {
         while ($row = mysqli_fetch_assoc($result)) {
             $items[] = [
                 'id' => (int) $row['color_code_id'],
-                'name' => $row['color_name'],
+                'name' => mb_strtoupper((string) $row['color_name'], 'UTF-8'),
                 'code' => $row['color_code_name_code'],
                 'count' => (int) $row['item_count'],
             ];
@@ -462,7 +462,7 @@ if ($resource === 'driven' || $resource === 'drive' || $resource === 'drives') {
         while ($row = mysqli_fetch_assoc($result)) {
             $items[] = [
                 'id' => (int) $row['drive_id'],
-                'name' => $row['drive_name'],
+                'name' => mb_strtoupper((string) $row['drive_name'], 'UTF-8'),
             ];
         }
         return $items;
@@ -496,7 +496,7 @@ if ($resource === 'cc-range' || $resource === 'cc_range' || $resource === 'ccran
         while ($row = mysqli_fetch_assoc($result)) {
             $items[] = [
                 'id' => (int) $row['cc_id'],
-                'name' => $row['cc_name'],
+                'name' => mb_strtoupper((string) $row['cc_name'], 'UTF-8'),
             ];
         }
         return $items;
@@ -530,7 +530,7 @@ if ($resource === 'features' || $resource === 'feature' || $resource === 'vehicl
         while ($row = mysqli_fetch_assoc($result)) {
             $items[] = [
                 'id' => (int) $row['vehicle_feature_id'],
-                'name' => $row['vehicle_feature_name'],
+                'name' => mb_strtoupper((string) $row['vehicle_feature_name'], 'UTF-8'),
             ];
         }
         return $items;
@@ -688,7 +688,7 @@ if ($resource === 'filters') {
         while ($r = mysqli_fetch_assoc($mq)) {
             $makers[] = [
                 'id' => (int) $r['maker_id'],
-                'name' => $r['maker_name'],
+                'name' => mb_strtoupper((string) $r['maker_name'], 'UTF-8'),
                 'image' => normalizeImageUrl($r['maker_img']),
                 'available_vehicle_count' => (int) $r['vehicle_count'],
             ];
@@ -700,7 +700,7 @@ if ($resource === 'filters') {
         while ($r = mysqli_fetch_assoc($bq)) {
             $brands[] = [
                 'id' => (int) $r['brand_id'],
-                'name' => $r['brand_name'],
+                'name' => mb_strtoupper((string) $r['brand_name'], 'UTF-8'),
                 'maker_id' => (int) $r['maker_id'],
                 'available_vehicle_count' => (int) $r['vehicle_count'],
             ];
@@ -712,7 +712,7 @@ if ($resource === 'filters') {
         while ($r = mysqli_fetch_assoc($tq)) {
             $body_types[] = [
                 'id' => (int) $r['body_type_id'],
-                'name' => $r['body_type_name'],
+                'name' => mb_strtoupper((string) $r['body_type_name'], 'UTF-8'),
                 'image' => normalizeImageUrl($r['body_type_img']),
                 'available_vehicle_count' => (int) $r['vehicle_count'],
             ];
@@ -733,7 +733,7 @@ if ($resource === 'filters') {
         while ($r = mysqli_fetch_assoc($tq)) {
             $machine_types[] = [
                 'id' => (int) $r['machine_type_id'],
-                'name' => $r['machine_type_name'],
+                'name' => mb_strtoupper((string) $r['machine_type_name'], 'UTF-8'),
                 'image' => normalizeImageUrl($r['machine_type_img']),
                 'available_vehicle_count' => (int) $r['machine_count'],
             ];
@@ -742,36 +742,36 @@ if ($resource === 'filters') {
         $colors = [];
         $cq = mysqli_query($dbc, "SELECT cc.color_code_id, cc.color_name, cc.color_code_name_code, ((SELECT COUNT(*) FROM vehicle_info v WHERE (v.vehicle_color_name = cc.color_name OR v.vehicle_color = cc.color_name) AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) + (SELECT COUNT(*) FROM machines mch WHERE mch.machine_color = cc.color_name AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS item_count FROM color_code cc WHERE cc.color_code_sts = '1' HAVING item_count > 0 ORDER BY cc.color_name ASC");
         while ($r = mysqli_fetch_assoc($cq))
-            $colors[] = ['name' => $r['color_name'], 'code' => $r['color_code_name_code']];
+            $colors[] = ['name' => mb_strtoupper((string) $r['color_name'], 'UTF-8'), 'code' => $r['color_code_name_code']];
 
         // Transmissions
         $transmissions = [];
         $tq2 = mysqli_query($dbc, "SELECT t.transmission_id, t.transmission_name, ((SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_transmission = t.transmission_name AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) + (SELECT COUNT(*) FROM machines mch WHERE mch.machine_transmission = t.transmission_name AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS item_count FROM transmission t WHERE t.transmission_sts = '1' HAVING item_count > 0 ORDER BY t.transmission_name ASC");
         while ($r = mysqli_fetch_assoc($tq2))
-            $transmissions[] = ['id' => (int) $r['transmission_id'], 'name' => $r['transmission_name']];
+            $transmissions[] = ['id' => (int) $r['transmission_id'], 'name' => mb_strtoupper((string) $r['transmission_name'], 'UTF-8')];
 
         // Fuel types
         $fuels = [];
         $fq = mysqli_query($dbc, "SELECT f.fuel_id, f.fuel_name, ((SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_fuel = f.fuel_name AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) + (SELECT COUNT(*) FROM machines mch WHERE mch.machine_fuel = f.fuel_name AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS item_count FROM fuel f WHERE f.fuel_sts = 1 HAVING item_count > 0 ORDER BY f.fuel_name ASC");
         while ($r = mysqli_fetch_assoc($fq))
-            $fuels[] = ['id' => (int) $r['fuel_id'], 'name' => $r['fuel_name']];
+            $fuels[] = ['id' => (int) $r['fuel_id'], 'name' => mb_strtoupper((string) $r['fuel_name'], 'UTF-8')];
 
         $cc_range = [];
         $c_range = mysqli_query($dbc, "SELECT c.cc_id, c.cc_name, (SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_cc = c.cc_name AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) AS item_count FROM cc c WHERE c.cc_sts = 1 HAVING item_count > 0 ORDER BY c.cc_id ASC");
         while ($r = mysqli_fetch_assoc($c_range))
-            $cc_range[] = ['id' => (int) $r['cc_id'], 'name' => $r['cc_name']];
+            $cc_range[] = ['id' => (int) $r['cc_id'], 'name' => mb_strtoupper((string) $r['cc_name'], 'UTF-8')];
 
         // Driven
         $driven = [];
         $dv = mysqli_query($dbc, "SELECT d.drive_id, d.drive_name, ((SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_drive = d.drive_name AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) + (SELECT COUNT(*) FROM machines mch WHERE mch.machine_drive = d.drive_name AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS item_count FROM drive d WHERE d.drive_sts = 1 HAVING item_count > 0 ORDER BY d.drive_name ASC");
         while ($r = mysqli_fetch_assoc($dv))
-            $driven[] = ['id' => (int) $r['drive_id'], 'name' => $r['drive_name']];
+            $driven[] = ['id' => (int) $r['drive_id'], 'name' => mb_strtoupper((string) $r['drive_name'], 'UTF-8')];
 
         // steering
         $steering = [];
         $st = mysqli_query($dbc, "SELECT o.option_id, o.option_name, ((SELECT COUNT(*) FROM vehicle_info v WHERE v.vehicle_option = o.option_name AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) + (SELECT COUNT(*) FROM machines mch WHERE mch.machine_steering = o.option_name AND mch.machine_sts = 1 AND (mch.machine_sale_stts IS NULL OR mch.machine_sale_stts != 'sold'))) AS item_count FROM options o WHERE o.option_sts = 1 HAVING item_count > 0 ORDER BY o.option_name ASC");
         while ($r = mysqli_fetch_assoc($st))
-            $steering[] = ['id' => (int) $r['option_id'], 'name' => $r['option_name']];
+            $steering[] = ['id' => (int) $r['option_id'], 'name' => mb_strtoupper((string) $r['option_name'], 'UTF-8')];
 
         // Locations
         $locations = [];
@@ -779,7 +779,7 @@ if ($resource === 'filters') {
         while ($r = mysqli_fetch_assoc($mq)) {
             $locations[] = [
                 'id' => (int) $r['country_id'],
-                'name' => $r['country_name'],
+                'name' => mb_strtoupper((string) $r['country_name'], 'UTF-8'),
                 'image' => $r['image'],
                 'available_vehicle_count' => (int) $r['vehicle_count'],
             ];
@@ -790,7 +790,7 @@ if ($resource === 'filters') {
         $features = [];
         $fte = mysqli_query($dbc, "SELECT vf.vehicle_feature_id, vf.vehicle_feature_name, (SELECT COUNT(*) FROM vehicle_info v WHERE JSON_CONTAINS(v.vehicle_feature_list, CONCAT('\"', vf.vehicle_feature_name, '\"')) AND (v.vehicle_sale_stts IS NULL OR v.vehicle_sale_stts != 'sold')) AS item_count FROM vehicle_feature vf WHERE vf.vehicle_feature_sts = 1 HAVING item_count > 0 ORDER BY vf.vehicle_feature_name ASC");
         while ($r = mysqli_fetch_assoc($fte))
-            $features[] = ['id' => (int) $r['vehicle_feature_id'], 'name' => $r['vehicle_feature_name']];
+            $features[] = ['id' => (int) $r['vehicle_feature_id'], 'name' => mb_strtoupper((string) $r['vehicle_feature_name'], 'UTF-8')];
 
         return compact('types', 'makers', 'brands', 'codes', 'fuels', 'machine_types', 'steering', 'body_types', 'transmissions', 'colors', 'locations', 'port', 'driven', 'cc_range', 'features');
     });

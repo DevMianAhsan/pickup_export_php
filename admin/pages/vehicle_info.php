@@ -297,7 +297,8 @@ require_once("custom/vendor/autoload.php");
 
 					<label for="">Lenght(cm)</label>
 
-					<input type="number" name="vehicle_length" id="vehicle_length" required="required"
+					<input type="number" step="any" name="vehicle_length" id="vehicle_length" required="required"
+						value="<?= htmlspecialchars(@$stock['vehicle_length'] ?? '') ?>"
 						class="form-control form-control-sm forM3">
 
 				</div><!-- form group -->
@@ -307,6 +308,7 @@ require_once("custom/vendor/autoload.php");
 					<label for="">M3</label>
 
 					<input type="text" name="vehicle_m3" required="required" id="vehicle_m3"
+						value="<?= htmlspecialchars(@$stock['vehicle_m3'] ?? '') ?>"
 						class="form-control form-control-sm">
 
 				</div><!-- form group -->
@@ -567,6 +569,7 @@ require_once("custom/vendor/autoload.php");
 					<label for="">Width(cm)</label>
 
 					<input type="text" name="vehicle_width" id="vehicle_width" required="required"
+						value="<?= htmlspecialchars(@$stock['vehicle_width'] ?? '') ?>"
 						class="form-control form-control-sm forM3">
 
 				</div><!-- form group -->
@@ -776,6 +779,7 @@ require_once("custom/vendor/autoload.php");
 					<label for="">Height(cm)</label>
 
 					<input type="text" name="vehicle_height" required="required" id="vehicle_height"
+						value="<?= htmlspecialchars(@$stock['vehicle_height'] ?? '') ?>"
 						class="form-control form-control-sm forM3">
 
 				</div><!-- form group -->
