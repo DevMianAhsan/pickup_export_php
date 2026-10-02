@@ -39,9 +39,8 @@ if (isset($_POST['inquiryvehicle'])) {
 		echo json_encode($response);
 	}
 
-	if (isset($_POST['part_stock_idp'])) {
+	if (isset($_POST['part_stock_idp']) || isset($_POST['part_stock_pre']) || isset($_POST['part_stock_id'])) {
 		$data = [
-			'part_stock_id' => $_POST['part_stock_idp'],
 			'part_chassis_no' => $_POST['part_chassis_no'],
 			'part_no' => $_POST['part_no'],
 			'part_weight' => $_POST['part_weight'],
@@ -60,36 +59,52 @@ if (isset($_POST['inquiryvehicle'])) {
 			'part_condition_remarks' => $_POST['part_condition_remarks'],
 			'part_fob_price' => $_POST['part_fob_price'],
 		];
-		if ($_POST['part_id'] == "") {
+		if (empty($_POST['part_id'])) {
+			$stock_prefix = !empty($_POST['part_stock_pre']) ? $_POST['part_stock_pre'] : (!empty($_POST['part_stock_idp']) ? $_POST['part_stock_idp'] : ('TPP-' . date('y')));
+			$safe_stock_id = function_exists('generateSafePartStockId') ? generateSafePartStockId($dbc, $stock_prefix) : ($stock_prefix . '001');
+			$data['part_stock_id'] = $safe_stock_id;
 			$data['user_id'] = $_SESSION['userId'] ?? $_SESSION['user_id'] ?? 0;
 			if (insert_data($dbc, "vehicle_parts", $data)) {
+				$last_id = mysqli_insert_id($dbc);
+				$response = [
+					'msg' => "Part Added Successfully",
+					'sts' => 'success',
+					'id' => $last_id
+				];
+			} else {
+				$response = [
+					'msg' => mysqli_error($dbc),
+					'sts' => 'error'
+				];
+			}
+		} else {
+			$existing_part = fetchRecord($dbc, "vehicle_parts", "part_id", $_POST['part_id']);
+			$existing_stock_id = trim($existing_part['part_stock_id'] ?? '');
 
-				$response=['msg'=>"Part Added Successfully",
-							'sts'=>'success',
-						];
-				
-			}else{
-				$response=['msg'=>mysqli_error($dbc),
-							'sts'=>'success'];			}
-		}else{
-			if (update_data($dbc, "vehicle_parts", $data, "part_id ", $_POST['part_id'])) {
-$response=['msg'=>"Part Updated Successfully",
-							'sts'=>'success',
-						];
-
-			}else{
-				$response=['msg'=>mysqli_error($dbc),
-							'sts'=>'success',
-							];
+			if (empty($existing_stock_id)) {
+				$stock_prefix = !empty($_POST['part_stock_pre']) ? $_POST['part_stock_pre'] : (!empty($_POST['part_stock_idp']) ? $_POST['part_stock_idp'] : ('TPP-' . date('y')));
+				$safe_stock_id = function_exists('generateSafePartStockId') ? generateSafePartStockId($dbc, $stock_prefix) : ($stock_prefix . '001');
+				$data['part_stock_id'] = $safe_stock_id;
 			}
 
+			if (update_data($dbc, "vehicle_parts", $data, "part_id ", $_POST['part_id'])) {
+				$response = [
+					'msg' => "Part Updated Successfully",
+					'sts' => 'success',
+					'id' => $_POST['part_id']
+				];
+			} else {
+				$response = [
+					'msg' => mysqli_error($dbc),
+					'sts' => 'error'
+				];
+			}
 		}
 		echo json_encode($response);
-
 	}
-if (isset($_POST['machine_stock_idp'])) {
+
+	if (isset($_POST['machine_stock_idp']) || isset($_POST['machine_stock_pre']) || isset($_POST['machine_stock_id'])) {
 		$data = [
-			'machine_stock_id' => $_POST['machine_stock_idp'],
 			'machine_type' => $_POST['machine_type'],
 			'country_id' => @$_POST['machine_country_id'],
 			'part_no' => $_POST['part_no'],
@@ -112,34 +127,49 @@ if (isset($_POST['machine_stock_idp'])) {
 			'machine_drive' => $_POST['machine_drive'],
 			'machine_transmission' => $_POST['machine_transmission'],
 			'machine_condition' => $_POST['machine_condition'],
-
 		];
-		if ($_POST['machine_id'] == "") {
+		if (empty($_POST['machine_id'])) {
+			$stock_prefix = !empty($_POST['machine_stock_pre']) ? $_POST['machine_stock_pre'] : (!empty($_POST['machine_stock_idp']) ? $_POST['machine_stock_idp'] : ('TPM-' . date('y')));
+			$safe_stock_id = function_exists('generateSafeMachineStockId') ? generateSafeMachineStockId($dbc, $stock_prefix) : ($stock_prefix . '001');
+			$data['machine_stock_id'] = $safe_stock_id;
 			$data['user_id'] = $_SESSION['userId'] ?? $_SESSION['user_id'] ?? 0;
 			if (insert_data($dbc, "machines", $data)) {
+				$last_id = mysqli_insert_id($dbc);
+				$response = [
+					'msg' => "Machine Added Successfully",
+					'sts' => 'success',
+					'id' => $last_id
+				];
+			} else {
+				$response = [
+					'msg' => mysqli_error($dbc),
+					'sts' => 'error'
+				];
+			}
+		} else {
+			$existing_machine = fetchRecord($dbc, "machines", "machine_id", $_POST['machine_id']);
+			$existing_stock_id = trim($existing_machine['machine_stock_id'] ?? '');
 
-				$response=['msg'=>"Machine Added Successfully",
-							'sts'=>'success',
-						];
-				
-			}else{
-				$response=['msg'=>mysqli_error($dbc),
-							'sts'=>'success'];			}
-		}else{
-			if (update_data($dbc, "machines", $data, "machine_id ", $_POST['machine_id'])) {
-$response=['msg'=>"Machine Updated Successfully",
-							'sts'=>'success',
-						];
-
-			}else{
-				$response=['msg'=>mysqli_error($dbc),
-							'sts'=>'success',
-							];
+			if (empty($existing_stock_id)) {
+				$stock_prefix = !empty($_POST['machine_stock_pre']) ? $_POST['machine_stock_pre'] : (!empty($_POST['machine_stock_idp']) ? $_POST['machine_stock_idp'] : ('TPM-' . date('y')));
+				$safe_stock_id = function_exists('generateSafeMachineStockId') ? generateSafeMachineStockId($dbc, $stock_prefix) : ($stock_prefix . '001');
+				$data['machine_stock_id'] = $safe_stock_id;
 			}
 
+			if (update_data($dbc, "machines", $data, "machine_id ", $_POST['machine_id'])) {
+				$response = [
+					'msg' => "Machine Updated Successfully",
+					'sts' => 'success',
+					'id' => $_POST['machine_id']
+				];
+			} else {
+				$response = [
+					'msg' => mysqli_error($dbc),
+					'sts' => 'error'
+				];
+			}
 		}
 		echo json_encode($response);
-
 	}
 if (isset($_POST['inquiry_fullName'])) {
 	$inquiry_services='';

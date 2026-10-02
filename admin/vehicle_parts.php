@@ -15,17 +15,19 @@ include_once "inc/code.php";
                         <?php 
 
 if (isset($_GET['part_id'])) {
-   @$id =$_GET['part_id'];
-     $q = mysqli_query($dbc,"SELECT * FROM vehicle_parts WHERE part_id='$id' ");
-
-      $PartDe= mysqli_fetch_assoc($q);
-
-    
-}else{
-  $q = mysqli_query($dbc,"SELECT part_id FROM vehicle_parts ORDER BY part_id DESC");
-      @$id = mysqli_num_rows($q)+1;
+   @$id = $_GET['part_id'];
+   $q = mysqli_query($dbc, "SELECT * FROM vehicle_parts WHERE part_id='$id' ");
+   $PartDe = mysqli_fetch_assoc($q);
+} else {
+   $q = mysqli_query($dbc, "SELECT part_id FROM vehicle_parts ORDER BY part_id DESC LIMIT 1");
+   $r = mysqli_fetch_assoc($q);
+   @$id = ($r ? $r['part_id'] : 0) + 1;
 }
-      ?>
+
+$is_edit = (!empty($_GET['part_id']) && !empty($PartDe['part_stock_id']));
+$next_num = function_exists('getNextPartStockNumber') ? getNextPartStockNumber($dbc) : 1;
+$display_stock_id = $is_edit ? $PartDe['part_stock_id'] : sprintf("%03d", $next_num);
+?>
 
       <div class="vehicel_main_form">
 
@@ -35,16 +37,23 @@ if (isset($_GET['part_id'])) {
 
   <div class="row form-group">
 
-    <div class="col-sm-2">
+    <div class="col-sm-3">
        <label for="">Stock ID</label>      
-            <select tabindex="1" name="part_stock_idp" id="part_stock_id" class="form-control select2" required> 
-               <option <?=@($PartDe['part_stock_id']=="TPE-".date('y'))?"selected":""?> value="TPE-<?= date('y') ?>">TPE-<?= date('y') ?></option>
-<option <?=@($PartDe['part_stock_id']=="JPE-".date('y'))?"selected":""?> value="JPE-<?= date('y') ?>">JPE-<?= date('y') ?></option>
-<option <?=@($PartDe['part_stock_id']=="SPE-".date('y'))?"selected":""?> value="SPE-<?= date('y') ?>">SPE-<?= date('y') ?></option>
-<option <?=@($PartDe['part_stock_id']=="HPE-".date('y'))?"selected":""?> value="HPE-<?= date('y') ?>">HPE-<?= date('y') ?></option>
-<option <?=@($PartDe['part_stock_id']=="EPE-".date('y'))?"selected":""?> value="EPE-<?= date('y') ?>">EPE-<?= date('y') ?></option>
-<option <?=@($PartDe['part_stock_id']=="UPE-".date('y'))?"selected":""?> value="UPE-<?= date('y') ?>">UPE-<?= date('y') ?></option>
+       <div class="row">
+         <div class="col-sm-6 <?= $is_edit ? 'd-none' : '' ?>">
+            <select tabindex="1" name="part_stock_pre" id="part_stock_pre" class="form-control select2" <?= $is_edit ? '' : 'required' ?>> 
+               <option value="TPP-<?= date('y') ?>">TPP-<?= date('y') ?></option>
+               <option value="JPP-<?= date('y') ?>">JPP-<?= date('y') ?></option>
+               <option value="SPP-<?= date('y') ?>">SPP-<?= date('y') ?></option>
+               <option value="HPP-<?= date('y') ?>">HPP-<?= date('y') ?></option>
+               <option value="EPP-<?= date('y') ?>">EPP-<?= date('y') ?></option>
+               <option value="UPP-<?= date('y') ?>">UPP-<?= date('y') ?></option>
             </select>
+         </div><!-- col -->
+         <div class="<?= $is_edit ? 'col-sm-12' : 'col-sm-6' ?> customStockIDEDIT">
+            <input type="text" value="<?= htmlspecialchars($display_stock_id) ?>" readonly name="part_stock_id" id="part_stock_id" class="form-control form-control-sm">
+         </div><!-- col -->
+       </div> <!-- inner row -->
     </div><!-- col -->
     <div class="col-sm-3">
         <label for="">Maker</label>     
@@ -63,7 +72,7 @@ if (isset($_GET['part_id'])) {
 
         </select>
     </div>
-    <div class="col-sm-3">
+    <div class="col-sm-2">
 
 
         <label for="">Brand</label>     

@@ -2647,20 +2647,100 @@ if (!function_exists('getNextVehicleStockNumber')) {
 	}
 }
 
-if (!function_exists('generateSafeVehicleStockId')) {
-	function generateSafeVehicleStockId($dbc, $prefix) {
+if (!function_exists('getNextPartStockNumber')) {
+	function getNextPartStockNumber($dbc, $target_year = null) {
+		if (!$target_year) {
+			$target_year = date('y');
+		}
+		
+		$pattern = "%-" . mysqli_real_escape_string($dbc, $target_year) . "%";
+		$query = mysqli_query($dbc, "SELECT part_stock_id FROM vehicle_parts WHERE part_stock_id LIKE '$pattern' AND part_stock_id IS NOT NULL");
+		
+		$max_seq = 0;
+		if ($query) {
+			while ($row = mysqli_fetch_assoc($query)) {
+				$stock_id = trim($row['part_stock_id']);
+				if (preg_match('/-(\d{2})(\d{3,})$/', $stock_id, $matches)) {
+					$year = $matches[1];
+					$num = intval($matches[2]);
+					if ($year == $target_year && $num > $max_seq) {
+						$max_seq = $num;
+					}
+				}
+			}
+		}
+		
+		return ($max_seq > 0) ? ($max_seq + 1) : 1;
+	}
+}
+
+if (!function_exists('generateSafePartStockId')) {
+	function generateSafePartStockId($dbc, $prefix) {
 		$target_year = date('y');
 		if (preg_match('/-(\d{2})$/', $prefix, $m)) {
 			$target_year = $m[1];
 		}
 		
-		$seq = getNextVehicleStockNumber($dbc, $target_year);
+		$seq = getNextPartStockNumber($dbc, $target_year);
 		$candidate_stock_id = $prefix . sprintf("%03d", $seq);
 		
 		while (true) {
 			$cand_escaped = mysqli_real_escape_string($dbc, $candidate_stock_id);
 			$num_suffix = "%-" . mysqli_real_escape_string($dbc, $target_year . sprintf("%03d", $seq));
-			$check = mysqli_query($dbc, "SELECT vehicle_id FROM vehicle_info WHERE vehicle_stock_id = '$cand_escaped' OR vehicle_stock_id LIKE '$num_suffix' LIMIT 1");
+			$check = mysqli_query($dbc, "SELECT part_id FROM vehicle_parts WHERE part_stock_id = '$cand_escaped' OR part_stock_id LIKE '$num_suffix' LIMIT 1");
+			if ($check && mysqli_num_rows($check) > 0) {
+				$seq++;
+				$candidate_stock_id = $prefix . sprintf("%03d", $seq);
+			} else {
+				break;
+			}
+		}
+		
+		return $candidate_stock_id;
+	}
+}
+
+if (!function_exists('getNextMachineStockNumber')) {
+	function getNextMachineStockNumber($dbc, $target_year = null) {
+		if (!$target_year) {
+			$target_year = date('y');
+		}
+		
+		$pattern = "%-" . mysqli_real_escape_string($dbc, $target_year) . "%";
+		$query = mysqli_query($dbc, "SELECT machine_stock_id FROM machines WHERE machine_stock_id LIKE '$pattern' AND machine_stock_id IS NOT NULL");
+		
+		$max_seq = 0;
+		if ($query) {
+			while ($row = mysqli_fetch_assoc($query)) {
+				$stock_id = trim($row['machine_stock_id']);
+				if (preg_match('/-(\d{2})(\d{3,})$/', $stock_id, $matches)) {
+					$year = $matches[1];
+					$num = intval($matches[2]);
+					if ($year == $target_year && $num > $max_seq) {
+						$max_seq = $num;
+					}
+				}
+			}
+		}
+		
+		return ($max_seq > 0) ? ($max_seq + 1) : 1;
+	}
+}
+
+if (!function_exists('generateSafeMachineStockId')) {
+	function generateSafeMachineStockId($dbc, $prefix) {
+		$target_year = date('y');
+		if (preg_match('/-(\d{2})$/', $prefix, $m)) {
+			$target_year = $m[1];
+		}
+		
+		$seq = getNextMachineStockNumber($dbc, $target_year);
+		$candidate_stock_id = $prefix . sprintf("%03d", $seq);
+		
+		while (true) {
+			$cand_escaped = mysqli_real_escape_string($dbc, $candidate_stock_id);
+			$num_suffix = "%-" . mysqli_real_escape_string($dbc, $target_year . sprintf("%03d", $seq));
+			$check = mysqli_query($dbc, "SELECT machine_id FROM machines WHERE machine_stock_id = '$cand_escaped' OR machine_stock_id LIKE '$num_suffix' LIMIT 1");
 			if ($check && mysqli_num_rows($check) > 0) {
 				$seq++;
 				$candidate_stock_id = $prefix . sprintf("%03d", $seq);

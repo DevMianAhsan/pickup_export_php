@@ -56,19 +56,41 @@ $("#formDataIQ").off('submit').on('submit',function(e) {
             dataType:"json",
             beforeSend:function() {
                 $('#formDataIQ_btn').prop("disabled",true);
-                 $('#formDataIQ_btn').text("Loading...");
+                $('#formDataIQ_btn').text("Loading...");
             },
             success:function (response) {
-                $('#formDataIQ_btn').text("Save");
+                $('#formDataIQ_btn').text("Submit");
                 $('#formDataIQ_btn').prop("disabled",false);
                 
-            $("#formDataIQTb").load(location.href + " #formDataIQTb > *");
+                if ($("#formDataIQTb").length > 0) {
+                    $("#formDataIQTb").load(location.href + " #formDataIQTb > *");
+                    $('#formDataIQ').each(function(){
+                        this.reset();
+                    });
+                    $('#formDataIQ select.select2').val('').trigger('change');
+                }
 
+                if (response.id) {
+                    $('input[name="part_id"]').val(response.id);
+                    $('input[name="machine_id"]').val(response.id);
+                    $('#part_id').val(response.id);
+                    $('#machine_id').val(response.id);
+                    $('.vehicle_idMain').val(response.id);
 
-                $('#formDataIQ').each(function(){
-                    this.reset();
-                });    
+                    var currentUrl = window.location.href;
+                    if (currentUrl.indexOf('part_id=') === -1 && currentUrl.indexOf('vehicle_parts.php') !== -1) {
+                        history.pushState(null, null, 'vehicle_parts.php?part_id=' + response.id);
+                    } else if (currentUrl.indexOf('machine_id=') === -1 && currentUrl.indexOf('machines.php') !== -1) {
+                        history.pushState(null, null, 'machines.php?machine_id=' + response.id);
+                    }
+                }
+
                 sweeetalert('Success', response.msg, response.sts, 2000);
+            },
+            error: function(xhr, status, error) {
+                $('#formDataIQ_btn').text("Submit");
+                $('#formDataIQ_btn').prop("disabled",false);
+                sweeetalert('Error', 'AJAX request failed: ' + error, 'error', 3000);
             }
         });//ajax call
     });//main
