@@ -69,7 +69,7 @@ include_once "inc/code.php";
 							while ($r = mysqli_fetch_array($q)) {
 								$maker = fetchRecord($dbc, "maker", "maker_id", $r['part_maker'])
 								['maker_name'];
-								$brand = fetchRecord($dbc, "brands", "brand_id", $r['part_brand'])
+								$brand = @fetchRecord($dbc, "brands", "brand_id", $r['part_brand'])
 								['brand_name'];
 								$added_by = !empty($r['user_id']) ? (@fetchRecord($dbc, "users", "user_id", $r['user_id'])['username'] ?? 'N/A') : 'N/A';
 								$c++;

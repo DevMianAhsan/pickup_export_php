@@ -133,6 +133,7 @@ if (isset($_POST['inquiryvehicle'])) {
 			$safe_stock_id = function_exists('generateSafeMachineStockId') ? generateSafeMachineStockId($dbc, $stock_prefix) : ($stock_prefix . '001');
 			$data['machine_stock_id'] = $safe_stock_id;
 			$data['user_id'] = $_SESSION['userId'] ?? $_SESSION['user_id'] ?? 0;
+			$data['machine_timestamp'] = date('Y-m-d H:i:s');
 			if (insert_data($dbc, "machines", $data)) {
 				$last_id = mysqli_insert_id($dbc);
 				$response = [
