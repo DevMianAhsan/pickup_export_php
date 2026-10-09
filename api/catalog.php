@@ -1334,6 +1334,17 @@ if (strtolower($resource) === 'search') {
     } elseif ($typeParam === 'machine' || $typeParam === '2') {
         $searchType = 'machine';
     }
+    $bodyTypeParam = trim((string) ($params['body_type'] ?? ''));
+    $hasBodyType = $bodyTypeParam !== '' && strtolower($bodyTypeParam) !== 'null' && (int) $bodyTypeParam > 0;
+    $machineTypeParam = trim((string) ($params['machine_type'] ?? ''));
+    $hasMachineType = $machineTypeParam !== '' && strtolower($machineTypeParam) !== 'null' && (int) $machineTypeParam > 0;
+    if ($hasBodyType && $hasMachineType) {
+        $searchType = null;
+    } elseif ($hasBodyType) {
+        $searchType = 'car';
+    } elseif ($hasMachineType) {
+        $searchType = 'machine';
+    }
 
     // Handle drivetrain alias: if client passes 'options' with 'wheel drive' or '4wd', route to 'driven'
     if (!empty($params['options']) && $params['options'] !== 'null') {
