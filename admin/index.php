@@ -7,8 +7,9 @@
           include_once 'includes/functions.php';
      $get_company =mysqli_fetch_assoc(mysqli_query($dbc,"SELECT * FROM company ORDER BY id DESC LIMIT 1"));
 
-if(isset($_SESSION['userId'])) {
+if (!empty($_SESSION['userId']) || !empty($_SESSION['user_id'])) {
   header('location: dashboard.php');  
+  exit;
 }
 
 
